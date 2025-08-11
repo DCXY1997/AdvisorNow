@@ -9,6 +9,16 @@ import AdvisorMatchingForm from "@/components/AdvisorMatchingForm";
 const Index = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  const scrollToHowItWorks = () => {
+    const element = document.getElementById('how-it-works');
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -43,6 +53,7 @@ const Index = () => {
               </Button>
               
               <Button
+                onClick={scrollToHowItWorks}
                 variant="outline"
                 size="lg"
                 className="border-primary text-primary hover:bg-primary hover:text-primary-foreground text-lg px-8 py-4 rounded-full transition-smooth font-semibold"
