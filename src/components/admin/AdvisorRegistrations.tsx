@@ -242,7 +242,6 @@ export const AdvisorRegistrations = () => {
                   <TableHead>Applicant</TableHead>
                   <TableHead>Contact</TableHead>
                   <TableHead>Institution</TableHead>
-                  <TableHead>Specializations</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Submitted</TableHead>
                   <TableHead>Actions</TableHead>
@@ -275,20 +274,6 @@ export const AdvisorRegistrations = () => {
                     </TableCell>
                     <TableCell>
                       <span className="text-sm">{registration.financialInstitution}</span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1 flex-wrap max-w-48">
-                        {registration.specializations.slice(0, 2).map((spec) => (
-                          <Badge key={spec} variant="outline" className="text-xs">
-                            {spec}
-                          </Badge>
-                        ))}
-                        {registration.specializations.length > 2 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{registration.specializations.length - 2}
-                          </Badge>
-                        )}
-                      </div>
                     </TableCell>
                     <TableCell>{getStatusBadge(registration.status)}</TableCell>
                     <TableCell>
