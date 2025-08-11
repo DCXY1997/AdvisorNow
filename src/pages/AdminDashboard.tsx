@@ -14,7 +14,8 @@ import {
   BarChart3,
   ChevronDown, 
   LogOut,
-  Settings
+  Settings,
+  UserPlus
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AdvisorManagement } from "@/components/admin/AdvisorManagement";
@@ -22,6 +23,7 @@ import { AdvisorModeration } from "@/components/admin/AdvisorModeration";
 import { ReviewManagement } from "@/components/admin/ReviewManagement";
 import { SubscriptionManagement } from "@/components/admin/SubscriptionManagement";
 import { CallAnalytics } from "@/components/admin/CallAnalytics";
+import { AdvisorRegistrations } from "@/components/admin/AdvisorRegistrations";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -84,7 +86,7 @@ const AdminDashboard = () => {
       {/* Dashboard Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Overview
@@ -92,6 +94,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="advisors" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Advisors
+            </TabsTrigger>
+            <TabsTrigger value="registrations" className="flex items-center gap-2">
+              <UserPlus className="h-4 w-4" />
+              Registrations
             </TabsTrigger>
             <TabsTrigger value="moderation" className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
@@ -190,6 +196,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="advisors">
             <AdvisorManagement />
+          </TabsContent>
+
+          <TabsContent value="registrations">
+            <AdvisorRegistrations />
           </TabsContent>
 
           <TabsContent value="moderation">
