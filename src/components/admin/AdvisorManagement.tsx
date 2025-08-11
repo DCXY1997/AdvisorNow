@@ -31,7 +31,7 @@ export const AdvisorManagement = () => {
       joinDate: "2024-01-15",
       subscription: "Premium",
       totalCalls: 234,
-      specialties: ["Investment Planning", "Retirement", "Tax Strategy"],
+      specialization: ["Investment Planning", "Retirement", "Tax Strategy"],
       credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CFA - Chartered Financial Analyst", "Top 100 Financial Advisors 2023 - Forbes"],
       bio: "Dr. Sarah Johnson is a seasoned financial advisor specializing in comprehensive investment planning and retirement strategies. She has been recognized for her exceptional client service and innovative portfolio management techniques.",
       reviews: [
@@ -88,7 +88,7 @@ export const AdvisorManagement = () => {
       joinDate: "2024-02-01",
       subscription: "Basic",
       totalCalls: 156,
-      specialties: ["Startup Financing", "Venture Capital", "Financial Tech"],
+      specialization: ["Startup Financing", "Venture Capital", "Financial Tech"],
       credentialsAccolades: ["CFP - Certified Financial Planner", "Series 7 - General Securities Representative", "Fintech Innovation Award 2023"],
       bio: "Michael Chen specializes in startup financing and venture capital advisory. He has extensive experience working with tech entrepreneurs and early-stage companies, helping them navigate complex funding landscapes.",
       reviews: [
@@ -126,7 +126,7 @@ export const AdvisorManagement = () => {
       joinDate: "2024-01-20",
       subscription: "Pro",
       totalCalls: 78,
-      specialties: ["Personal Finance", "Debt Management"],
+      specialization: ["Personal Finance", "Debt Management"],
       credentialsAccolades: ["CFP - Certified Financial Planner"],
       bio: "Jennifer Davis focuses on personal finance management and debt reduction strategies for middle-income families.",
       reviews: [
@@ -183,7 +183,7 @@ export const AdvisorManagement = () => {
       joinDate: "2023-12-10",
       subscription: "Premium",
       totalCalls: 345,
-      specialties: ["Wealth Management", "Estate Planning", "Tax Optimization"],
+      specialization: ["Wealth Management", "Estate Planning", "Tax Optimization"],
       credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CLU - Chartered Life Underwriter", "ChFC - Chartered Financial Consultant", "Top 1% Wealth Advisors - Barron's 2023"],
       bio: "Robert Wilson is a highly experienced wealth manager with dual expertise in law and finance. He specializes in comprehensive estate planning and tax optimization for high-net-worth individuals.",
       reviews: [
@@ -457,9 +457,9 @@ export const AdvisorManagement = () => {
                                           </div>
                                         </div>
                                         <div>
-                                          <div className="text-sm font-medium text-muted-foreground">Specialties</div>
+                                          <div className="text-sm font-medium text-muted-foreground">Specialization</div>
                                           <div className="flex gap-1 flex-wrap">
-                                            {advisor.specialties.map((specialty) => (
+                                            {advisor.specialization.map((specialty) => (
                                               <Badge key={specialty} className="bg-blue-100 text-blue-700">{specialty}</Badge>
                                             ))}
                                           </div>
