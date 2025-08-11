@@ -35,6 +35,10 @@ export default {
 					foreground: 'hsl(var(--secondary-foreground))',
 					light: 'hsl(var(--secondary-light))'
 				},
+				hero: {
+					background: 'hsl(var(--hero-background))',
+					accent: 'hsl(var(--hero-accent))'
+				},
 				success: {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))'

@@ -6,52 +6,52 @@
 
 @layer base {
   :root {
-    /* Brand Colors - Financial Trust & Growth */
-    --background: 0 0% 100%;
-    --foreground: 216 20% 15%;
+    /* Light & Clean Color Scheme - Inspired by Reference */
+    --background: 200 30% 98%;
+    --foreground: 220 15% 25%;
     
-    /* Primary - Trust Blue */
-    --primary: 217 91% 35%;
-    --primary-foreground: 0 0% 98%;
-    --primary-light: 217 91% 45%;
-    --primary-dark: 217 91% 25%;
+    /* Primary - Deep Navy Blue */
+    --primary: 220 30% 25%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 220 30% 35%;
+    --primary-dark: 220 30% 15%;
     
-    /* Secondary - Growth Green */
-    --secondary: 142 76% 36%;
-    --secondary-foreground: 0 0% 98%;
-    --secondary-light: 142 76% 46%;
+    /* Secondary - Fresh Green Accent */
+    --secondary: 85 60% 55%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 85 60% 65%;
     
-    /* Success - Financial Growth */
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 98%;
+    /* Hero Background - Light Blue */
+    --hero-background: 195 50% 92%;
+    --hero-accent: 195 50% 85%;
     
     /* Neutral Colors */
     --card: 0 0% 100%;
-    --card-foreground: 216 20% 15%;
+    --card-foreground: 220 15% 25%;
     --popover: 0 0% 100%;
-    --popover-foreground: 216 20% 15%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 220 14% 96%;
-    --accent-foreground: 216 20% 15%;
+    --popover-foreground: 220 15% 25%;
+    --muted: 200 15% 94%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 200 15% 94%;
+    --accent-foreground: 220 15% 25%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 217 91% 35%;
+    --border: 200 15% 88%;
+    --input: 200 15% 96%;
+    --ring: 220 30% 25%;
     --radius: 0.75rem;
     
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 14% 96%) 100%);
+    /* Light Clean Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--hero-background)) 0%, hsl(var(--hero-accent)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(200 15% 98%) 100%);
     --gradient-accent: linear-gradient(90deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
     
-    /* Shadows */
-    --shadow-card: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
-    --shadow-elevated: 0 10px 25px -3px hsl(var(--primary) / 0.1), 0 4px 6px -2px hsl(var(--primary) / 0.05);
-    --shadow-button: 0 2px 4px hsl(var(--primary) / 0.2);
+    /* Soft Shadows */
+    --shadow-card: 0 2px 8px hsl(var(--primary) / 0.08);
+    --shadow-elevated: 0 8px 30px hsl(var(--primary) / 0.12);
+    --shadow-button: 0 4px 12px hsl(var(--primary) / 0.15);
     
-    /* Animations */
+    /* Smooth Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }

@@ -1,113 +1,84 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import Header from "@/components/Header";
+import HowItWorks from "@/components/HowItWorks";
+import Testimonials from "@/components/Testimonials";
 import ServiceTabs from "@/components/ServiceTabs";
 import AdvisorMatchingForm from "@/components/AdvisorMatchingForm";
-import { Users, Award, Clock, Shield } from "lucide-react";
-import heroImage from "@/assets/hero-financial-consultation.jpg";
 
 const Index = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const stats = [
-    {
-      icon: <Users className="w-8 h-8 text-primary" />,
-      number: "10,000+",
-      label: "Clients Served"
-    },
-    {
-      icon: <Award className="w-8 h-8 text-primary" />,
-      number: "500+",
-      label: "Certified Advisors"
-    },
-    {
-      icon: <Clock className="w-8 h-8 text-primary" />,
-      number: "24hr",
-      label: "Response Time"
-    },
-    {
-      icon: <Shield className="w-8 h-8 text-primary" />,
-      number: "100%",
-      label: "Secure & Confidential"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
+      <Header onFindAdvisorClick={() => setIsFormOpen(true)} />
+
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 gradient-hero"></div>
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        ></div>
+      <section className="gradient-hero relative overflow-hidden">
+        {/* Decorative elements inspired by reference */}
+        <div className="absolute top-20 right-20 w-32 h-16 bg-secondary rounded-full opacity-30"></div>
+        <div className="absolute top-40 right-40 w-24 h-12 bg-secondary-light rounded-full opacity-20"></div>
+        <div className="absolute bottom-20 left-20 w-40 h-20 bg-secondary rounded-full opacity-25"></div>
+        <div className="absolute bottom-40 right-10 w-28 h-14 bg-secondary-light rounded-full opacity-15"></div>
         
-        <div className="relative z-10 container mx-auto px-4 py-20 md:py-32">
-          <div className="hero-content max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Find Your Perfect
-              <span className="block text-secondary-light">Financial Advisor</span>
+        <div className="container mx-auto px-4 py-20 md:py-32">
+          <div className="max-w-4xl">
+            <h1 className="text-4xl md:text-6xl font-bold text-primary mb-6 leading-tight">
+              Talk to a Licensed<br />
+              <span className="text-primary-light">Financial Advisor Instantly</span>
             </h1>
             
-            <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-2xl mx-auto">
-              Connect with certified financial professionals who understand your goals and 
-              help you build a secure financial future.
+            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl">
+              No Pressure, No Hard Selling, Just Advice
             </p>
             
-            <Button
-              onClick={() => setIsFormOpen(true)}
-              size="lg"
-              className="bg-white text-primary hover:bg-white/90 shadow-elevated text-lg px-8 py-4 rounded-full transition-bounce font-semibold"
-            >
-              Find an Advisor
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                onClick={() => setIsFormOpen(true)}
+                size="lg"
+                className="bg-primary hover:bg-primary-light text-primary-foreground shadow-button text-lg px-8 py-4 rounded-full transition-smooth font-semibold"
+              >
+                FIND AN ADVISOR NOW
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground text-lg px-8 py-4 rounded-full transition-smooth font-semibold"
+              >
+                SEE HOW IT WORKS
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <Card key={index} className="service-card text-center border-border/50">
-                <CardContent className="pt-6">
-                  <div className="flex justify-center mb-4">
-                    {stat.icon}
-                  </div>
-                  <div className="text-2xl md:text-3xl font-bold text-primary mb-2">
-                    {stat.number}
-                  </div>
-                  <div className="text-sm text-muted-foreground font-medium">
-                    {stat.label}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* How It Works Section */}
+      <HowItWorks />
 
       {/* Service Tabs Section */}
       <ServiceTabs />
 
-      {/* Call to Action Section */}
+      {/* Testimonials Section */}
+      <Testimonials />
+
+      {/* Final CTA Section */}
       <section className="py-20 gradient-hero">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto hero-content">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Take Control of Your Financial Future?
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
+              Ready to Get Expert Financial Advice?
             </h2>
-            <p className="text-xl mb-8 opacity-90">
-              Join thousands of satisfied clients who have achieved their financial goals 
-              with our expert guidance.
+            <p className="text-xl text-muted-foreground mb-8">
+              Connect with certified financial advisors instantly and get the guidance you need.
             </p>
             <Button
               onClick={() => setIsFormOpen(true)}
               size="lg"
-              className="bg-white text-primary hover:bg-white/90 shadow-elevated text-lg px-8 py-4 rounded-full transition-bounce font-semibold"
+              className="bg-primary hover:bg-primary-light text-primary-foreground shadow-button text-lg px-8 py-4 rounded-full transition-smooth font-semibold"
             >
-              Get Matched Today
+              Get Started Today
             </Button>
           </div>
         </div>
@@ -118,28 +89,33 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">FinanceMatch</h3>
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-7 bg-secondary rounded-full mr-3 flex items-center justify-center">
+                  <div className="w-7 h-5 bg-secondary-light rounded-full"></div>
+                </div>
+                <span className="text-xl font-bold">FinanceMatch</span>
+              </div>
               <p className="text-primary-foreground/80">
-                Connecting you with trusted financial advisors for a secure financial future.
+                Connecting you with licensed financial advisors for instant, pressure-free advice.
               </p>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Services</h4>
               <ul className="space-y-2 text-primary-foreground/80">
-                <li>Investment Planning</li>
-                <li>Insurance Coverage</li>
+                <li>Insurance Planning</li>
+                <li>Investment Advisory</li>
                 <li>Retirement Planning</li>
-                <li>Education Planning</li>
+                <li>Education Funding</li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Contact</h4>
               <div className="space-y-2 text-primary-foreground/80">
-                <p>📧 contact@financematch.sg</p>
+                <p>📧 hello@financematch.sg</p>
                 <p>📞 +65 6123 4567</p>
-                <p>🏢 Singapore Financial District</p>
+                <p>🏢 Singapore CBD</p>
               </div>
             </div>
           </div>
