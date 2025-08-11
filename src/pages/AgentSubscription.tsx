@@ -11,6 +11,15 @@ import { useNavigate } from "react-router-dom";
 const AgentSubscription = () => {
   const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(true);
+  
+  // Mock current subscription data - replace with actual subscription check
+  const currentSubscription = {
+    isActive: true,
+    planName: "Premium",
+    billingPeriod: "Quarterly",
+    nextBillingDate: "2024-03-15",
+    amount: "$809"
+  };
 
   const sidebarItems = [
     { icon: BarChart, label: "Dashboard", active: false, path: "/agent-dashboard" },
@@ -184,6 +193,39 @@ const AgentSubscription = () => {
 
         {/* Subscription Content */}
         <div className="p-6">
+          {/* Current Subscription Status */}
+          {currentSubscription.isActive && (
+            <Card className="mb-8 border-green-200 bg-green-50/50">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Badge className="bg-green-100 text-green-700 border-green-200">
+                        Current Plan
+                      </Badge>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        {currentSubscription.planName} Plan
+                      </h3>
+                    </div>
+                    <p className="text-muted-foreground">
+                      {currentSubscription.billingPeriod} billing • {currentSubscription.amount}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Next billing date: {new Date(currentSubscription.nextBillingDate).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                  <Button variant="outline">
+                    Manage Subscription
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Plan Headers */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {plans.map((plan, index) => (
