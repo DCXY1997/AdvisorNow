@@ -6,63 +6,182 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Eye, MoreHorizontal, Star } from "lucide-react";
+import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, MapPin, Award } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const AdvisorManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("name");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Mock advisor data
+  // Mock advisor data with detailed information and reviews
   const advisors = [
     {
       id: "1",
       name: "Dr. Sarah Johnson",
       email: "sarah.johnson@email.com",
+      phone: "+1 (555) 123-4567",
       licenseCode: "FP-2024-001",
       rating: 4.8,
       reviewCount: 156,
       status: "active",
       joinDate: "2024-01-15",
       subscription: "Premium",
-      totalCalls: 234
+      totalCalls: 234,
+      location: "New York, NY",
+      specialties: ["Investment Planning", "Retirement", "Tax Strategy"],
+      experience: "12 years",
+      education: "PhD Finance, Harvard Business School",
+      certifications: ["CFP", "CPA", "CFA"],
+      bio: "Dr. Sarah Johnson is a seasoned financial advisor with over 12 years of experience helping clients achieve their financial goals. She specializes in comprehensive investment planning and retirement strategies.",
+      reviews: [
+        {
+          id: "r1",
+          userId: "user123",
+          userName: "John D.",
+          rating: 5,
+          date: "2024-01-20",
+          comment: "Excellent advice on my retirement planning. Dr. Johnson was very thorough and explained everything clearly.",
+          callId: "call_001"
+        },
+        {
+          id: "r2",
+          userId: "user456",
+          userName: "Mary S.",
+          rating: 4,
+          date: "2024-01-18",
+          comment: "Great insights on tax optimization strategies. Very knowledgeable and professional.",
+          callId: "call_002"
+        },
+        {
+          id: "r3",
+          userId: "user789",
+          userName: "Robert K.",
+          rating: 5,
+          date: "2024-01-15",
+          comment: "Dr. Johnson helped me restructure my investment portfolio. Couldn't be happier with the results!",
+          callId: "call_003"
+        }
+      ]
     },
     {
       id: "2", 
       name: "Michael Chen",
       email: "michael.chen@email.com",
+      phone: "+1 (555) 234-5678",
       licenseCode: "FP-2024-002",
       rating: 4.6,
       reviewCount: 89,
       status: "active",
       joinDate: "2024-02-01",
       subscription: "Basic",
-      totalCalls: 156
+      totalCalls: 156,
+      location: "San Francisco, CA",
+      specialties: ["Startup Financing", "Venture Capital", "Financial Tech"],
+      experience: "8 years",
+      education: "MBA Finance, Stanford University",
+      certifications: ["CFP", "Series 7"],
+      bio: "Michael Chen specializes in startup financing and venture capital advisory. He has extensive experience working with tech entrepreneurs and early-stage companies.",
+      reviews: [
+        {
+          id: "r4",
+          userId: "user321",
+          userName: "Lisa T.",
+          rating: 5,
+          date: "2024-01-25",
+          comment: "Michael's expertise in startup funding was invaluable for my new business venture.",
+          callId: "call_004"
+        },
+        {
+          id: "r5",
+          userId: "user654",
+          userName: "David W.",
+          rating: 4,
+          date: "2024-01-22",
+          comment: "Good advice on venture capital opportunities. Very responsive and knowledgeable.",
+          callId: "call_005"
+        }
+      ]
     },
     {
       id: "3",
       name: "Jennifer Davis",
-      email: "jennifer.davis@email.com", 
+      email: "jennifer.davis@email.com",
+      phone: "+1 (555) 345-6789", 
       licenseCode: "FP-2024-003",
       rating: 3.2,
       reviewCount: 45,
       status: "suspended",
       joinDate: "2024-01-20",
       subscription: "Pro",
-      totalCalls: 78
+      totalCalls: 78,
+      location: "Chicago, IL",
+      specialties: ["Personal Finance", "Debt Management"],
+      experience: "5 years",
+      education: "MS Finance, University of Chicago",
+      certifications: ["CFP"],
+      bio: "Jennifer Davis focuses on personal finance management and debt reduction strategies for middle-income families.",
+      reviews: [
+        {
+          id: "r6",
+          userId: "user111",
+          userName: "Tom M.",
+          rating: 2,
+          date: "2024-01-24",
+          comment: "Session was not very helpful. Advisor seemed unprepared and gave generic advice.",
+          callId: "call_006"
+        },
+        {
+          id: "r7",
+          userId: "user222",
+          userName: "Sarah P.",
+          rating: 4,
+          date: "2024-01-20",
+          comment: "Good basic advice on debt management, but nothing particularly insightful.",
+          callId: "call_007"
+        }
+      ]
     },
     {
       id: "4",
       name: "Robert Wilson",
       email: "robert.wilson@email.com",
+      phone: "+1 (555) 456-7890",
       licenseCode: "FP-2024-004", 
       rating: 4.9,
       reviewCount: 203,
       status: "active",
       joinDate: "2023-12-10",
       subscription: "Premium",
-      totalCalls: 345
+      totalCalls: 345,
+      location: "Dallas, TX",
+      specialties: ["Wealth Management", "Estate Planning", "Tax Optimization"],
+      experience: "15 years",
+      education: "JD/MBA, University of Texas",
+      certifications: ["CFP", "CPA", "CLU", "ChFC"],
+      bio: "Robert Wilson is a highly experienced wealth manager with dual expertise in law and finance. He specializes in comprehensive estate planning and tax optimization for high-net-worth individuals.",
+      reviews: [
+        {
+          id: "r8",
+          userId: "user333",
+          userName: "Elizabeth H.",
+          rating: 5,
+          date: "2024-01-26",
+          comment: "Outstanding estate planning guidance. Robert's legal background really shows in his comprehensive approach.",
+          callId: "call_008"
+        },
+        {
+          id: "r9",
+          userId: "user444",
+          userName: "Michael R.",
+          rating: 5,
+          date: "2024-01-24",
+          comment: "Exceptional wealth management advice. Robert helped save me thousands in taxes this year.",
+          callId: "call_009"
+        }
+      ]
     }
   ];
 
@@ -228,14 +347,219 @@ export const AdvisorManagement = () => {
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            View Reviews
-                          </DropdownMenuItem>
+                        <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border shadow-lg z-50">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Details & Reviews
+                              </DropdownMenuItem>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle className="flex items-center gap-3">
+                                  <Avatar className="h-12 w-12">
+                                    <AvatarImage src="" />
+                                    <AvatarFallback className="text-lg">
+                                      {advisor.name.split(' ').map(n => n[0]).join('')}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="text-xl font-semibold">{advisor.name}</div>
+                                    <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                      {getStatusBadge(advisor.status)}
+                                      {getSubscriptionBadge(advisor.subscription)}
+                                    </div>
+                                  </div>
+                                </DialogTitle>
+                              </DialogHeader>
+                              
+                              <Tabs defaultValue="overview" className="w-full">
+                                <TabsList className="grid w-full grid-cols-3">
+                                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                                  <TabsTrigger value="reviews">Reviews ({advisor.reviewCount})</TabsTrigger>
+                                  <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                                </TabsList>
+                                
+                                <TabsContent value="overview" className="space-y-6">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Contact Information */}
+                                    <Card>
+                                      <CardHeader>
+                                        <CardTitle className="text-lg flex items-center gap-2">
+                                          <Phone className="h-5 w-5" />
+                                          Contact Information
+                                        </CardTitle>
+                                      </CardHeader>
+                                      <CardContent className="space-y-3">
+                                        <div>
+                                          <div className="text-sm font-medium text-muted-foreground">Email</div>
+                                          <div>{advisor.email}</div>
+                                        </div>
+                                        <div>
+                                          <div className="text-sm font-medium text-muted-foreground">Phone</div>
+                                          <div>{advisor.phone}</div>
+                                        </div>
+                                        <div>
+                                          <div className="text-sm font-medium text-muted-foreground">Location</div>
+                                          <div className="flex items-center gap-1">
+                                            <MapPin className="h-4 w-4" />
+                                            {advisor.location}
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <div className="text-sm font-medium text-muted-foreground">License Code</div>
+                                          <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.licenseCode}</code>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+
+                                    {/* Professional Information */}
+                                    <Card>
+                                      <CardHeader>
+                                        <CardTitle className="text-lg flex items-center gap-2">
+                                          <Award className="h-5 w-5" />
+                                          Professional Details
+                                        </CardTitle>
+                                      </CardHeader>
+                                      <CardContent className="space-y-3">
+                                        <div>
+                                          <div className="text-sm font-medium text-muted-foreground">Experience</div>
+                                          <div>{advisor.experience}</div>
+                                        </div>
+                                        <div>
+                                          <div className="text-sm font-medium text-muted-foreground">Education</div>
+                                          <div>{advisor.education}</div>
+                                        </div>
+                                        <div>
+                                          <div className="text-sm font-medium text-muted-foreground">Certifications</div>
+                                          <div className="flex gap-1 flex-wrap">
+                                            {advisor.certifications.map((cert) => (
+                                              <Badge key={cert} variant="outline">{cert}</Badge>
+                                            ))}
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <div className="text-sm font-medium text-muted-foreground">Specialties</div>
+                                          <div className="flex gap-1 flex-wrap">
+                                            {advisor.specialties.map((specialty) => (
+                                              <Badge key={specialty} className="bg-blue-100 text-blue-700">{specialty}</Badge>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  </div>
+
+                                  {/* Bio */}
+                                  <Card>
+                                    <CardHeader>
+                                      <CardTitle className="text-lg">Biography</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                      <p className="text-muted-foreground leading-relaxed">{advisor.bio}</p>
+                                    </CardContent>
+                                  </Card>
+
+                                  {/* Stats */}
+                                  <div className="grid grid-cols-3 gap-4">
+                                    <Card>
+                                      <CardContent className="p-4 text-center">
+                                        <div className="text-2xl font-bold text-green-600">{advisor.rating}</div>
+                                        <div className="text-sm text-muted-foreground">Average Rating</div>
+                                      </CardContent>
+                                    </Card>
+                                    <Card>
+                                      <CardContent className="p-4 text-center">
+                                        <div className="text-2xl font-bold text-blue-600">{advisor.totalCalls}</div>
+                                        <div className="text-sm text-muted-foreground">Total Calls</div>
+                                      </CardContent>
+                                    </Card>
+                                    <Card>
+                                      <CardContent className="p-4 text-center">
+                                        <div className="text-2xl font-bold text-purple-600">{advisor.reviewCount}</div>
+                                        <div className="text-sm text-muted-foreground">Reviews</div>
+                                      </CardContent>
+                                    </Card>
+                                  </div>
+                                </TabsContent>
+
+                                <TabsContent value="reviews" className="space-y-4">
+                                  <div className="space-y-4">
+                                    {advisor.reviews.map((review) => (
+                                      <Card key={review.id}>
+                                        <CardContent className="p-4">
+                                          <div className="flex justify-between items-start mb-3">
+                                            <div className="flex items-center gap-2">
+                                              <Avatar className="h-8 w-8">
+                                                <AvatarFallback className="text-xs">
+                                                  {review.userName.split(' ').map(n => n[0]).join('')}
+                                                </AvatarFallback>
+                                              </Avatar>
+                                              <div>
+                                                <div className="font-medium">{review.userName}</div>
+                                                <div className="text-xs text-muted-foreground">
+                                                  {new Date(review.date).toLocaleDateString()} • Call #{review.callId}
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                              {Array.from({ length: 5 }).map((_, i) => (
+                                                <Star
+                                                  key={i}
+                                                  className={`h-4 w-4 ${
+                                                    i < review.rating
+                                                      ? 'fill-yellow-400 text-yellow-400'
+                                                      : 'text-gray-300'
+                                                  }`}
+                                                />
+                                              ))}
+                                              <span className="ml-1 text-sm font-medium">{review.rating}/5</span>
+                                            </div>
+                                          </div>
+                                          <p className="text-muted-foreground">{review.comment}</p>
+                                        </CardContent>
+                                      </Card>
+                                    ))}
+                                  </div>
+                                </TabsContent>
+
+                                <TabsContent value="analytics" className="space-y-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <Card>
+                                      <CardHeader>
+                                        <CardTitle className="text-lg">Join Date</CardTitle>
+                                      </CardHeader>
+                                      <CardContent>
+                                        <div className="flex items-center gap-2">
+                                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                                          {new Date(advisor.joinDate).toLocaleDateString()}
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                    <Card>
+                                      <CardHeader>
+                                        <CardTitle className="text-lg">Subscription Plan</CardTitle>
+                                      </CardHeader>
+                                      <CardContent>
+                                        {getSubscriptionBadge(advisor.subscription)}
+                                      </CardContent>
+                                    </Card>
+                                  </div>
+                                  <Card>
+                                    <CardHeader>
+                                      <CardTitle className="text-lg">Performance Metrics</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                      <div className="text-muted-foreground">
+                                        Additional performance metrics and analytics data would be displayed here.
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                </TabsContent>
+                              </Tabs>
+                            </DialogContent>
+                          </Dialog>
                           <DropdownMenuItem>
                             View Call History
                           </DropdownMenuItem>
