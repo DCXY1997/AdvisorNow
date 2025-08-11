@@ -39,7 +39,8 @@ export const AdvisorModeration = () => {
           rating: 2,
           complaint: "Advisor seemed unprepared and gave generic advice",
           callId: "call_789",
-          status: "active"
+          status: "active",
+          resolutionNote: undefined
         },
         {
           id: "1-2", 
@@ -48,7 +49,8 @@ export const AdvisorModeration = () => {
           rating: 3,
           complaint: "Did not understand my investment goals",
           callId: "call_790",
-          status: "active"
+          status: "active",
+          resolutionNote: undefined
         },
         {
           id: "1-3",
@@ -57,7 +59,8 @@ export const AdvisorModeration = () => {
           rating: 2,
           complaint: "Call ended abruptly without proper conclusion",
           callId: "call_791",
-          status: "active"
+          status: "active",
+          resolutionNote: undefined
         }
       ],
       avgRating: 2.8,
@@ -83,7 +86,8 @@ export const AdvisorModeration = () => {
           rating: 1,
           complaint: "Advisor made inappropriate personal comments during financial consultation",
           callId: "call_800",
-          status: "active"
+          status: "active",
+          resolutionNote: undefined
         },
         {
           id: "2-2",
@@ -92,7 +96,8 @@ export const AdvisorModeration = () => {
           rating: 2,
           complaint: "Used unprofessional language during call",
           callId: "call_801",
-          status: "active"
+          status: "active",
+          resolutionNote: undefined
         },
         {
           id: "2-3",
@@ -101,7 +106,8 @@ export const AdvisorModeration = () => {
           rating: 1,
           complaint: "Seemed intoxicated during video consultation",
           callId: "call_802",
-          status: "active"
+          status: "active",
+          resolutionNote: undefined
         }
       ],
       avgRating: 3.1,
@@ -298,14 +304,14 @@ export const AdvisorModeration = () => {
                         </div>
                         <div className="space-y-1">
                           <div className="text-xs font-medium text-muted-foreground">Recent Reports:</div>
-                          {case_.reports.slice(0, 2).map((report, index) => (
+                          {(case_.reports || []).slice(0, 2).map((report, index) => (
                             <div key={index} className="text-xs bg-orange-50 p-2 rounded border-l-2 border-orange-200">
                               {report.complaint}
                             </div>
                           ))}
-                          {case_.reports.length > 2 && (
+                          {(case_.reports || []).length > 2 && (
                             <div className="text-xs text-muted-foreground">
-                              +{case_.reports.length - 2} more reports...
+                              +{(case_.reports || []).length - 2} more reports...
                             </div>
                           )}
                         </div>
@@ -314,7 +320,7 @@ export const AdvisorModeration = () => {
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <AlertTriangle className="h-4 w-4 text-orange-500" />
-                        <span className="font-medium">{case_.reports.filter(r => r.status === 'active').length}</span>
+                        <span className="font-medium">{(case_.reports || []).filter(r => r.status === 'active').length}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -357,7 +363,7 @@ export const AdvisorModeration = () => {
                                   <DialogTitle>Individual Reports for {case_.advisor.name}</DialogTitle>
                                 </DialogHeader>
                                 <div className="space-y-4">
-                                  {case_.reports.map((report) => (
+                                  {(case_.reports || []).map((report) => (
                                     <div key={report.id} className="border rounded-lg p-4 space-y-3">
                                       <div className="flex justify-between items-start">
                                         <div className="space-y-1">
