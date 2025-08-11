@@ -178,7 +178,7 @@ const AgentDashboard = () => {
   const sidebarItems = [
     { icon: BarChart, label: "Dashboard", active: true, path: "/agent-dashboard" },
     { icon: FileText, label: "Reviews", active: false, path: "/agent-reviews" },
-    { icon: CreditCard, label: "Subscription", active: false, path: "#" },
+    { icon: CreditCard, label: "Subscription", active: false, path: "/agent-subscription" },
   ];
 
   return (

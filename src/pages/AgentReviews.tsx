@@ -24,7 +24,7 @@ const AgentReviews = () => {
   const sidebarItems = [
     { icon: BarChart, label: "Dashboard", active: false, path: "/agent-dashboard" },
     { icon: FileText, label: "Reviews", active: true, path: "/agent-reviews" },
-    { icon: CreditCard, label: "Subscription", active: false, path: "#" },
+    { icon: CreditCard, label: "Subscription", active: false, path: "/agent-subscription" },
   ];
 
   const overallRating = 4.7;
