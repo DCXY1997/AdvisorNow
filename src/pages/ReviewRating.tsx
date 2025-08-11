@@ -51,10 +51,7 @@ const ReviewRating = () => {
 
   const reportOptions = [
     "Inappropriate behavior",
-    "Unprofessional conduct", 
-    "Provided incorrect information",
-    "Was late or unprepared",
-    "Technical issues on advisor's end",
+    "Unprofessional conduct",
     "Other"
   ];
 
