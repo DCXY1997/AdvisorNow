@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, MapPin, Award } from "lucide-react";
+import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, Award, Building } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,18 +24,17 @@ export const AdvisorManagement = () => {
       email: "sarah.johnson@email.com",
       phone: "+1 (555) 123-4567",
       licenseCode: "FP-2024-001",
+      representativeNumber: "REP-789456123",
+      financialInstitution: "Goldman Sachs Private Wealth Management",
       rating: 4.8,
       reviewCount: 156,
       status: "active",
       joinDate: "2024-01-15",
       subscription: "Premium",
       totalCalls: 234,
-      location: "New York, NY",
       specialties: ["Investment Planning", "Retirement", "Tax Strategy"],
-      experience: "12 years",
-      education: "PhD Finance, Harvard Business School",
-      certifications: ["CFP", "CPA", "CFA"],
-      bio: "Dr. Sarah Johnson is a seasoned financial advisor with over 12 years of experience helping clients achieve their financial goals. She specializes in comprehensive investment planning and retirement strategies.",
+      credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CFA - Chartered Financial Analyst", "Top 100 Financial Advisors 2023 - Forbes"],
+      bio: "Dr. Sarah Johnson is a seasoned financial advisor specializing in comprehensive investment planning and retirement strategies. She has been recognized for her exceptional client service and innovative portfolio management techniques.",
       reviews: [
         {
           id: "r1",
@@ -72,18 +71,17 @@ export const AdvisorManagement = () => {
       email: "michael.chen@email.com",
       phone: "+1 (555) 234-5678",
       licenseCode: "FP-2024-002",
+      representativeNumber: "REP-456789012",
+      financialInstitution: "Morgan Stanley Wealth Management",
       rating: 4.6,
       reviewCount: 89,
       status: "active",
       joinDate: "2024-02-01",
       subscription: "Basic",
       totalCalls: 156,
-      location: "San Francisco, CA",
       specialties: ["Startup Financing", "Venture Capital", "Financial Tech"],
-      experience: "8 years",
-      education: "MBA Finance, Stanford University",
-      certifications: ["CFP", "Series 7"],
-      bio: "Michael Chen specializes in startup financing and venture capital advisory. He has extensive experience working with tech entrepreneurs and early-stage companies.",
+      credentialsAccolades: ["CFP - Certified Financial Planner", "Series 7 - General Securities Representative", "Fintech Innovation Award 2023"],
+      bio: "Michael Chen specializes in startup financing and venture capital advisory. He has extensive experience working with tech entrepreneurs and early-stage companies, helping them navigate complex funding landscapes.",
       reviews: [
         {
           id: "r4",
@@ -111,17 +109,16 @@ export const AdvisorManagement = () => {
       email: "jennifer.davis@email.com",
       phone: "+1 (555) 345-6789", 
       licenseCode: "FP-2024-003",
+      representativeNumber: "REP-123789456",
+      financialInstitution: "Charles Schwab Advisory Services",
       rating: 3.2,
       reviewCount: 45,
       status: "suspended",
       joinDate: "2024-01-20",
       subscription: "Pro",
       totalCalls: 78,
-      location: "Chicago, IL",
       specialties: ["Personal Finance", "Debt Management"],
-      experience: "5 years",
-      education: "MS Finance, University of Chicago",
-      certifications: ["CFP"],
+      credentialsAccolades: ["CFP - Certified Financial Planner"],
       bio: "Jennifer Davis focuses on personal finance management and debt reduction strategies for middle-income families.",
       reviews: [
         {
@@ -149,18 +146,17 @@ export const AdvisorManagement = () => {
       name: "Robert Wilson",
       email: "robert.wilson@email.com",
       phone: "+1 (555) 456-7890",
-      licenseCode: "FP-2024-004", 
+      licenseCode: "FP-2024-004",
+      representativeNumber: "REP-987654321",
+      financialInstitution: "UBS Private Wealth Management", 
       rating: 4.9,
       reviewCount: 203,
       status: "active",
       joinDate: "2023-12-10",
       subscription: "Premium",
       totalCalls: 345,
-      location: "Dallas, TX",
       specialties: ["Wealth Management", "Estate Planning", "Tax Optimization"],
-      experience: "15 years",
-      education: "JD/MBA, University of Texas",
-      certifications: ["CFP", "CPA", "CLU", "ChFC"],
+      credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CLU - Chartered Life Underwriter", "ChFC - Chartered Financial Consultant", "Top 1% Wealth Advisors - Barron's 2023"],
       bio: "Robert Wilson is a highly experienced wealth manager with dual expertise in law and finance. He specializes in comprehensive estate planning and tax optimization for high-net-worth individuals.",
       reviews: [
         {
@@ -401,11 +397,8 @@ export const AdvisorManagement = () => {
                                           <div>{advisor.phone}</div>
                                         </div>
                                         <div>
-                                          <div className="text-sm font-medium text-muted-foreground">Location</div>
-                                          <div className="flex items-center gap-1">
-                                            <MapPin className="h-4 w-4" />
-                                            {advisor.location}
-                                          </div>
+                                          <div className="text-sm font-medium text-muted-foreground">Representative Number</div>
+                                          <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.representativeNumber}</code>
                                         </div>
                                         <div>
                                           <div className="text-sm font-medium text-muted-foreground">License Code</div>
@@ -418,24 +411,22 @@ export const AdvisorManagement = () => {
                                     <Card>
                                       <CardHeader>
                                         <CardTitle className="text-lg flex items-center gap-2">
-                                          <Award className="h-5 w-5" />
+                                          <Building className="h-5 w-5" />
                                           Professional Details
                                         </CardTitle>
                                       </CardHeader>
                                       <CardContent className="space-y-3">
                                         <div>
-                                          <div className="text-sm font-medium text-muted-foreground">Experience</div>
-                                          <div>{advisor.experience}</div>
+                                          <div className="text-sm font-medium text-muted-foreground">Financial Institution</div>
+                                          <div>{advisor.financialInstitution}</div>
                                         </div>
                                         <div>
-                                          <div className="text-sm font-medium text-muted-foreground">Education</div>
-                                          <div>{advisor.education}</div>
-                                        </div>
-                                        <div>
-                                          <div className="text-sm font-medium text-muted-foreground">Certifications</div>
-                                          <div className="flex gap-1 flex-wrap">
-                                            {advisor.certifications.map((cert) => (
-                                              <Badge key={cert} variant="outline">{cert}</Badge>
+                                          <div className="text-sm font-medium text-muted-foreground">Credentials & Accolades</div>
+                                          <div className="space-y-1">
+                                            {advisor.credentialsAccolades.map((credential, index) => (
+                                              <div key={index} className="text-sm bg-green-50 p-2 rounded border-l-2 border-green-200">
+                                                {credential}
+                                              </div>
                                             ))}
                                           </div>
                                         </div>
