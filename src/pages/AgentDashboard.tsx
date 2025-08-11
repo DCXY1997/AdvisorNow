@@ -161,13 +161,13 @@ const AgentDashboard = () => {
               </Select>
               
               <div className="flex items-center gap-2">
-                <Badge variant={isOnline ? "default" : "secondary"} className="px-3 py-1">
+                <Badge variant={isOnline ? "default" : "destructive"} className="px-3 py-1">
                   {isOnline ? "ON" : "OFF"}
                 </Badge>
                 <Switch 
                   checked={isOnline} 
                   onCheckedChange={setIsOnline}
-                  className="data-[state=checked]:bg-green-500"
+                  className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
                 />
               </div>
               
