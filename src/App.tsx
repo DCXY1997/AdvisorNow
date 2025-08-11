@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 import AgentSignup from "./pages/AgentSignup";
 import AgentDashboard from "./pages/AgentDashboard";
+import AgentProfile from "./pages/AgentProfile";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/agent-signup" element={<AgentSignup />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
+          <Route path="/agent-profile" element={<AgentProfile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

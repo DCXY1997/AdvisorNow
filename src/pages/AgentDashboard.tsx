@@ -12,8 +12,10 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } fro
 import { Filter, User, FileText, CreditCard, ChevronDown, CalendarIcon, LogOut, Settings } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 const AgentDashboard = () => {
+  const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(true);
   const [filterPeriod, setFilterPeriod] = useState("weekly");
   const [customStartDate, setCustomStartDate] = useState<Date>();
@@ -309,7 +311,10 @@ const AgentDashboard = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 bg-background border-border">
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:bg-muted">
+                  <DropdownMenuItem 
+                    className="flex items-center gap-2 cursor-pointer hover:bg-muted"
+                    onClick={() => navigate("/agent-profile")}
+                  >
                     <Settings className="h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
