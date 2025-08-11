@@ -18,7 +18,7 @@ export const ReviewManagement = () => {
   const [ratingFilter, setRatingFilter] = useState("all");
   const [actionReason, setActionReason] = useState("");
 
-  // Mock review data
+  // Mock appeal review data - only shows reviews that have been appealed
   const reviews = [
     {
       id: "1",
@@ -33,29 +33,15 @@ export const ReviewManagement = () => {
       rating: 2,
       content: "Very unprofessional and gave poor advice. Seemed to not know what they were talking about.",
       date: "2024-01-28",
-      status: "flagged",
-      flagCount: 3,
-      flagReasons: ["Inappropriate content", "False information"]
-    },
-    {
-      id: "2",
-      client: {
-        name: "Emily Chen",
-        avatar: ""
-      },
-      advisor: {
-        name: "Michael Chen", 
-        licenseCode: "FP-2024-002"
-      },
-      rating: 5,
-      content: "Excellent service! Very knowledgeable and helped me understand my financial options clearly.",
-      date: "2024-01-27",
-      status: "active",
+      status: "under_review",
       flagCount: 0,
-      flagReasons: []
+      flagReasons: [],
+      isAppeal: true,
+      appealDate: "2024-01-29",
+      appealReason: "Client had unrealistic expectations and the advice given was accurate based on their financial situation."
     },
     {
-      id: "3",
+      id: "3", 
       client: {
         name: "Anonymous User",
         avatar: ""
@@ -67,26 +53,32 @@ export const ReviewManagement = () => {
       rating: 1,
       content: "This advisor used offensive language and was completely inappropriate. Should be banned!",
       date: "2024-01-26",
-      status: "flagged",
-      flagCount: 8,
-      flagReasons: ["Inappropriate content", "Harassment", "False information"]
+      status: "appeal_rejected",
+      flagCount: 0,
+      flagReasons: [],
+      isAppeal: true,
+      appealDate: "2024-01-27",
+      appealReason: "The client misunderstood my explanation. I maintained professional conduct throughout the session."
     },
     {
-      id: "4",
+      id: "5",
       client: {
-        name: "David Wilson",
+        name: "Maria Rodriguez",
         avatar: ""
       },
       advisor: {
-        name: "Robert Wilson",
-        licenseCode: "FP-2024-004"
+        name: "Thomas Anderson",
+        licenseCode: "FP-2024-005"
       },
-      rating: 4,
-      content: "Good advice overall, though the session ran a bit long. Would recommend.",
-      date: "2024-01-25",
-      status: "active",
+      rating: 3,
+      content: "Session was okay but felt rushed. Could have been more thorough in explanations.",
+      date: "2024-01-24",
+      status: "appeal_approved",
       flagCount: 0,
-      flagReasons: []
+      flagReasons: [],
+      isAppeal: true,
+      appealDate: "2024-01-25",
+      appealReason: "The session was conducted within the allocated time and all key points were covered comprehensively."
     }
   ];
 
@@ -107,7 +99,13 @@ export const ReviewManagement = () => {
   });
 
   const getStatusBadge = (status: string, flagCount: number) => {
-    if (status === "flagged") {
+    if (status === "under_review") {
+      return <Badge className="bg-blue-100 text-blue-700 border-blue-200">Under Review</Badge>;
+    } else if (status === "appeal_approved") {
+      return <Badge className="bg-green-100 text-green-700 border-green-200">Appeal Approved</Badge>;
+    } else if (status === "appeal_rejected") {
+      return <Badge className="bg-red-100 text-red-700 border-red-200">Appeal Rejected</Badge>;
+    } else if (status === "flagged") {
       return <Badge className="bg-red-100 text-red-700 border-red-200">Flagged ({flagCount})</Badge>;
     } else if (status === "hidden") {
       return <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200">Hidden</Badge>;
@@ -149,7 +147,7 @@ export const ReviewManagement = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Review Management</span>
+            <span>Appeal Review Management</span>
             <div className="text-sm font-normal text-muted-foreground">
               {filteredReviews.length} of {reviews.length} reviews
             </div>
@@ -175,9 +173,9 @@ export const ReviewManagement = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="flagged">Flagged</SelectItem>
-                  <SelectItem value="hidden">Hidden</SelectItem>
+                  <SelectItem value="under_review">Under Review</SelectItem>
+                  <SelectItem value="appeal_approved">Appeal Approved</SelectItem>
+                  <SelectItem value="appeal_rejected">Appeal Rejected</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -204,8 +202,9 @@ export const ReviewManagement = () => {
                   <TableHead>Advisor</TableHead>
                   <TableHead>Rating</TableHead>
                   <TableHead>Review Content</TableHead>
+                  <TableHead>Appeal Reason</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead>Appeal Date</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -254,11 +253,19 @@ export const ReviewManagement = () => {
                         </div>
                       )}
                     </TableCell>
+                    <TableCell className="max-w-sm">
+                      <div className="text-sm">
+                        {(review as any).appealReason?.length > 80 
+                          ? `${(review as any).appealReason.substring(0, 80)}...` 
+                          : (review as any).appealReason
+                        }
+                      </div>
+                    </TableCell>
                     <TableCell>
                       {getStatusBadge(review.status, review.flagCount)}
                     </TableCell>
                     <TableCell>
-                      {new Date(review.date).toLocaleDateString()}
+                      {new Date((review as any).appealDate).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
