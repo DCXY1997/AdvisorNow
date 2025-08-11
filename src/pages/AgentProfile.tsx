@@ -67,12 +67,16 @@ const AgentProfile = () => {
         return;
       }
 
+      console.log('Current user:', user.id, user.email);
+
       // Get advisor data
       const { data: advisor, error: advisorError } = await supabase
         .from('advisors')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
+
+      console.log('Advisor query result:', advisor, advisorError);
 
       if (advisorError) {
         console.error('Advisors error:', advisorError);
@@ -85,6 +89,7 @@ const AgentProfile = () => {
       }
 
       if (!advisor) {
+        console.log('No advisor found for user_id:', user.id);
         toast({
           title: "Profile Not Found",
           description: "Your advisor profile is not set up yet. Please contact support.",
