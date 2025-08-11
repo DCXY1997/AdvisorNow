@@ -10,17 +10,84 @@ import { Filter, User, FileText, CreditCard, ChevronDown } from "lucide-react";
 
 const AgentDashboard = () => {
   const [isOnline, setIsOnline] = useState(true);
-  const [filterPeriod, setFilterPeriod] = useState("week");
+  const [filterPeriod, setFilterPeriod] = useState("weekly");
   
-  const weeklyData = [
-    { day: "Monday", value1: 8, value2: 2 },
-    { day: "Tuesday", value1: 12, value2: 1 },
-    { day: "Wednesday", value1: 16, value2: 3 },
-    { day: "Thursday", value1: 20, value2: 3 },
-    { day: "Friday", value1: 18, value2: 4 },
-    { day: "Saturday", value1: 13, value2: 6 },
-    { day: "Sunday", value1: 17, value2: 1 },
-  ];
+  // Dynamic data based on filter period
+  const getDashboardData = () => {
+    const dataMap = {
+      daily: {
+        consultations: 18,
+        satisfaction: 4.9,
+        period: "Today",
+        chartData: [
+          { period: "9AM", value1: 2, value2: 0 },
+          { period: "10AM", value1: 3, value2: 1 },
+          { period: "11AM", value1: 4, value2: 0 },
+          { period: "12PM", value1: 3, value2: 1 },
+          { period: "1PM", value1: 2, value2: 0 },
+          { period: "2PM", value1: 2, value2: 1 },
+          { period: "3PM", value1: 2, value2: 0 },
+        ]
+      },
+      weekly: {
+        consultations: 142,
+        satisfaction: 4.8,
+        period: "This week",
+        chartData: [
+          { period: "Monday", value1: 8, value2: 2 },
+          { period: "Tuesday", value1: 12, value2: 1 },
+          { period: "Wednesday", value1: 16, value2: 3 },
+          { period: "Thursday", value1: 20, value2: 3 },
+          { period: "Friday", value1: 18, value2: 4 },
+          { period: "Saturday", value1: 13, value2: 6 },
+          { period: "Sunday", value1: 17, value2: 1 },
+        ]
+      },
+      monthly: {
+        consultations: 580,
+        satisfaction: 4.7,
+        period: "This month",
+        chartData: [
+          { period: "Week 1", value1: 142, value2: 20 },
+          { period: "Week 2", value1: 156, value2: 18 },
+          { period: "Week 3", value1: 134, value2: 22 },
+          { period: "Week 4", value1: 148, value2: 16 },
+        ]
+      },
+      yearly: {
+        consultations: 6840,
+        satisfaction: 4.6,
+        period: "This year",
+        chartData: [
+          { period: "Jan", value1: 580, value2: 76 },
+          { period: "Feb", value1: 620, value2: 82 },
+          { period: "Mar", value1: 540, value2: 68 },
+          { period: "Apr", value1: 590, value2: 74 },
+          { period: "May", value1: 610, value2: 78 },
+          { period: "Jun", value1: 570, value2: 72 },
+          { period: "Jul", value1: 600, value2: 80 },
+          { period: "Aug", value1: 580, value2: 76 },
+          { period: "Sep", value1: 560, value2: 70 },
+          { period: "Oct", value1: 590, value2: 74 },
+          { period: "Nov", value1: 620, value2: 82 },
+          { period: "Dec", value1: 630, value2: 88 },
+        ]
+      },
+      custom: {
+        consultations: 89,
+        satisfaction: 4.8,
+        period: "Custom period",
+        chartData: [
+          { period: "Period 1", value1: 25, value2: 3 },
+          { period: "Period 2", value1: 32, value2: 4 },
+          { period: "Period 3", value1: 32, value2: 2 },
+        ]
+      }
+    };
+    return dataMap[filterPeriod as keyof typeof dataMap] || dataMap.weekly;
+  };
+
+  const currentData = getDashboardData();
 
   const sidebarItems = [
     { icon: BarChart, label: "Dashboard", active: true },
@@ -72,10 +139,10 @@ const AgentDashboard = () => {
                   <SelectValue placeholder="Filter by period" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border-border z-50">
-                  <SelectItem value="day">Day</SelectItem>
-                  <SelectItem value="week">Week</SelectItem>
-                  <SelectItem value="month">Month</SelectItem>
-                  <SelectItem value="year">Year</SelectItem>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="yearly">Yearly</SelectItem>
                   <SelectItem value="custom">Custom</SelectItem>
                 </SelectContent>
               </Select>
@@ -109,8 +176,8 @@ const AgentDashboard = () => {
                 <CardTitle className="text-lg">Total Consultations</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-primary">142</div>
-                <p className="text-sm text-muted-foreground">This week</p>
+                <div className="text-3xl font-bold text-primary">{currentData.consultations}</div>
+                <p className="text-sm text-muted-foreground">{currentData.period}</p>
               </CardContent>
             </Card>
             
@@ -119,7 +186,7 @@ const AgentDashboard = () => {
                 <CardTitle className="text-lg">Client Satisfaction</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-primary">4.8</div>
+                <div className="text-3xl font-bold text-primary">{currentData.satisfaction}</div>
                 <p className="text-sm text-muted-foreground">Average rating</p>
               </CardContent>
             </Card>
@@ -128,14 +195,14 @@ const AgentDashboard = () => {
           {/* Weekly Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>Weekly Activity</CardTitle>
+              <CardTitle>{filterPeriod.charAt(0).toUpperCase() + filterPeriod.slice(1)} Activity</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={weeklyData}>
+                  <BarChart data={currentData.chartData}>
                     <XAxis 
-                      dataKey="day" 
+                      dataKey="period"
                       axisLine={false}
                       tickLine={false}
                       className="text-muted-foreground"
