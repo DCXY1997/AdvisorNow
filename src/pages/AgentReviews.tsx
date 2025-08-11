@@ -5,13 +5,21 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Star, User, FileText, CreditCard, ChevronDown, Settings, LogOut, BarChart } from "lucide-react";
+import { Star, User, FileText, CreditCard, ChevronDown, Settings, LogOut, BarChart, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const AgentReviews = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isOnline, setIsOnline] = useState(true);
+  const [appealText, setAppealText] = useState("");
+  const [isAppealDialogOpen, setIsAppealDialogOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<number | null>(null);
 
   const sidebarItems = [
     { icon: BarChart, label: "Dashboard", active: false, path: "/agent-dashboard" },
@@ -91,6 +99,31 @@ const AgentReviews = () => {
         }`}
       />
     ));
+  };
+
+  const handleAppeal = (reviewId: number) => {
+    setSelectedReview(reviewId);
+    setIsAppealDialogOpen(true);
+  };
+
+  const submitAppeal = () => {
+    if (!appealText.trim()) {
+      toast({
+        title: "Appeal Required",
+        description: "Please provide a reason for your appeal.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Appeal Submitted",
+      description: "Your appeal has been submitted for review. We'll respond within 2-3 business days.",
+    });
+
+    setAppealText("");
+    setIsAppealDialogOpen(false);
+    setSelectedReview(null);
   };
 
   return (
@@ -238,15 +271,82 @@ const AgentReviews = () => {
                         </div>
                       </div>
                       
-                      <p className="text-sm text-foreground leading-relaxed">
+                      <p className="text-sm text-foreground leading-relaxed mb-3">
                         {review.comment}
                       </p>
+
+                      {/* Appeal Button for Low Ratings (3 or below) */}
+                      {review.rating <= 3 && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAppeal(review.id)}
+                          className="flex items-center gap-2 text-orange-600 border-orange-200 hover:bg-orange-50"
+                        >
+                          <AlertTriangle className="h-3 w-3" />
+                          Appeal Review
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {/* Appeal Dialog */}
+          <Dialog open={isAppealDialogOpen} onOpenChange={setIsAppealDialogOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-orange-600" />
+                  Appeal Review
+                </DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="appeal-reason">Reason for Appeal</Label>
+                  <Textarea
+                    id="appeal-reason"
+                    value={appealText}
+                    onChange={(e) => setAppealText(e.target.value)}
+                    placeholder="Please explain why you believe this review is unfair or inaccurate. Include any relevant details about the consultation."
+                    className="min-h-[120px]"
+                    maxLength={500}
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    {appealText.length}/500 characters
+                  </p>
+                </div>
+                
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <h4 className="font-medium text-sm mb-2">Appeal Guidelines:</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Appeals are reviewed within 2-3 business days</li>
+                    <li>• Provide specific details about the consultation</li>
+                    <li>• Reviews may be removed if they violate our guidelines</li>
+                    <li>• False appeals may result in account penalties</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAppealDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={submitAppeal}
+                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  Submit Appeal
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>
