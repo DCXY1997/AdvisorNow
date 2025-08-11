@@ -67,8 +67,7 @@ const AgentSubscription = () => {
         "Client consultation management",
         "Review and rating system",
         "Profile customization",
-        "Email support",
-        "Mobile app access"
+        "Email support"
       ]
     },
     {
@@ -81,8 +80,8 @@ const AgentSubscription = () => {
         "Review and rating system",
         "Profile customization",
         "Priority email support",
-        "Mobile app access",
-        "Extended reporting features"
+        "Data export capabilities",
+        "Historical performance trends"
       ]
     },
     {
@@ -95,8 +94,8 @@ const AgentSubscription = () => {
         "Review and rating system",
         "Profile customization",
         "Priority phone & email support",
-        "Mobile app access",
-        "Advanced reporting & exports",
+        "Advanced data export & reports",
+        "Custom date range analytics",
         "API access for integrations"
       ]
     }
