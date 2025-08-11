@@ -116,24 +116,13 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
                 {advisor.experience}
               </p>
               
-              {/* Specialties */}
-              <p className="text-xs text-muted-foreground mb-4 line-clamp-2">
-                {advisor.specialties}
-              </p>
-              
-              {/* Mutual Connections */}
-              <div className="flex items-center gap-1 text-xs text-muted-foreground mb-4">
-                <Users className="w-3 h-3" />
-                <span>{advisor.connections}</span>
-              </div>
-              
-              {/* Connect Button */}
+              {/* View Button */}
               <Button
                 onClick={onConnectClick}
                 variant="outline"
                 className="w-full text-primary border-primary hover:bg-primary hover:text-primary-foreground"
               >
-                Connect
+                View
               </Button>
             </div>
             
