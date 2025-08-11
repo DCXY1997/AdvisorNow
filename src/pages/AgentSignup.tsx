@@ -5,11 +5,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 const AgentSignup = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -82,13 +83,10 @@ const AgentSignup = () => {
         description: "Your agent registration has been submitted for review. We'll contact you soon.",
       });
       
-      setFormData({
-        fullName: "",
-        email: "",
-        password: "",
-        representativeCode: "",
-        financialInstitution: "",
-      });
+      // Navigate to index page after successful registration
+      setTimeout(() => {
+        navigate('/');
+      }, 2000); // 2 second delay to show the success message
     } catch (error) {
       toast({
         title: "Registration Failed",
