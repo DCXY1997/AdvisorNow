@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const AgentSignup = () => {
   const { toast } = useToast();
@@ -46,20 +47,54 @@ const AgentSignup = () => {
 
     setIsSubmitting(true);
     
-    // Simulate signup process
-    setTimeout(() => {
+    try {
+      const { error } = await supabase
+        .from('agent_registrations')
+        .insert({
+          full_name: fullName,
+          email: email,
+          representative_code: representativeCode,
+          financial_institution: financialInstitution,
+          status: 'pending'
+        });
+
+      if (error) {
+        if (error.code === '23505') { // Unique constraint violation
+          toast({
+            title: "Email Already Registered",
+            description: "An account with this email already exists. Please use a different email or contact support.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Registration Failed",
+            description: "There was an error submitting your registration. Please try again.",
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+
       toast({
         title: "Registration Submitted",
         description: "Your agent registration has been submitted for review. We'll contact you soon.",
       });
-      setIsSubmitting(false);
+      
       setFormData({
         fullName: "",
         email: "",
         representativeCode: "",
         financialInstitution: "",
       });
-    }, 1500);
+    } catch (error) {
+      toast({
+        title: "Registration Failed",
+        description: "There was an error submitting your registration. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
