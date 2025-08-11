@@ -17,7 +17,7 @@ const AgentDashboard = () => {
     const dataMap = {
       daily: {
         consultations: 18,
-        avgMinutes: 24,
+        activeHours: 8,
         period: "Today",
         chartData: [
           { period: "12AM-3AM", value1: 0, value2: 0 },
@@ -32,7 +32,7 @@ const AgentDashboard = () => {
       },
       weekly: {
         consultations: 142,
-        avgMinutes: 26,
+        activeHours: 45,
         period: "This week",
         chartData: [
           { period: "Monday", value1: 8, value2: 192 },
@@ -46,7 +46,7 @@ const AgentDashboard = () => {
       },
       monthly: {
         consultations: 580,
-        avgMinutes: 28,
+        activeHours: 168,
         period: "This year",
         chartData: [
           { period: "Jan", value1: 48, value2: 1344 },
@@ -65,7 +65,7 @@ const AgentDashboard = () => {
       },
       quarterly: {
         consultations: 1740,
-        avgMinutes: 27,
+        activeHours: 520,
         period: "This year",
         chartData: [
           { period: "Q1", value1: 145, value2: 4060 },
@@ -76,7 +76,7 @@ const AgentDashboard = () => {
       },
       yearly: {
         consultations: 6840,
-        avgMinutes: 25,
+        activeHours: 2080,
         period: "Since subscription",
         chartData: [
           { period: "2021", value1: 1200, value2: 30000 },
@@ -87,7 +87,7 @@ const AgentDashboard = () => {
       },
       custom: {
         consultations: 89,
-        avgMinutes: 29,
+        activeHours: 32,
         period: "Custom period",
         chartData: [
           { period: "Period 1", value1: 25, value2: 700 },
@@ -196,11 +196,11 @@ const AgentDashboard = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Average Minutes per Call</CardTitle>
+                <CardTitle className="text-lg">Numbers of active hours</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-primary">{currentData.avgMinutes}</div>
-                <p className="text-sm text-muted-foreground">Minutes average</p>
+                <div className="text-3xl font-bold text-primary">{currentData.activeHours}</div>
+                <p className="text-sm text-muted-foreground">Hours {currentData.period.toLowerCase()}</p>
               </CardContent>
             </Card>
           </div>
