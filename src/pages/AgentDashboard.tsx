@@ -54,6 +54,17 @@ const AgentDashboard = () => {
           { period: "Week 4", value1: 148, value2: 16 },
         ]
       },
+      quarterly: {
+        consultations: 1740,
+        satisfaction: 4.7,
+        period: "This quarter",
+        chartData: [
+          { period: "Q1", value1: 1680, value2: 210 },
+          { period: "Q2", value1: 1820, value2: 230 },
+          { period: "Q3", value1: 1740, value2: 220 },
+          { period: "Q4", value1: 1600, value2: 200 },
+        ]
+      },
       yearly: {
         consultations: 6840,
         satisfaction: 4.6,
@@ -142,6 +153,7 @@ const AgentDashboard = () => {
                   <SelectItem value="daily">Daily</SelectItem>
                   <SelectItem value="weekly">Weekly</SelectItem>
                   <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="quarterly">Quarterly</SelectItem>
                   <SelectItem value="yearly">Yearly</SelectItem>
                   <SelectItem value="custom">Custom</SelectItem>
                 </SelectContent>
