@@ -26,7 +26,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
     name: "",
     phoneNumber: "",
     topic: "",
-    financialInstitution: "",
+    financialInstitution: "Any",
     pdpaConsent: false,
   });
 
@@ -58,7 +58,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
         name: "",
         phoneNumber: "",
         topic: "",
-        financialInstitution: "",
+        financialInstitution: "Any",
         pdpaConsent: false,
       });
     }, 1500);
