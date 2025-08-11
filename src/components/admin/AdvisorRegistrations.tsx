@@ -275,8 +275,7 @@ export const AdvisorRegistrations = () => {
                     </TableCell>
                      <TableCell>
                        <div className="text-sm">
-                         <div>{registration.email}</div>
-                         <div className="text-muted-foreground">N/A</div>
+                         {registration.email}
                        </div>
                      </TableCell>
                      <TableCell>
