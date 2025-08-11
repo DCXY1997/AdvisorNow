@@ -69,7 +69,6 @@ const AgentSubscription = () => {
         "Review and rating system",
         "Profile customization",
         "Email support",
-        "Data export capabilities",
         "Historical performance tracking"
       ]
     },
@@ -83,8 +82,7 @@ const AgentSubscription = () => {
         "Client consultation management",
         "Review and rating system",
         "Profile customization",
-        "Email support",
-        "Data export capabilities",
+        "Priority email support",
         "Historical performance tracking"
       ]
     },
@@ -98,8 +96,7 @@ const AgentSubscription = () => {
         "Client consultation management",
         "Review and rating system",
         "Profile customization",
-        "Email support",
-        "Data export capabilities",
+        "Priority email support",
         "Historical performance tracking"
       ]
     }
