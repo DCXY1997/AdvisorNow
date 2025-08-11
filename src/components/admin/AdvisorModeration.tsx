@@ -30,7 +30,7 @@ export const AdvisorModeration = () => {
         avatar: ""
       },
       issue: "Low ratings",
-      description: "Consistently receiving ratings below 3.0 stars (15+ reviews)",
+      description: "Triggered when advisor has 15+ reviews with average rating below 3.0 stars",
       reports: [
         {
           id: "1-1",
@@ -77,7 +77,7 @@ export const AdvisorModeration = () => {
         avatar: ""
       },
       issue: "Inappropriate conduct",
-      description: "Multiple reports of unprofessional behavior during consultations",
+      description: "Triggered by any report of unprofessional behavior (1+ reports)",
       reports: [
         {
           id: "2-1",
