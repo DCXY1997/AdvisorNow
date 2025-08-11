@@ -379,7 +379,7 @@ export const AdvisorManagement = () => {
                             onClick={() => navigate("/advisor-full-review", { state: { advisor } })}
                           >
                             <Eye className="h-4 w-4 mr-2" />
-                            View Details & Reviews
+                            View Advisor
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             View Call History
