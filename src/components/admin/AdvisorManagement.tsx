@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,217 +11,62 @@ import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, Award, Buil
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const AdvisorManagement = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("name");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [advisors, setAdvisors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock advisor data with detailed information and reviews
-  const advisors = [
-    {
-      id: "1",
-      name: "Dr. Sarah Johnson",
-      email: "sarah.johnson@email.com",
-      phone: "+1 (555) 123-4567",
-      representativeNumber: "REP-789456123",
-      financialInstitution: "AIA",
-      rating: 4.8,
-      reviewCount: 156,
-      status: "active",
-      joinDate: "2024-01-15",
-      subscription: "Premium",
-      totalCalls: 234,
-      specialization: ["Investment Planning", "Retirement", "Tax Strategy"],
-      credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CFA - Chartered Financial Analyst", "Top 100 Financial Advisors 2023 - Forbes"],
-      bio: "Dr. Sarah Johnson is a seasoned financial advisor specializing in comprehensive investment planning and retirement strategies. She has been recognized for her exceptional client service and innovative portfolio management techniques.",
-      reviews: [
-        {
-          id: "r1",
-          userId: "user123",
-          userName: "John D.",
-          rating: 5,
-          date: "2024-01-20",
-          comment: "Excellent advice on my retirement planning. Dr. Johnson was very thorough and explained everything clearly.",
-          callId: "call_001"
-        },
-        {
-          id: "r2",
-          userId: "user456",
-          userName: "Mary S.",
-          rating: 4,
-          date: "2024-01-18",
-          comment: "Great insights on tax optimization strategies. Very knowledgeable and professional.",
-          callId: "call_002"
-        },
-        {
-          id: "r3",
-          userId: "user789",
-          userName: "Robert K.",
-          rating: 5,
-          date: "2024-01-15",
-          comment: "Dr. Johnson helped me restructure my investment portfolio. Couldn't be happier with the results!",
-          callId: "call_003"
-        }
-      ],
-      reports: [
-        {
-          id: "rep1",
-          userId: "user321",
-          userName: "Alex T.",
-          date: "2024-01-26",
-          complaint: "Advisor made inappropriate personal comments during financial consultation",
-          callId: "call_010",
-          status: "active"
-        }
-      ]
-    },
-    {
-      id: "2", 
-      name: "Michael Chen",
-      email: "michael.chen@email.com",
-      phone: "+1 (555) 234-5678",
-      representativeNumber: "REP-456789012",
-      financialInstitution: "Great Eastern",
-      rating: 4.6,
-      reviewCount: 89,
-      status: "active",
-      joinDate: "2024-02-01",
-      subscription: "Basic",
-      totalCalls: 156,
-      specialization: ["Startup Financing", "Venture Capital", "Financial Tech"],
-      credentialsAccolades: ["CFP - Certified Financial Planner", "Series 7 - General Securities Representative", "Fintech Innovation Award 2023"],
-      bio: "Michael Chen specializes in startup financing and venture capital advisory. He has extensive experience working with tech entrepreneurs and early-stage companies, helping them navigate complex funding landscapes.",
-      reviews: [
-        {
-          id: "r4",
-          userId: "user321",
-          userName: "Lisa T.",
-          rating: 5,
-          date: "2024-01-25",
-          comment: "Michael's expertise in startup funding was invaluable for my new business venture.",
-          callId: "call_004"
-        },
-        {
-          id: "r5",
-          userId: "user654",
-          userName: "David W.",
-          rating: 4,
-          date: "2024-01-22",
-          comment: "Good advice on venture capital opportunities. Very responsive and knowledgeable.",
-          callId: "call_005"
-        }
-      ],
-      reports: []
-    },
-    {
-      id: "3",
-      name: "Jennifer Davis",
-      email: "jennifer.davis@email.com",
-      phone: "+1 (555) 345-6789", 
-      representativeNumber: "REP-123789456",
-      financialInstitution: "Prudential",
-      rating: 3.2,
-      reviewCount: 45,
-      status: "suspended",
-      joinDate: "2024-01-20",
-      subscription: "Pro",
-      totalCalls: 78,
-      specialization: ["Personal Finance", "Debt Management"],
-      credentialsAccolades: ["CFP - Certified Financial Planner"],
-      bio: "Jennifer Davis focuses on personal finance management and debt reduction strategies for middle-income families.",
-      reviews: [
-        {
-          id: "r6",
-          userId: "user111",
-          userName: "Tom M.",
-          rating: 2,
-          date: "2024-01-24",
-          comment: "Session was not very helpful. Advisor seemed unprepared and gave generic advice.",
-          callId: "call_006"
-        },
-        {
-          id: "r7",
-          userId: "user222",
-          userName: "Sarah P.",
-          rating: 4,
-          date: "2024-01-20",
-          comment: "Good basic advice on debt management, but nothing particularly insightful.",
-          callId: "call_007"
-        }
-      ],
-      reports: [
-        {
-          id: "rep2",
-          userId: "user654",
-          userName: "Alex T.",
-          date: "2024-01-27", 
-          complaint: "Used unprofessional language during call",
-          callId: "call_011",
-          status: "active"
-        },
-        {
-          id: "rep3",
-          userId: "user987",
-          userName: "Alex T.",
-          date: "2024-01-28",
-          complaint: "Seemed intoxicated during video consultation",
-          callId: "call_012", 
-          status: "active"
-        }
-      ]
-    },
-    {
-      id: "4",
-      name: "Robert Wilson",
-      email: "robert.wilson@email.com",
-      phone: "+1 (555) 456-7890",
-      representativeNumber: "REP-987654321",
-      financialInstitution: "Income", 
-      rating: 4.9,
-      reviewCount: 203,
-      status: "active",
-      joinDate: "2023-12-10",
-      subscription: "Premium",
-      totalCalls: 345,
-      specialization: ["Wealth Management", "Estate Planning", "Tax Optimization"],
-      credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CLU - Chartered Life Underwriter", "ChFC - Chartered Financial Consultant", "Top 1% Wealth Advisors - Barron's 2023"],
-      bio: "Robert Wilson is a highly experienced wealth manager with dual expertise in law and finance. He specializes in comprehensive estate planning and tax optimization for high-net-worth individuals.",
-      reviews: [
-        {
-          id: "r8",
-          userId: "user333",
-          userName: "Elizabeth H.",
-          rating: 5,
-          date: "2024-01-26",
-          comment: "Outstanding estate planning guidance. Robert's legal background really shows in his comprehensive approach.",
-          callId: "call_008"
-        },
-        {
-          id: "r9",
-          userId: "user444",
-          userName: "Michael R.",
-          rating: 5,
-          date: "2024-01-24",
-          comment: "Exceptional wealth management advice. Robert helped save me thousands in taxes this year.",
-          callId: "call_009"
-        }
-      ],
-      reports: []
+  // Fetch advisors from database
+  useEffect(() => {
+    fetchAdvisors();
+  }, []);
+
+  const fetchAdvisors = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('advisors')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch advisors",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setAdvisors(data || []);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch advisors",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const filteredAdvisors = advisors.filter(advisor => {
     const matchesSearch = () => {
       const term = searchTerm.toLowerCase();
       switch (searchType) {
         case "name":
-          return advisor.name.toLowerCase().includes(term);
+          return advisor.full_name.toLowerCase().includes(term);
         case "email":
           return advisor.email.toLowerCase().includes(term);
         case "representative":
-          return advisor.representativeNumber.toLowerCase().includes(term);
+          return advisor.representative_code.toLowerCase().includes(term);
         default:
           return true;
       }
@@ -332,15 +177,14 @@ export const AdvisorManagement = () => {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar>
-                          <AvatarImage src="" />
                           <AvatarFallback>
-                            {advisor.name.split(' ').map(n => n[0]).join('')}
+                            {advisor.full_name.split(' ').map((n: string) => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <div className="font-medium">{advisor.name}</div>
+                          <div className="font-medium">{advisor.full_name}</div>
                           <div className="text-sm text-muted-foreground">
-                            Joined {new Date(advisor.joinDate).toLocaleDateString()}
+                            Joined {new Date(advisor.created_at).toLocaleDateString()}
                           </div>
                         </div>
                       </div>
@@ -350,22 +194,26 @@ export const AdvisorManagement = () => {
                     </TableCell>
                     <TableCell>
                       <code className="text-xs bg-muted px-2 py-1 rounded">
-                        {advisor.representativeNumber}
+                        {advisor.representative_code}
                       </code>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-medium">{advisor.rating}</span>
+                        <span className="font-medium">N/A</span>
                         <span className="text-sm text-muted-foreground">
-                          ({advisor.reviewCount})
+                          (0)
                         </span>
                       </div>
                     </TableCell>
                     <TableCell>{getStatusBadge(advisor.status)}</TableCell>
-                    <TableCell>{getSubscriptionBadge(advisor.subscription)}</TableCell>
                     <TableCell>
-                      <span className="font-medium">{advisor.totalCalls}</span>
+                      <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+                        Basic
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <span className="font-medium">0</span>
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
