@@ -69,15 +69,10 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[420px] gradient-card border-border/50 p-0">
         <div className="text-center py-8 px-6">
-          <div className="mb-6">
+          <div className="mb-8">
             <h1 className="text-3xl font-bold text-primary mb-2">Advisor Now</h1>
+            <h2 className="text-xl font-semibold text-muted-foreground">Agent Login</h2>
           </div>
-          
-          <DialogHeader className="mb-6">
-            <DialogTitle className="text-xl font-semibold text-muted-foreground">
-              Agent Login
-            </DialogTitle>
-          </DialogHeader>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2 text-left">
