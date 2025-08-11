@@ -78,7 +78,9 @@ export const AdvisorManagement = () => {
       }
     };
 
-    const matchesStatus = statusFilter === "all" || advisor.status === statusFilter;
+    // Determine computed status based on subscription
+    const computedStatus = advisor.subscription ? 'active' : 'inactive';
+    const matchesStatus = statusFilter === "all" || computedStatus === statusFilter;
     
     return matchesSearch() && matchesStatus;
   });
@@ -87,6 +89,8 @@ export const AdvisorManagement = () => {
     switch (status) {
       case "active":
         return <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>;
+      case "inactive":
+        return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Inactive</Badge>;
       case "suspended":
         return <Badge className="bg-red-100 text-red-700 border-red-200">Suspended</Badge>;
       case "pending":
@@ -155,6 +159,7 @@ export const AdvisorManagement = () => {
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
                   <SelectItem value="suspended">Suspended</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                 </SelectContent>
@@ -212,11 +217,17 @@ export const AdvisorManagement = () => {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>{getStatusBadge(advisor.status)}</TableCell>
+                    <TableCell>{getStatusBadge(advisor.subscription ? 'active' : 'inactive')}</TableCell>
                     <TableCell>
-                      <Badge className="bg-blue-100 text-blue-700 border-blue-200">
-                        Basic
-                      </Badge>
+                      {advisor.subscription ? (
+                        <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+                          {advisor.subscription}
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-gray-100 text-gray-700 border-gray-200">
+                          N/A
+                        </Badge>
+                      )}
                     </TableCell>
                     <TableCell>
                       <span className="font-medium">0</span>

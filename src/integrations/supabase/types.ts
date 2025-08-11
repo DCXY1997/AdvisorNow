@@ -24,6 +24,7 @@ export type Database = {
           registration_id: string | null
           representative_code: string
           status: string
+          subscription: string | null
           updated_at: string
           user_id: string | null
         }
@@ -36,6 +37,7 @@ export type Database = {
           registration_id?: string | null
           representative_code: string
           status?: string
+          subscription?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -48,6 +50,7 @@ export type Database = {
           registration_id?: string | null
           representative_code?: string
           status?: string
+          subscription?: string | null
           updated_at?: string
           user_id?: string | null
         }
