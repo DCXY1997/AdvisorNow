@@ -321,118 +321,67 @@ export const AdvisorModeration = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {case_.status === "resolved" ? (
-                        <div className="text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            Case Resolved
-                          </div>
-                        </div>
-                      ) : (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  View Reports
-                                </DropdownMenuItem>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                                <DialogHeader>
-                                  <DialogTitle>Individual Reports for {case_.advisor.name}</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                  {(case_.reports || []).map((report) => (
-                                    <div key={report.id} className="border rounded-lg p-4 space-y-3">
-                                      <div className="flex justify-between items-start">
-                                        <div className="space-y-1">
-                                          <div className="text-sm font-medium">Report #{report.id}</div>
-                                           <div className="text-xs text-muted-foreground">
-                                             User: {report.userName} | Contact: {report.userContact} | Date: {new Date(report.reportDate).toLocaleDateString()}
-                                           </div>
-                                        </div>
-                                        <Badge className={report.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
-                                          {report.status}
-                                        </Badge>
-                                      </div>
-                                      <div className="text-sm bg-gray-50 p-3 rounded">
-                                        <strong>Complaint:</strong> {report.complaint}
-                                      </div>
-                                      {report.resolutionNote && (
-                                        <div className="text-sm bg-green-50 p-3 rounded border-l-4 border-green-200">
-                                          <strong>Resolution:</strong> {report.resolutionNote}
-                                        </div>
-                                      )}
-                                      {report.status === 'active' && (
-                                        <div className="flex gap-2">
-                                          <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                              <Button size="sm" variant="outline" className="text-green-600 border-green-200">
-                                                <CheckCircle className="h-4 w-4 mr-1" />
-                                                Resolve This Report
-                                              </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                              <AlertDialogHeader>
-                                                <AlertDialogTitle>Resolve Report #{report.id}</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                  Are you sure you want to resolve this specific report? You'll need to provide a resolution note.
-                                                </AlertDialogDescription>
-                                              </AlertDialogHeader>
-                                              <div className="space-y-4">
-                                                <div>
-                                                  <Label htmlFor="resolution-note">Resolution note (required)</Label>
-                                                  <Textarea
-                                                    id="resolution-note"
-                                                    placeholder="Explain why this report is being resolved..."
-                                                    value={resolutionNote}
-                                                    onChange={(e) => setResolutionNote(e.target.value)}
-                                                   />
-                                                 </div>
-                                               </div>
-                                               <AlertDialogFooter>
-                                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                 <AlertDialogAction 
-                                                   onClick={() => handleResolveReport(report.id)}
-                                                   className="bg-green-600 hover:bg-green-700"
-                                                   disabled={!resolutionNote.trim()}
-                                                 >
-                                                   Resolve Report
-                                                 </AlertDialogAction>
-                                               </AlertDialogFooter>
-                                             </AlertDialogContent>
-                                           </AlertDialog>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Reports
+                              </DropdownMenuItem>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle>Individual Reports for {case_.advisor.name}</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                {(case_.reports || []).map((report) => (
+                                  <div key={report.id} className="border rounded-lg p-4 space-y-3">
+                                    <div className="flex justify-between items-start">
+                                      <div className="space-y-1">
+                                        <div className="text-sm font-medium">Report #{report.id}</div>
+                                         <div className="text-xs text-muted-foreground">
+                                           User: {report.userName} | Contact: {report.userContact} | Date: {new Date(report.reportDate).toLocaleDateString()}
                                          </div>
-                                       )}
-                                     </div>
-                                   ))}
-                                 </div>
-                                 
-                                 {/* Case Resolution Summary for Resolved Cases */}
-                                 {case_.status === 'resolved' && (
-                                   <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                                     <h4 className="text-sm font-medium text-green-800 mb-2">Case Resolution Summary</h4>
-                                     <p className="text-sm text-green-700">
-                                       This case has been fully resolved. All associated reports have been investigated and appropriate actions have been taken. 
-                                       The advisor has been counseled on proper consultation practices and boundaries.
-                                     </p>
-                                     <div className="text-xs text-green-600 mt-2">
-                                       Resolved on: {new Date(case_.reportedDate).toLocaleDateString()}
-                                     </div>
-                                   </div>
-                                 )}
-                               </DialogContent>
-                            </Dialog>
-
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
+                                      </div>
+                                      <Badge className={report.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
+                                        {report.status}
+                                      </Badge>
+                                    </div>
+                                    <div className="text-sm bg-gray-50 p-3 rounded">
+                                      <strong>Complaint:</strong> {report.complaint}
+                                    </div>
+                                    {report.resolutionNote && (
+                                      <div className="text-sm bg-green-50 p-3 rounded border-l-4 border-green-200">
+                                        <strong>Resolution Note:</strong> {report.resolutionNote}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                              
+                              {/* Case Resolution Summary for Resolved Cases */}
+                              {case_.status === 'resolved' && (
+                                <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                  <h4 className="text-sm font-medium text-green-800 mb-2">Case Resolution Summary</h4>
+                                  <p className="text-sm text-green-700">
+                                    This case has been fully resolved. All associated reports have been investigated and appropriate actions have been taken. 
+                                    The advisor has been counseled on proper consultation practices and boundaries.
+                                  </p>
+                                  <div className="text-xs text-green-600 mt-2">
+                                    Resolved on: {new Date(case_.reportedDate).toLocaleDateString()}
+                                  </div>
+                                </div>
+                              )}
+                            </DialogContent>
+                          </Dialog>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
