@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const AgentDashboard = () => {
   const navigate = useNavigate();
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState(false);
   const [filterPeriod, setFilterPeriod] = useState("weekly");
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
