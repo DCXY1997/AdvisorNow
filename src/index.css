@@ -10,16 +10,16 @@
     --background: 200 30% 98%;
     --foreground: 220 15% 25%;
     
-    /* Primary - Deep Navy Blue */
-    --primary: 220 30% 25%;
+    /* Primary - Brand Navy Blue #243159 */
+    --primary: 225 41% 25%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 220 30% 35%;
-    --primary-dark: 220 30% 15%;
+    --primary-light: 225 41% 35%;
+    --primary-dark: 225 41% 15%;
     
-    /* Secondary - Fresh Green Accent */
-    --secondary: 85 60% 55%;
-    --secondary-foreground: 0 0% 100%;
-    --secondary-light: 85 60% 65%;
+    /* Secondary - Brand Tan #d2b589 */
+    --secondary: 36 45% 68%;
+    --secondary-foreground: 225 41% 25%;
+    --secondary-light: 36 45% 78%;
     
     /* Hero Background - Light Blue */
     --hero-background: 195 50% 92%;
