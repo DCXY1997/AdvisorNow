@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -15,6 +16,23 @@ const AgentSignup = () => {
     financialInstitution: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const financialInstitutions = [
+    "TD Bank",
+    "RBC Royal Bank",
+    "Scotiabank",
+    "BMO Bank of Montreal",
+    "CIBC",
+    "National Bank of Canada",
+    "Desjardins Group",
+    "Tangerine",
+    "HSBC Canada",
+    "Laurentian Bank",
+    "Canadian Western Bank",
+    "Manulife Bank",
+    "PC Financial",
+    "Other"
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,14 +130,18 @@ const AgentSignup = () => {
               <Label htmlFor="financialInstitution" className="text-sm font-medium text-foreground">
                 Financial Institution
               </Label>
-              <Input
-                id="financialInstitution"
-                value={formData.financialInstitution}
-                onChange={(e) => handleInputChange("financialInstitution", e.target.value)}
-                placeholder="Enter your financial institution"
-                required
-                className="h-12 transition-smooth focus:ring-2 focus:ring-primary/20 border-border"
-              />
+              <Select value={formData.financialInstitution} onValueChange={(value) => handleInputChange("financialInstitution", value)}>
+                <SelectTrigger className="h-12 transition-smooth focus:ring-2 focus:ring-primary/20 border-border bg-background">
+                  <SelectValue placeholder="Select your financial institution" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-border z-50">
+                  {financialInstitutions.map((institution) => (
+                    <SelectItem key={institution} value={institution} className="hover:bg-muted">
+                      {institution}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <Button
