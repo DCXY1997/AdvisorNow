@@ -78,8 +78,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
     "Manulife",
     "Singlife",
     "FWD",
-    "Tokio Marine Life",
-    "Other"
+    "Tokio Marine Life"
   ];
 
   const topics = [
@@ -189,7 +188,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
           <Button
             type="submit"
             disabled={isSubmitting || !formData.name || !formData.phoneNumber || !formData.topic || !formData.financialInstitution || !formData.pdpaConsent}
-            className="w-full gradient-hero hover:opacity-90 shadow-button transition-smooth"
+            className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 border-0"
           >
             {isSubmitting ? "Submitting..." : "Find My Advisor"}
           </Button>
