@@ -316,101 +316,33 @@ export const AdvisorRegistrations = () => {
                                 <DialogTitle>Application Details - {registration.name}</DialogTitle>
                               </DialogHeader>
                               
-                              <div className="space-y-6">
-                                {/* Basic Information */}
+                              <div className="space-y-4">
+                                {/* Application Information */}
                                 <Card>
                                   <CardHeader>
                                     <CardTitle className="text-lg flex items-center gap-2">
                                       <User className="h-5 w-5" />
-                                      Basic Information
+                                      Application Details
                                     </CardTitle>
                                   </CardHeader>
-                                  <CardContent className="grid grid-cols-2 gap-4">
+                                  <CardContent className="grid grid-cols-1 gap-4">
                                     <div>
                                       <Label className="text-sm font-medium text-muted-foreground">Full Name</Label>
-                                      <div>{registration.name}</div>
+                                      <div className="text-base font-medium">{registration.name}</div>
                                     </div>
                                     <div>
                                       <Label className="text-sm font-medium text-muted-foreground">Email</Label>
-                                      <div>{registration.email}</div>
-                                    </div>
-                                    <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Phone</Label>
-                                      <div>{registration.phone}</div>
+                                      <div className="text-base">{registration.email}</div>
                                     </div>
                                     <div>
                                       <Label className="text-sm font-medium text-muted-foreground">Representative Number</Label>
-                                      <code className="bg-muted px-2 py-1 rounded text-sm">
+                                      <code className="bg-muted px-3 py-2 rounded text-base">
                                         {registration.representativeNumber}
                                       </code>
                                     </div>
-                                  </CardContent>
-                                </Card>
-
-                                {/* Professional Information */}
-                                <Card>
-                                  <CardHeader>
-                                    <CardTitle className="text-lg flex items-center gap-2">
-                                      <Building2 className="h-5 w-5" />
-                                      Professional Information
-                                    </CardTitle>
-                                  </CardHeader>
-                                  <CardContent className="space-y-4">
                                     <div>
                                       <Label className="text-sm font-medium text-muted-foreground">Financial Institution</Label>
-                                      <div>{registration.financialInstitution}</div>
-                                    </div>
-                                    
-                                    <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Specializations</Label>
-                                      <div className="flex gap-1 flex-wrap mt-1">
-                                        {registration.specializations.map((spec) => (
-                                          <Badge key={spec} className="bg-blue-100 text-blue-700">
-                                            {spec}
-                                          </Badge>
-                                        ))}
-                                      </div>
-                                    </div>
-                                    
-                                    <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Credentials</Label>
-                                      <div className="space-y-1 mt-1">
-                                        {registration.credentials.map((credential, index) => (
-                                          <div key={index} className="text-sm bg-green-50 p-2 rounded border-l-2 border-green-200">
-                                            {credential}
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                    
-                                    <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Professional Bio</Label>
-                                      <div className="text-sm bg-gray-50 p-3 rounded mt-1">
-                                        {registration.bio}
-                                      </div>
-                                    </div>
-                                  </CardContent>
-                                </Card>
-
-                                {/* Documents */}
-                                <Card>
-                                  <CardHeader>
-                                    <CardTitle className="text-lg flex items-center gap-2">
-                                      <FileText className="h-5 w-5" />
-                                      Submitted Documents
-                                    </CardTitle>
-                                  </CardHeader>
-                                  <CardContent>
-                                    <div className="grid grid-cols-2 gap-2">
-                                      {registration.documents.map((doc, index) => (
-                                        <div key={index} className="flex items-center gap-2 p-2 border rounded">
-                                          <FileText className="h-4 w-4 text-muted-foreground" />
-                                          <span className="text-sm">{doc}</span>
-                                          <Button variant="ghost" size="sm" className="ml-auto text-xs">
-                                            View
-                                          </Button>
-                                        </div>
-                                      ))}
+                                      <div className="text-base">{registration.financialInstitution}</div>
                                     </div>
                                   </CardContent>
                                 </Card>
