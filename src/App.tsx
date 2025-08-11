@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Investment from "./pages/Investment";
 import Insurance from "./pages/Insurance";
@@ -24,31 +25,33 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/investment" element={<Investment />} />
-          <Route path="/insurance" element={<Insurance />} />
-          <Route path="/retirement" element={<Retirement />} />
-          <Route path="/education" element={<Education />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/agent-signup" element={<AgentSignup />} />
-          <Route path="/agent-dashboard" element={<AgentDashboard />} />
-          <Route path="/agent-profile" element={<AgentProfile />} />
-          <Route path="/agent-reviews" element={<AgentReviews />} />
-          <Route path="/agent-subscription" element={<AgentSubscription />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/advisor-full-review" element={<AdvisorFullReview />} />
-          <Route path="/video-call" element={<VideoCall />} />
-          <Route path="/review-rating" element={<ReviewRating />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/investment" element={<Investment />} />
+            <Route path="/insurance" element={<Insurance />} />
+            <Route path="/retirement" element={<Retirement />} />
+            <Route path="/education" element={<Education />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/agent-signup" element={<AgentSignup />} />
+            <Route path="/agent-dashboard" element={<AgentDashboard />} />
+            <Route path="/agent-profile" element={<AgentProfile />} />
+            <Route path="/agent-reviews" element={<AgentReviews />} />
+            <Route path="/agent-subscription" element={<AgentSubscription />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/advisor-full-review" element={<AdvisorFullReview />} />
+            <Route path="/video-call" element={<VideoCall />} />
+            <Route path="/review-rating" element={<ReviewRating />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

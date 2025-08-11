@@ -10,14 +10,12 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Upload, User, Save, ChevronDown, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import type { User as SupabaseUser, Session } from "@supabase/supabase-js";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AgentProfile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const { user, session, loading: authLoading } = useAuth();
   
   const [profileData, setProfileData] = useState({
     displayName: "",
@@ -34,7 +32,6 @@ const AgentProfile = () => {
 
   const [loading, setLoading] = useState(true);
   const [advisorId, setAdvisorId] = useState<string | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
 
   const specializationOptions = [
     "Investment Planning",
@@ -50,71 +47,34 @@ const AgentProfile = () => {
   
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Set up auth state listener and load initial session
+  // Load profile when user changes
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
-        setSession(session);
-        setUser(session?.user ?? null);
-        setAuthChecked(true);
-        
-        // Load profile when user is authenticated
-        if (session?.user && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
-          console.log('Loading profile for authenticated user:', session.user.email);
-          setTimeout(() => {
-            loadAdvisorProfile(session.user);
-          }, 0);
-        } else if (event === 'SIGNED_OUT') {
-          // Redirect to home when signed out
-          console.log('User signed out, redirecting to home');
-          navigate('/');
-        } else if (!session?.user && authChecked) {
-          console.log('No session found after auth check');
-          setLoading(false);
-        }
-      }
-    );
+    if (user) {
+      console.log('AgentProfile: Loading profile for user:', user.email);
+      loadAdvisorProfile(user);
+    } else if (!authLoading) {
+      console.log('AgentProfile: No user and auth loading complete');
+      setLoading(false);
+    }
+  }, [user, authLoading]);
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session:', session?.user?.email);
-      setSession(session);
-      setUser(session?.user ?? null);
-      setAuthChecked(true);
-      
-      if (session?.user) {
-        loadAdvisorProfile(session.user);
-      } else {
-        setLoading(false);
-        // Don't show error immediately - let user see the page first
-        console.log('No session found');
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate, toast]);
-
-  const loadAdvisorProfile = async (currentUser?: SupabaseUser) => {
+  const loadAdvisorProfile = async (currentUser: typeof user) => {
     try {
       setLoading(true);
       
-      // Use provided user or current user
-      const userToUse = currentUser || user;
-      if (!userToUse) {
+      if (!currentUser) {
         console.log('No user available for profile loading');
         setLoading(false);
         return;
       }
 
-      console.log('Loading profile for user:', userToUse.id, userToUse.email);
+      console.log('Loading profile for user:', currentUser.id, currentUser.email);
 
       // Get advisor data
       const { data: advisor, error: advisorError } = await supabase
         .from('advisors')
         .select('*')
-        .eq('user_id', userToUse.id)
+        .eq('user_id', currentUser.id)
         .maybeSingle();
 
       console.log('Advisor query result:', advisor, advisorError);
@@ -130,12 +90,12 @@ const AgentProfile = () => {
       }
 
       if (!advisor) {
-        console.log('No advisor found for user_id:', userToUse.id);
+        console.log('No advisor found for user_id:', currentUser.id);
         // Don't show error toast immediately, show empty form instead
         console.log('Setting empty profile data');
         setProfileData({
           displayName: "",
-          email: userToUse.email || "",
+          email: currentUser.email || "",
           contactNumber: "",
           representativeNumber: "",
           financialInstitution: "",
@@ -314,7 +274,7 @@ const AgentProfile = () => {
     navigate("/agent-dashboard");
   };
 
-  if (loading || !authChecked) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -325,8 +285,8 @@ const AgentProfile = () => {
     );
   }
 
-  // Show authentication required message only after auth check is complete
-  if (authChecked && !user) {
+  // Show authentication required message only if auth is not loading and no user
+  if (!authLoading && !user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-6">
