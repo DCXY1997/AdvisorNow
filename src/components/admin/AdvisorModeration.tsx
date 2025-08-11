@@ -26,8 +26,8 @@ export const AdvisorModeration = () => {
         avatar: ""
       },
       issue: "Low ratings",
-      description: "Consistently receiving ratings below 3.5 stars",
-      reportCount: 8,
+      description: "Consistently receiving ratings below 3.0 stars (15+ reviews)",
+      reportCount: 15,
       avgRating: 2.8,
       status: "under_review",
       reportedDate: "2024-01-25",
