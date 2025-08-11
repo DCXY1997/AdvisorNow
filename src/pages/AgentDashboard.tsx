@@ -167,7 +167,7 @@ const AgentDashboard = () => {
                 <Switch 
                   checked={isOnline} 
                   onCheckedChange={setIsOnline}
-                  className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
+                  className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-gray-400"
                 />
               </div>
               
