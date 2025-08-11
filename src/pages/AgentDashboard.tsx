@@ -92,17 +92,82 @@ const AgentDashboard = () => {
         ]
       },
       custom: {
-        consultations: 89,
-        activeHours: 32,
-        period: "Custom period",
-        chartData: [
-          { period: "Period 1", value1: 25, value2: 8 },
-          { period: "Period 2", value1: 32, value2: 12 },
-          { period: "Period 3", value1: 32, value2: 12 },
-        ]
+        consultations: getCustomConsultations(),
+        activeHours: getCustomActiveHours(),
+        period: getCustomPeriodLabel(),
+        chartData: getCustomChartData()
       }
     };
     return dataMap[filterPeriod as keyof typeof dataMap] || dataMap.weekly;
+  };
+
+  // Helper functions for custom date range
+  const getCustomConsultations = () => {
+    if (!customStartDate || !customEndDate) return 0;
+    const daysDiff = Math.ceil((customEndDate.getTime() - customStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.round(daysDiff * 3.2); // ~3.2 consultations per day average
+  };
+
+  const getCustomActiveHours = () => {
+    if (!customStartDate || !customEndDate) return 0;
+    const daysDiff = Math.ceil((customEndDate.getTime() - customStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.round(daysDiff * 1.1); // ~1.1 active hours per day average
+  };
+
+  const getCustomPeriodLabel = () => {
+    if (!customStartDate || !customEndDate) return "Custom period";
+    return `${format(customStartDate, "MMM dd")} - ${format(customEndDate, "MMM dd")}`;
+  };
+
+  const getCustomChartData = () => {
+    if (!customStartDate || !customEndDate) {
+      return [
+        { period: "No dates", value1: 0, value2: 0 },
+      ];
+    }
+
+    const daysDiff = Math.ceil((customEndDate.getTime() - customStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (daysDiff <= 7) {
+      // Show daily data for short periods
+      const data = [];
+      for (let i = 0; i <= daysDiff; i++) {
+        const date = new Date(customStartDate);
+        date.setDate(date.getDate() + i);
+        data.push({
+          period: format(date, "MMM dd"),
+          value1: Math.floor(Math.random() * 8) + 2, // 2-10 consultations
+          value2: Math.floor(Math.random() * 4) + 2, // 2-6 active hours
+        });
+      }
+      return data;
+    } else if (daysDiff <= 60) {
+      // Show weekly data for medium periods
+      const weeksCount = Math.ceil(daysDiff / 7);
+      const data = [];
+      for (let i = 0; i < weeksCount; i++) {
+        data.push({
+          period: `Week ${i + 1}`,
+          value1: Math.floor(Math.random() * 30) + 15, // 15-45 consultations
+          value2: Math.floor(Math.random() * 10) + 8, // 8-18 active hours
+        });
+      }
+      return data;
+    } else {
+      // Show monthly data for long periods
+      const monthsCount = Math.ceil(daysDiff / 30);
+      const data = [];
+      for (let i = 0; i < monthsCount; i++) {
+        const date = new Date(customStartDate);
+        date.setMonth(date.getMonth() + i);
+        data.push({
+          period: format(date, "MMM"),
+          value1: Math.floor(Math.random() * 20) + 40, // 40-60 consultations
+          value2: Math.floor(Math.random() * 8) + 12, // 12-20 active hours
+        });
+      }
+      return data;
+    }
   };
 
   const currentData = getDashboardData();
