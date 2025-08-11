@@ -57,8 +57,8 @@ export const AdvisorModeration = () => {
         licenseCode: "FP-2024-008",
         avatar: ""
       },
-      issue: "Missed appointments",
-      description: "High no-show rate for scheduled consultations",
+      issue: "Call availability issues",
+      description: "Frequently unavailable during scheduled consultation hours",
       reportCount: 12,
       avgRating: 4.1,
       status: "under_review",
