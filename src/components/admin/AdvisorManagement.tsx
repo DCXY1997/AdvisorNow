@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, Award, Building } from "lucide-react";
+import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, Award, Building2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -411,7 +411,7 @@ export const AdvisorManagement = () => {
                                     <Card>
                                       <CardHeader>
                                         <CardTitle className="text-lg flex items-center gap-2">
-                                          <Building className="h-5 w-5" />
+                                          <Building2 className="h-5 w-5" />
                                           Professional Details
                                         </CardTitle>
                                       </CardHeader>
