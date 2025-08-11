@@ -18,19 +18,15 @@ const AgentSignup = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const financialInstitutions = [
-    "TD Bank",
-    "RBC Royal Bank",
-    "Scotiabank",
-    "BMO Bank of Montreal",
-    "CIBC",
-    "National Bank of Canada",
-    "Desjardins Group",
-    "Tangerine",
-    "HSBC Canada",
-    "Laurentian Bank",
-    "Canadian Western Bank",
-    "Manulife Bank",
-    "PC Financial",
+    "AIA",
+    "Great Eastern",
+    "Prudential",
+    "HSBC Life",
+    "Income",
+    "Manulife",
+    "Singlife",
+    "FWD",
+    "Tokio Marine Life",
     "Other"
   ];
 
