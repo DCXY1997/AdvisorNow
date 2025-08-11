@@ -10,7 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Search, Flag, Star, Eye, MoreHorizontal, EyeOff, Trash2 } from "lucide-react";
+import { Search, Flag, Star, Eye, MoreHorizontal, EyeOff, Trash2, Check, X } from "lucide-react";
 
 export const ReviewManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -123,6 +123,18 @@ export const ReviewManagement = () => {
         }`}
       />
     ));
+  };
+
+  const handleApproveAppeal = (reviewId: string) => {
+    console.log(`Approving appeal for review ${reviewId} with reason: ${actionReason}`);
+    setActionReason("");
+    // Here you would make API call to approve the appeal
+  };
+
+  const handleRejectAppeal = (reviewId: string) => {
+    console.log(`Rejecting appeal for review ${reviewId} with reason: ${actionReason}`);
+    setActionReason("");
+    // Here you would make API call to reject the appeal
   };
 
   const handleHideReview = (reviewId: string) => {
@@ -280,86 +292,83 @@ export const ReviewManagement = () => {
                             View Full Review
                           </DropdownMenuItem>
                           
-                          {review.status === "active" ? (
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <EyeOff className="h-4 w-4 mr-2" />
-                                  Hide Review
-                                </DropdownMenuItem>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Hide Review</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This review will be hidden from public view but not permanently deleted.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <Label htmlFor="hide-reason">Reason for hiding</Label>
-                                    <Textarea
-                                      id="hide-reason"
-                                      placeholder="Enter the reason for hiding this review..."
-                                      value={actionReason}
-                                      onChange={(e) => setActionReason(e.target.value)}
-                                    />
+                          {review.status === "under_review" && (
+                            <>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-green-600">
+                                    <Check className="h-4 w-4 mr-2" />
+                                    Approve Appeal
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Approve Appeal</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will approve the advisor's appeal and restore their rating. The review will remain visible.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <Label htmlFor="approve-reason">Reason for approval</Label>
+                                      <Textarea
+                                        id="approve-reason"
+                                        placeholder="Enter the reason for approving this appeal..."
+                                        value={actionReason}
+                                        onChange={(e) => setActionReason(e.target.value)}
+                                      />
+                                    </div>
                                   </div>
-                                </div>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction 
-                                    onClick={() => handleHideReview(review.id)}
-                                    className="bg-yellow-600 hover:bg-yellow-700"
-                                  >
-                                    Hide Review
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          ) : (
-                            <DropdownMenuItem onClick={() => handleRestoreReview(review.id)}>
-                              <Eye className="h-4 w-4 mr-2" />
-                              Restore Review
-                            </DropdownMenuItem>
-                          )}
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleApproveAppeal(review.id)}
+                                      className="bg-green-600 hover:bg-green-700"
+                                    >
+                                      Approve Appeal
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
 
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-red-600">
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Delete Permanently
-                              </DropdownMenuItem>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Review</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. The review will be permanently deleted from the system.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <div className="space-y-4">
-                                <div>
-                                  <Label htmlFor="delete-reason">Reason for deletion</Label>
-                                  <Textarea
-                                    id="delete-reason"
-                                    placeholder="Enter the reason for deleting this review..."
-                                    value={actionReason}
-                                    onChange={(e) => setActionReason(e.target.value)}
-                                  />
-                                </div>
-                              </div>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleDeleteReview(review.id)}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  Delete Permanently
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-red-600">
+                                    <X className="h-4 w-4 mr-2" />
+                                    Reject Appeal
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Reject Appeal</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will reject the advisor's appeal. The original review and rating will remain unchanged.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <Label htmlFor="reject-reason">Reason for rejection</Label>
+                                      <Textarea
+                                        id="reject-reason"
+                                        placeholder="Enter the reason for rejecting this appeal..."
+                                        value={actionReason}
+                                        onChange={(e) => setActionReason(e.target.value)}
+                                      />
+                                    </div>
+                                  </div>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleRejectAppeal(review.id)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Reject Appeal
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
