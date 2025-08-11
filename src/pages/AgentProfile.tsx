@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,23 +9,27 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Upload, User, Save, ChevronDown, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const AgentProfile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
   const [profileData, setProfileData] = useState({
-    displayName: "John Smith",
-    email: "john.smith@example.com",
-    contactNumber: "+65 9123 4567",
-    representativeNumber: "REP-2024-0123",
-    financialInstitution: "AIA",
-    bio: "Experienced financial advisor with over 10 years in wealth management and retirement planning.",
-    credentials: "CFP, CFA, ChFC - Certified Financial Planner with expertise in investment strategies and risk management.",
-    tagline: "Building your financial future, one step at a time",
-    specializations: ["Retirement Planning", "Investment Planning", "Wealth Management"],
+    displayName: "",
+    email: "",
+    contactNumber: "",
+    representativeNumber: "",
+    financialInstitution: "",
+    bio: "",
+    credentials: "",
+    tagline: "",
+    specializations: [] as string[],
     profileImage: ""
   });
+
+  const [loading, setLoading] = useState(true);
+  const [advisorId, setAdvisorId] = useState<string | null>(null);
 
   const specializationOptions = [
     "Investment Planning",
@@ -40,6 +44,72 @@ const AgentProfile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Load advisor profile data on component mount
+  useEffect(() => {
+    loadAdvisorProfile();
+  }, []);
+
+  const loadAdvisorProfile = async () => {
+    try {
+      setLoading(true);
+      
+      // Get current user
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) throw authError;
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to access your profile.",
+          variant: "destructive",
+        });
+        navigate("/agent-login");
+        return;
+      }
+
+      // Get advisor data
+      const { data: advisor, error: advisorError } = await supabase
+        .from('advisors')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (advisorError) {
+        console.error('Error fetching advisor:', advisorError);
+        toast({
+          title: "Error",
+          description: "Could not load profile data.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (advisor) {
+        setAdvisorId(advisor.id);
+        setProfileData({
+          displayName: advisor.full_name || "",
+          email: advisor.email || "",
+          contactNumber: advisor.contact_number || "",
+          representativeNumber: advisor.representative_code || "",
+          financialInstitution: advisor.financial_institution || "",
+          bio: advisor.bio || "",
+          credentials: advisor.credentials || "",
+          tagline: advisor.tagline || "",
+          specializations: advisor.specializations ? JSON.parse(advisor.specializations) : [],
+          profileImage: advisor.profile_image || ""
+        });
+      }
+    } catch (error) {
+      console.error('Error loading advisor profile:', error);
+      toast({
+        title: "Error",
+        description: "Could not load profile data.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSpecializationToggle = (specialization: string) => {
     setProfileData(prev => ({
@@ -75,21 +145,63 @@ const AgentProfile = () => {
   };
 
   const handleSave = async () => {
+    if (!advisorId) {
+      toast({
+        title: "Error",
+        description: "No advisor ID found. Please try logging in again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsUpdating(true);
     
-    // Simulate save process
-    setTimeout(() => {
+    try {
+      const { error } = await supabase
+        .from('advisors')
+        .update({
+          full_name: profileData.displayName,
+          contact_number: profileData.contactNumber,
+          bio: profileData.bio,
+          credentials: profileData.credentials,
+          tagline: profileData.tagline,
+          specializations: JSON.stringify(profileData.specializations),
+          profile_image: profileData.profileImage
+        })
+        .eq('id', advisorId);
+
+      if (error) throw error;
+
       toast({
         title: "Profile Updated",
         description: "Your profile has been saved successfully.",
       });
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast({
+        title: "Error",
+        description: "Could not save profile. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsUpdating(false);
-    }, 1500);
+    }
   };
 
   const handleBackToDashboard = () => {
     navigate("/agent-dashboard");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
