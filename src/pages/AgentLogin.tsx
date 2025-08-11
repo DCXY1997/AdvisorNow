@@ -4,169 +4,238 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, EyeOff } from "lucide-react";
+import { User as SupabaseUser, Session } from '@supabase/supabase-js';
 
 const AgentLogin = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  
-  const [credentials, setCredentials] = useState({
+  const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
+  // Authentication state management
   useEffect(() => {
-    // Check if user is already logged in
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate("/agent-dashboard");
-      }
-    };
+    console.log('AgentLogin: Setting up auth listener');
     
-    checkAuth();
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log('AgentLogin: Auth state change', event, session?.user?.email);
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          console.log('AgentLogin: User found, redirecting to dashboard');
+          // Redirect to dashboard if already logged in
+          navigate('/agent-dashboard');
+        }
+      }
+    );
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        navigate("/agent-dashboard");
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('AgentLogin: Existing session check', session?.user?.email);
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        console.log('AgentLogin: Existing session found, redirecting to dashboard');
+        navigate('/agent-dashboard');
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const handleInputChange = (field: keyof typeof credentials, value: string) => {
-    setCredentials(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    
+    if (!formData.email || !formData.password) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsLoggingIn(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: credentials.email,
-        password: credentials.password,
-      });
+      // First check if the user is an approved advisor
+      const { data: registrationData, error: regError } = await (supabase as any)
+        .from('agent_registrations')
+        .select('*')
+        .eq('email', formData.email)
+        .eq('status', 'approved')
+        .maybeSingle();
 
-      if (error) {
+      if (!registrationData) {
         toast({
-          title: "Login Failed",
-          description: error.message,
-          variant: "destructive",
+          title: "Access Denied",
+          description: "Your advisor account is not approved yet or doesn't exist.",
+          variant: "destructive"
         });
+        setIsLoggingIn(false);
         return;
       }
 
-      toast({
-        title: "Welcome Back!",
-        description: "You have successfully logged in.",
+      // Attempt to sign in
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
       });
-      
-      // Navigation will be handled by the auth state change listener
-    } catch (error) {
-      console.error("Login error:", error);
+
+      if (error) {
+        // If user doesn't exist in auth, sign them up first
+        if (error.message.includes('Invalid login credentials')) {
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email: formData.email,
+            password: formData.password,
+            options: {
+              emailRedirectTo: `${window.location.origin}/agent-dashboard`
+            }
+          });
+
+          if (signUpError) {
+            throw signUpError;
+          }
+
+          if (signUpData.user && !signUpData.session) {
+            toast({
+              title: "Check Your Email",
+              description: "Please check your email and click the verification link to complete your login.",
+            });
+          } else if (signUpData.session) {
+            toast({
+              title: "Welcome!",
+              description: "Login successful. Redirecting to your dashboard...",
+            });
+            navigate('/agent-dashboard');
+          }
+        } else {
+          throw error;
+        }
+      } else if (data.session) {
+        toast({
+          title: "Welcome Back!",
+          description: "Login successful. Redirecting to your dashboard...",
+        });
+        navigate('/agent-dashboard');
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
+        title: "Login Failed",
+        description: error.message || "Invalid email or password. Please try again.",
+        variant: "destructive"
       });
     } finally {
-      setIsLoading(false);
+      setIsLoggingIn(false);
     }
-  };
-
-  const handleSignUp = () => {
-    navigate("/agent-signup");
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-primary">
-            Advisor Now
-          </CardTitle>
-          <p className="text-muted-foreground">Agent Login</p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email address or phone number</Label>
-              <Input
-                id="email"
-                type="email"
-                value={credentials.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                placeholder="Enter your email"
-                required
-                className="transition-smooth focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-block">
+            <h1 className="text-3xl font-bold text-primary mb-2">Advisor Now</h1>
+          </Link>
+          <h2 className="text-xl font-semibold text-muted-foreground">Agent Login</h2>
+          <p className="text-sm text-muted-foreground mt-2">
+            Access your advisor dashboard
+          </p>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">Sign In</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Enter your email"
+                  required
+                  disabled={isLoggingIn}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={credentials.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   placeholder="Enter your password"
                   required
-                  className="pr-10 transition-smooth focus:ring-2 focus:ring-primary/20"
+                  disabled={isLoggingIn}
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
+              </div>
+
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isLoggingIn}
+              >
+                {isLoggingIn ? "Signing In..." : "Sign In"}
+              </Button>
+            </form>
+
+            <div className="mt-6 space-y-4">
+              <div className="text-center">
+                <Link 
+                  to="/forgot-password" 
+                  className="text-sm text-primary hover:underline"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </Button>
+                  Forgot your password?
+                </Link>
+              </div>
+              
+              <div className="border-t pt-4 text-center">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Don't have an advisor account?
+                </p>
+                <Link to="/agent-signup">
+                  <Button variant="outline" className="w-full">
+                    Apply to Become an Advisor
+                  </Button>
+                </Link>
+              </div>
+              
+              <div className="text-center">
+                <Link 
+                  to="/" 
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  ← Back to Home
+                </Link>
               </div>
             </div>
-
-            <Button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary-light text-primary-foreground"
-              disabled={isLoading}
-            >
-              {isLoading ? "Logging in..." : "Login"}
-            </Button>
-
-            <div className="text-center">
-              <Button
-                type="button"
-                variant="link"
-                className="text-muted-foreground hover:text-primary"
-                onClick={() => navigate("/forgot-password")}
-              >
-                Forgotten Password?
-              </Button>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleSignUp}
-            >
-              Sign Up
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
