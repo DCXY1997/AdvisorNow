@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ import { Filter, User, FileText, CreditCard, ChevronDown, CalendarIcon, LogOut, 
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const AgentDashboard = () => {
   const navigate = useNavigate();
@@ -20,6 +21,42 @@ const AgentDashboard = () => {
   const [filterPeriod, setFilterPeriod] = useState("weekly");
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
+  const [advisorProfile, setAdvisorProfile] = useState<{
+    profileImage: string;
+    displayName: string;
+  }>({
+    profileImage: "",
+    displayName: ""
+  });
+
+  // Load advisor profile data on component mount
+  useEffect(() => {
+    loadAdvisorProfile();
+  }, []);
+
+  const loadAdvisorProfile = async () => {
+    try {
+      // Get current user
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) return;
+
+      // Get advisor data
+      const { data: advisor, error: advisorError } = await supabase
+        .from('advisors')
+        .select('full_name, profile_image')
+        .eq('user_id', user.id)
+        .single();
+
+      if (advisor) {
+        setAdvisorProfile({
+          profileImage: (advisor as any).profile_image || "",
+          displayName: advisor.full_name || ""
+        });
+      }
+    } catch (error) {
+      console.error('Error loading advisor profile:', error);
+    }
+  };
   
   // Dynamic data based on filter period
   const getDashboardData = () => {
@@ -303,9 +340,9 @@ const AgentDashboard = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2 p-2">
                     <Avatar>
-                      <AvatarImage src="" />
+                      <AvatarImage src={advisorProfile.profileImage} />
                       <AvatarFallback>
-                        <User className="h-4 w-4" />
+                        {advisorProfile.displayName ? advisorProfile.displayName.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
                       </AvatarFallback>
                     </Avatar>
                     <ChevronDown className="h-4 w-4 text-muted-foreground" />
