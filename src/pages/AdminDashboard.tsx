@@ -10,7 +10,6 @@ import {
   Shield, 
   MessageSquare, 
   CreditCard, 
-  Phone, 
   BarChart3,
   ChevronDown, 
   LogOut,
@@ -22,8 +21,8 @@ import { AdvisorManagement } from "@/components/admin/AdvisorManagement";
 import { AdvisorModeration } from "@/components/admin/AdvisorModeration";
 import { ReviewManagement } from "@/components/admin/ReviewManagement";
 import { SubscriptionManagement } from "@/components/admin/SubscriptionManagement";
-import { CallAnalytics } from "@/components/admin/CallAnalytics";
 import { AdvisorRegistrations } from "@/components/admin/AdvisorRegistrations";
+import { CallAnalytics } from "@/components/admin/CallAnalytics";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -86,7 +85,7 @@ const AdminDashboard = () => {
       {/* Dashboard Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Overview
@@ -110,10 +109,6 @@ const AdminDashboard = () => {
             <TabsTrigger value="subscriptions" className="flex items-center gap-2">
               <CreditCard className="h-4 w-4" />
               Subscriptions
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <Phone className="h-4 w-4" />
-              Call Analytics
             </TabsTrigger>
           </TabsList>
 
@@ -148,7 +143,7 @@ const AdminDashboard = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Calls</CardTitle>
-                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{overviewStats.totalCalls.toLocaleString()}</div>
@@ -172,24 +167,13 @@ const AdminDashboard = () => {
               </Card>
             </div>
 
-            {/* Quick Actions */}
+            {/* Call Analytics */}
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle>Call Analytics</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Button onClick={() => setActiveTab("advisors")} variant="outline" className="h-20 flex flex-col gap-2">
-                  <Users className="h-6 w-6" />
-                  <span>Manage Advisors</span>
-                </Button>
-                <Button onClick={() => setActiveTab("reviews")} variant="outline" className="h-20 flex flex-col gap-2">
-                  <MessageSquare className="h-6 w-6" />
-                  <span>Review Moderation</span>
-                </Button>
-                <Button onClick={() => setActiveTab("analytics")} variant="outline" className="h-20 flex flex-col gap-2">
-                  <BarChart3 className="h-6 w-6" />
-                  <span>View Analytics</span>
-                </Button>
+              <CardContent>
+                <CallAnalytics />
               </CardContent>
             </Card>
           </TabsContent>
@@ -212,10 +196,6 @@ const AdminDashboard = () => {
 
           <TabsContent value="subscriptions">
             <SubscriptionManagement />
-          </TabsContent>
-
-          <TabsContent value="analytics">
-            <CallAnalytics />
           </TabsContent>
         </Tabs>
       </div>
