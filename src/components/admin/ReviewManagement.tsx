@@ -369,6 +369,19 @@ export const ReviewManagement = () => {
                               </AlertDialog>
                             </>
                           )}
+
+                          {review.status === "appeal_approved" && (
+                            <>
+                              <DropdownMenuItem className="text-orange-600">
+                                <Eye className="h-4 w-4 mr-2" />
+                                Hide Review
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">
+                                <X className="h-4 w-4 mr-2" />
+                                Delete Review
+                              </DropdownMenuItem>
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
