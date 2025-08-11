@@ -9,7 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Shield, Ban, AlertTriangle, Users, Settings, CheckCircle, Filter } from "lucide-react";
+import { Shield, Ban, AlertTriangle, Users, Settings, CheckCircle, Filter, MoreHorizontal } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export const AdvisorModeration = () => {
   const [advisorLimit, setAdvisorLimit] = useState("1500");
@@ -29,6 +30,11 @@ export const AdvisorModeration = () => {
       },
       issue: "Low ratings",
       description: "Consistently receiving ratings below 3.0 stars (15+ reviews)",
+      reportDetails: [
+        "User reported: 'Advisor seemed unprepared and gave generic advice'",
+        "User reported: 'Did not understand my investment goals'", 
+        "User reported: 'Call ended abruptly without proper conclusion'"
+      ],
       reportCount: 15,
       avgRating: 2.8,
       status: "under_review",
@@ -47,6 +53,11 @@ export const AdvisorModeration = () => {
       },
       issue: "Inappropriate conduct",
       description: "Multiple reports of unprofessional behavior during consultations",
+      reportDetails: [
+        "User reported: 'Advisor made inappropriate personal comments'",
+        "User reported: 'Used unprofessional language during call'",
+        "User reported: 'Seemed intoxicated during video consultation'"
+      ],
       reportCount: 5,
       avgRating: 3.1,
       status: "flagged",
@@ -65,6 +76,11 @@ export const AdvisorModeration = () => {
       },
       issue: "False complaint reports",
       description: "Investigation revealed reports were false accusations from competitor",
+      reportDetails: [
+        "Anonymous reports claiming 'advisor provided illegal advice'",
+        "Multiple reports from same IP address with similar wording",
+        "Investigation found reports originated from competitor advisor"
+      ],
       reportCount: 8,
       avgRating: 4.3,
       status: "resolved",
@@ -216,10 +232,25 @@ export const AdvisorModeration = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div>
-                        <div className="font-medium">{case_.issue}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {case_.description}
+                      <div className="space-y-2">
+                        <div>
+                          <div className="font-medium">{case_.issue}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {case_.description}
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="text-xs font-medium text-muted-foreground">Recent Reports:</div>
+                          {case_.reportDetails.slice(0, 2).map((detail, index) => (
+                            <div key={index} className="text-xs bg-orange-50 p-2 rounded border-l-2 border-orange-200">
+                              {detail}
+                            </div>
+                          ))}
+                          {case_.reportDetails.length > 2 && (
+                            <div className="text-xs text-muted-foreground">
+                              +{case_.reportDetails.length - 2} more reports...
+                            </div>
+                          )}
                         </div>
                       </div>
                     </TableCell>
@@ -247,26 +278,32 @@ export const AdvisorModeration = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2 flex-wrap">{case_.status === "resolved" ? (
-                          <div className="text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <CheckCircle className="h-4 w-4 text-green-600" />
-                              Case Resolved
-                            </div>
-                            {case_.resolutionNote && (
-                              <div className="mt-1 text-xs bg-green-50 p-2 rounded border-l-2 border-green-200">
-                                {case_.resolutionNote}
-                              </div>
-                            )}
+                      {case_.status === "resolved" ? (
+                        <div className="text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <CheckCircle className="h-4 w-4 text-green-600" />
+                            Case Resolved
                           </div>
-                        ) : (
-                          <>
+                          {case_.resolutionNote && (
+                            <div className="mt-1 text-xs bg-green-50 p-2 rounded border-l-2 border-green-200">
+                              {case_.resolutionNote}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="sm" className="text-green-600 border-green-200 hover:bg-green-50">
-                                  <CheckCircle className="h-4 w-4 mr-1" />
-                                  Resolve
-                                </Button>
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                  <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                                  Resolve Case
+                                </DropdownMenuItem>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
@@ -301,10 +338,10 @@ export const AdvisorModeration = () => {
 
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                  <Shield className="h-4 w-4 mr-1" />
-                                  Suspend
-                                </Button>
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                  <Shield className="h-4 w-4 mr-2 text-orange-600" />
+                                  Suspend Advisor
+                                </DropdownMenuItem>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
@@ -338,10 +375,10 @@ export const AdvisorModeration = () => {
 
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                <Button variant="destructive" size="sm">
-                                  <Ban className="h-4 w-4 mr-1" />
-                                  Blacklist
-                                </Button>
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                  <Ban className="h-4 w-4 mr-2 text-red-600" />
+                                  Blacklist Advisor
+                                </DropdownMenuItem>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
@@ -361,9 +398,9 @@ export const AdvisorModeration = () => {
                                 </AlertDialogFooter>
                               </AlertDialogContent>
                             </AlertDialog>
-                          </>
-                        )}
-                      </div>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
