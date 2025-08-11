@@ -36,7 +36,7 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
     setIsLoggingIn(true);
     
     try {
-      // First, check if the email has an approved registration
+      // Step 1: Check if the email has an approved registration
       const { data: registration, error: regError } = await supabase
         .from('agent_registrations')
         .select('status')
@@ -52,6 +52,7 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
         return;
       }
 
+      // Step 2: Validate registration status
       if (registration.status !== 'approved') {
         const statusMessage = registration.status === 'pending' 
           ? "Your registration is still pending approval. Please wait for admin confirmation."
@@ -65,30 +66,47 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
         return;
       }
 
-      // Check if advisor already has an auth account
-      const { data: advisor } = await supabase
+      // Step 3: Check if advisor record exists
+      const { data: advisor, error: advisorError } = await supabase
         .from('advisors')
-        .select('user_id')
+        .select('user_id, status, subscription')
         .eq('email', formData.emailOrPhone)
         .single();
 
-      if (advisor?.user_id) {
-        // Advisor already has account, try to sign in
+      if (advisorError || !advisor) {
+        toast({
+          title: "Advisor Profile Not Found",
+          description: "Your advisor profile is being set up. Please contact support.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Step 4: Try to sign in with existing auth account
+      if (advisor.user_id) {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: formData.emailOrPhone,
           password: formData.password,
         });
 
         if (signInError) {
-          toast({
-            title: "Login Failed",
-            description: signInError.message,
-            variant: "destructive",
-          });
+          if (signInError.message.includes('Invalid login credentials')) {
+            toast({
+              title: "Invalid Credentials",
+              description: "Please check your email and password and try again.",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Login Failed",
+              description: signInError.message,
+              variant: "destructive",
+            });
+          }
           return;
         }
       } else {
-        // First time login - create auth account and link to advisor
+        // Step 5: First-time login - create auth account
         const { data: authData, error: signUpError } = await supabase.auth.signUp({
           email: formData.emailOrPhone,
           password: formData.password,
@@ -98,11 +116,19 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
         });
 
         if (signUpError) {
-          toast({
-            title: "Account Creation Failed",
-            description: signUpError.message,
-            variant: "destructive",
-          });
+          if (signUpError.message.includes('rate limit')) {
+            toast({
+              title: "Too Many Attempts",
+              description: "Please wait a moment before trying again.",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Account Creation Failed",
+              description: signUpError.message,
+              variant: "destructive",
+            });
+          }
           return;
         }
 
@@ -112,9 +138,25 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
             .from('advisors')
             .update({ user_id: authData.user.id })
             .eq('email', formData.emailOrPhone);
+            
+          if (authData.user.email_confirmed_at) {
+            // Email already confirmed, proceed with login
+            toast({
+              title: "Login Successful",
+              description: "Welcome back! Redirecting to agent dashboard...",
+            });
+          } else {
+            // Email needs confirmation
+            toast({
+              title: "Account Created",
+              description: "Please check your email to confirm your account before logging in.",
+            });
+            return;
+          }
         }
       }
 
+      // Step 6: Final success
       toast({
         title: "Login Successful",
         description: "Welcome back! Redirecting to agent dashboard...",
@@ -127,6 +169,7 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
       });
       navigate("/agent-dashboard");
     } catch (error) {
+      console.error("Login error:", error);
       toast({
         title: "Login Error",
         description: "An unexpected error occurred. Please try again.",
