@@ -387,6 +387,9 @@ export const AdvisorManagement = () => {
                           <DropdownMenuItem className="text-red-600">
                             {advisor.status === "suspended" ? "Reactivate" : "Suspend"}
                           </DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-700">
+                            Blacklist Advisor
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
