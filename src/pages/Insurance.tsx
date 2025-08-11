@@ -1,50 +1,12 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, CheckCircle, Star, MessageCircle } from "lucide-react";
+import { Shield, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import AdvisorMatchingForm from "@/components/AdvisorMatchingForm";
 
 const Insurance = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-
-  const topInsuranceAdvisors = [
-    {
-      name: "Sarah Chen",
-      rating: 4.9,
-      reviews: 167,
-      specialties: ["Life Insurance", "Health Insurance", "Critical Illness"],
-      experience: "8 years",
-      institution: "Great Eastern"
-    },
-    {
-      name: "Michael Tan",
-      rating: 4.8,
-      reviews: 203,
-      specialties: ["Term Life", "Whole Life", "Investment-Linked"],
-      experience: "12 years", 
-      institution: "AIA"
-    },
-    {
-      name: "Jennifer Lim",
-      rating: 4.8,
-      reviews: 156,
-      specialties: ["Family Protection", "Business Insurance", "Disability"],
-      experience: "6 years",
-      institution: "Prudential"
-    },
-    {
-      name: "David Wong",
-      rating: 4.7,
-      reviews: 189,
-      specialties: ["Estate Planning", "Legacy Protection", "Wealth Transfer"],
-      experience: "15 years",
-      institution: "Income"
-    }
-  ].sort((a, b) => {
-    if (b.rating !== a.rating) return b.rating - a.rating;
-    return b.reviews - a.reviews;
-  });
 
   const features = [
     "Life and health insurance",
