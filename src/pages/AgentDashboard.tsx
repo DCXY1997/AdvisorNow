@@ -17,82 +17,82 @@ const AgentDashboard = () => {
     const dataMap = {
       daily: {
         consultations: 18,
-        satisfaction: 4.9,
+        avgMinutes: 24,
         period: "Today",
         chartData: [
           { period: "12AM-3AM", value1: 0, value2: 0 },
           { period: "3AM-6AM", value1: 0, value2: 0 },
-          { period: "6AM-9AM", value1: 1, value2: 0 },
-          { period: "9AM-12PM", value1: 9, value2: 1 },
-          { period: "12PM-3PM", value1: 7, value2: 1 },
-          { period: "3PM-6PM", value1: 1, value2: 0 },
+          { period: "6AM-9AM", value1: 1, value2: 24 },
+          { period: "9AM-12PM", value1: 9, value2: 216 },
+          { period: "12PM-3PM", value1: 7, value2: 168 },
+          { period: "3PM-6PM", value1: 1, value2: 24 },
           { period: "6PM-9PM", value1: 0, value2: 0 },
           { period: "9PM-12AM", value1: 0, value2: 0 },
         ]
       },
       weekly: {
         consultations: 142,
-        satisfaction: 4.8,
+        avgMinutes: 26,
         period: "This week",
         chartData: [
-          { period: "Monday", value1: 8, value2: 2 },
-          { period: "Tuesday", value1: 12, value2: 1 },
-          { period: "Wednesday", value1: 16, value2: 3 },
-          { period: "Thursday", value1: 20, value2: 3 },
-          { period: "Friday", value1: 18, value2: 4 },
-          { period: "Saturday", value1: 13, value2: 6 },
-          { period: "Sunday", value1: 17, value2: 1 },
+          { period: "Monday", value1: 8, value2: 192 },
+          { period: "Tuesday", value1: 12, value2: 312 },
+          { period: "Wednesday", value1: 16, value2: 416 },
+          { period: "Thursday", value1: 20, value2: 520 },
+          { period: "Friday", value1: 18, value2: 468 },
+          { period: "Saturday", value1: 13, value2: 338 },
+          { period: "Sunday", value1: 17, value2: 442 },
         ]
       },
       monthly: {
         consultations: 580,
-        satisfaction: 4.7,
+        avgMinutes: 28,
         period: "This year",
         chartData: [
-          { period: "Jan", value1: 48, value2: 6 },
-          { period: "Feb", value1: 52, value2: 7 },
-          { period: "Mar", value1: 45, value2: 5 },
-          { period: "Apr", value1: 49, value2: 6 },
-          { period: "May", value1: 51, value2: 7 },
-          { period: "Jun", value1: 47, value2: 6 },
-          { period: "Jul", value1: 50, value2: 7 },
-          { period: "Aug", value1: 48, value2: 6 },
-          { period: "Sep", value1: 46, value2: 5 },
-          { period: "Oct", value1: 49, value2: 6 },
-          { period: "Nov", value1: 52, value2: 7 },
-          { period: "Dec", value1: 43, value2: 5 },
+          { period: "Jan", value1: 48, value2: 1344 },
+          { period: "Feb", value1: 52, value2: 1456 },
+          { period: "Mar", value1: 45, value2: 1260 },
+          { period: "Apr", value1: 49, value2: 1372 },
+          { period: "May", value1: 51, value2: 1428 },
+          { period: "Jun", value1: 47, value2: 1316 },
+          { period: "Jul", value1: 50, value2: 1400 },
+          { period: "Aug", value1: 48, value2: 1344 },
+          { period: "Sep", value1: 46, value2: 1288 },
+          { period: "Oct", value1: 49, value2: 1372 },
+          { period: "Nov", value1: 52, value2: 1456 },
+          { period: "Dec", value1: 43, value2: 1204 },
         ]
       },
       quarterly: {
         consultations: 1740,
-        satisfaction: 4.7,
+        avgMinutes: 27,
         period: "This year",
         chartData: [
-          { period: "Q1", value1: 145, value2: 18 },
-          { period: "Q2", value1: 147, value2: 19 },
-          { period: "Q3", value1: 144, value2: 18 },
-          { period: "Q4", value1: 142, value2: 17 },
+          { period: "Q1", value1: 145, value2: 4060 },
+          { period: "Q2", value1: 147, value2: 4116 },
+          { period: "Q3", value1: 144, value2: 4032 },
+          { period: "Q4", value1: 142, value2: 3976 },
         ]
       },
       yearly: {
         consultations: 6840,
-        satisfaction: 4.6,
+        avgMinutes: 25,
         period: "Since subscription",
         chartData: [
-          { period: "2021", value1: 1200, value2: 150 },
-          { period: "2022", value1: 1680, value2: 210 },
-          { period: "2023", value1: 1820, value2: 230 },
-          { period: "2024", value1: 2140, value2: 270 },
+          { period: "2021", value1: 1200, value2: 30000 },
+          { period: "2022", value1: 1680, value2: 42000 },
+          { period: "2023", value1: 1820, value2: 45500 },
+          { period: "2024", value1: 2140, value2: 53500 },
         ]
       },
       custom: {
         consultations: 89,
-        satisfaction: 4.8,
+        avgMinutes: 29,
         period: "Custom period",
         chartData: [
-          { period: "Period 1", value1: 25, value2: 3 },
-          { period: "Period 2", value1: 32, value2: 4 },
-          { period: "Period 3", value1: 32, value2: 2 },
+          { period: "Period 1", value1: 25, value2: 700 },
+          { period: "Period 2", value1: 32, value2: 896 },
+          { period: "Period 3", value1: 32, value2: 896 },
         ]
       }
     };
@@ -196,11 +196,11 @@ const AgentDashboard = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Client Satisfaction</CardTitle>
+                <CardTitle className="text-lg">Average Minutes per Call</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-primary">{currentData.satisfaction}</div>
-                <p className="text-sm text-muted-foreground">Average rating</p>
+                <div className="text-3xl font-bold text-primary">{currentData.avgMinutes}</div>
+                <p className="text-sm text-muted-foreground">Minutes average</p>
               </CardContent>
             </Card>
           </div>
@@ -235,7 +235,7 @@ const AgentDashboard = () => {
                     <Bar 
                       dataKey="value2" 
                       fill="hsl(var(--primary) / 0.6)" 
-                      name="Follow-ups"
+                      name="Call Minutes"
                       radius={[4, 4, 0, 0]}
                     />
                   </BarChart>
