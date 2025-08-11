@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 
 interface AgentLoginModalProps {
   isOpen: boolean;
@@ -35,135 +34,20 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
 
     setIsLoggingIn(true);
     
-    try {
-      // Step 1: Check if the email has an approved registration
-      const { data: registration, error: regError } = await supabase
-        .from('agent_registrations')
-        .select('status')
-        .eq('email', formData.emailOrPhone)
-        .single();
-
-      if (regError || !registration) {
-        toast({
-          title: "Registration Not Found",
-          description: "Please register first or contact support if you believe this is an error.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Step 2: Validate registration status
-      if (registration.status !== 'approved') {
-        const statusMessage = registration.status === 'pending' 
-          ? "Your registration is still pending approval. Please wait for admin confirmation."
-          : "Your registration has been rejected. Please contact support for more information.";
-        
-        toast({
-          title: "Access Denied",
-          description: statusMessage,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Step 3: Check if advisor record exists
-      const { data: advisor, error: advisorError } = await supabase
-        .from('advisors')
-        .select('user_id, status, subscription')
-        .eq('email', formData.emailOrPhone)
-        .single();
-
-      if (advisorError || !advisor) {
-        toast({
-          title: "Advisor Profile Not Found",
-          description: "Your advisor profile is being set up. Please contact support.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Step 4: Try to sign in with existing auth account
-      if (advisor.user_id) {
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email: formData.emailOrPhone,
-          password: formData.password,
-        });
-
-        if (signInError) {
-          if (signInError.message.includes('Invalid login credentials')) {
-            toast({
-              title: "Invalid Credentials",
-              description: "Please check your email and password and try again.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Login Failed",
-              description: signInError.message,
-              variant: "destructive",
-            });
-          }
-          return;
-        }
-
-        // Wait for session to be established
-        if (signInData.session) {
-          console.log('Login successful with session:', signInData.session.user.email);
-        }
-      } else {
-        // Advisor exists but no auth account yet - create one
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: formData.emailOrPhone,
-          password: formData.password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/agent-dashboard`
-          }
-        });
-
-        if (signUpError) {
-          toast({
-            title: "Account Creation Failed",
-            description: signUpError.message,
-            variant: "destructive",
-          });
-          return;
-        }
-
-        // Update advisor record with new user_id
-        if (signUpData.user) {
-          await supabase
-            .from('advisors')
-            .update({ user_id: signUpData.user.id })
-            .eq('email', formData.emailOrPhone);
-        }
-      }
-
-      // Step 6: Final success - wait a moment for session to propagate
+    // Simulate login process
+    setTimeout(() => {
       toast({
         title: "Login Successful",
         description: "Welcome back! Redirecting to agent dashboard...",
       });
-      
+      setIsLoggingIn(false);
       onClose();
       setFormData({
         emailOrPhone: "",
         password: "",
       });
-
-      // Wait a moment for the session to fully propagate before navigation
-      setTimeout(() => {
-        navigate("/agent-dashboard");
-      }, 100);
-    } catch (error) {
-      console.error("Login error:", error);
-      toast({
-        title: "Login Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoggingIn(false);
-    }
+      navigate("/agent-dashboard");
+    }, 1500);
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {

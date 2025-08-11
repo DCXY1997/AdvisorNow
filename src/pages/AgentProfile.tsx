@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,29 +9,23 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Upload, User, Save, ChevronDown, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 
 const AgentProfile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { user, session, loading: authLoading } = useAuth();
   
   const [profileData, setProfileData] = useState({
-    displayName: "",
-    email: "",
-    contactNumber: "",
-    representativeNumber: "",
-    financialInstitution: "",
-    bio: "",
-    credentials: "",
-    tagline: "",
-    specializations: [] as string[],
+    displayName: "John Smith",
+    email: "john.smith@example.com",
+    contactNumber: "+65 9123 4567",
+    representativeNumber: "REP-2024-0123",
+    financialInstitution: "AIA",
+    bio: "Experienced financial advisor with over 10 years in wealth management and retirement planning.",
+    credentials: "CFP, CFA, ChFC - Certified Financial Planner with expertise in investment strategies and risk management.",
+    tagline: "Building your financial future, one step at a time",
+    specializations: ["Retirement Planning", "Investment Planning", "Wealth Management"],
     profileImage: ""
   });
-
-  const [loading, setLoading] = useState(true);
-  const [advisorId, setAdvisorId] = useState<string | null>(null);
 
   const specializationOptions = [
     "Investment Planning",
@@ -46,94 +40,6 @@ const AgentProfile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const [isUpdating, setIsUpdating] = useState(false);
-
-  // Load profile when user changes
-  useEffect(() => {
-    if (user) {
-      console.log('AgentProfile: Loading profile for user:', user.email);
-      loadAdvisorProfile(user);
-    } else if (!authLoading) {
-      console.log('AgentProfile: No user and auth loading complete');
-      setLoading(false);
-    }
-  }, [user, authLoading]);
-
-  const loadAdvisorProfile = async (currentUser: typeof user) => {
-    try {
-      setLoading(true);
-      
-      if (!currentUser) {
-        console.log('No user available for profile loading');
-        setLoading(false);
-        return;
-      }
-
-      console.log('Loading profile for user:', currentUser.id, currentUser.email);
-
-      // Get advisor data
-      const { data: advisor, error: advisorError } = await supabase
-        .from('advisors')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .maybeSingle();
-
-      console.log('Advisor query result:', advisor, advisorError);
-
-      if (advisorError) {
-        console.error('Advisors error:', advisorError);
-        toast({
-          title: "Error",
-          description: "Could not load profile data.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (!advisor) {
-        console.log('No advisor found for user_id:', currentUser.id);
-        // Don't show error toast immediately, show empty form instead
-        console.log('Setting empty profile data');
-        setProfileData({
-          displayName: "",
-          email: currentUser.email || "",
-          contactNumber: "",
-          representativeNumber: "",
-          financialInstitution: "",
-          bio: "",
-          credentials: "",
-          tagline: "",
-          specializations: [],
-          profileImage: ""
-        });
-        return;
-      }
-
-      if (advisor) {
-        setAdvisorId(advisor.id);
-        setProfileData({
-          displayName: advisor.full_name || "",
-          email: advisor.email || "",
-          contactNumber: (advisor as any).contact_number || "",
-          representativeNumber: advisor.representative_code || "",
-          financialInstitution: advisor.financial_institution || "",
-          bio: (advisor as any).bio || "",
-          credentials: (advisor as any).credentials || "",
-          tagline: (advisor as any).tagline || "",
-          specializations: (advisor as any).specializations ? JSON.parse((advisor as any).specializations) : [],
-          profileImage: (advisor as any).profile_image || ""
-        });
-      }
-    } catch (error) {
-      console.error('Error loading advisor profile:', error);
-      toast({
-        title: "Error",
-        description: "Could not load profile data.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSpecializationToggle = (specialization: string) => {
     setProfileData(prev => ({
@@ -155,150 +61,35 @@ const AgentProfile = () => {
     setProfileData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid File",
-        description: "Please select an image file.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "File Too Large",
-        description: "Please select an image smaller than 5MB.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      // Get current user
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        toast({
-          title: "Authentication Error",
-          description: "Please log in to upload photos.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Create unique filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/profile.${fileExt}`;
-
-      // Upload to Supabase Storage
-      const { data, error } = await supabase.storage
-        .from('advisor-profiles')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: true // Replace existing file
-        });
-
-      if (error) throw error;
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('advisor-profiles')
-        .getPublicUrl(fileName);
-
-      // Update profile data with new image URL
-      setProfileData(prev => ({ ...prev, profileImage: publicUrl }));
-      
+    if (file) {
+      // In a real app, you'd upload to a server and get back a URL
+      const imageUrl = URL.createObjectURL(file);
+      setProfileData(prev => ({ ...prev, profileImage: imageUrl }));
       toast({
         title: "Image Uploaded",
         description: "Profile picture updated successfully.",
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      toast({
-        title: "Upload Failed",
-        description: "Could not upload image. Please try again.",
-        variant: "destructive",
       });
     }
   };
 
   const handleSave = async () => {
-    if (!advisorId) {
-      toast({
-        title: "Error",
-        description: "No advisor ID found. Please try logging in again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsUpdating(true);
     
-    try {
-      const { error } = await supabase
-        .from('advisors')
-        .update({
-          contact_number: profileData.contactNumber,
-          bio: profileData.bio,
-          credentials: profileData.credentials,
-          tagline: profileData.tagline,
-          specializations: JSON.stringify(profileData.specializations),
-          profile_image: profileData.profileImage
-        })
-        .eq('id', advisorId);
-
-      if (error) throw error;
-
+    // Simulate save process
+    setTimeout(() => {
       toast({
         title: "Profile Updated",
         description: "Your profile has been saved successfully.",
       });
-    } catch (error) {
-      console.error('Error saving profile:', error);
-      toast({
-        title: "Error",
-        description: "Could not save profile. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
       setIsUpdating(false);
-    }
+    }, 1500);
   };
 
   const handleBackToDashboard = () => {
     navigate("/agent-dashboard");
   };
-
-  if (loading || authLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading profile...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show authentication required message only if auth is not loading and no user
-  if (!authLoading && !user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-6">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Authentication Required</h2>
-          <p className="text-muted-foreground mb-6">Please log in to access your profile.</p>
-          <Button onClick={() => navigate('/')} className="bg-primary hover:bg-primary-light text-primary-foreground">
-            Go to Login
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -368,8 +159,8 @@ const AgentProfile = () => {
                     <Input
                       id="displayName"
                       value={profileData.displayName}
-                      readOnly
-                      className="bg-muted/50 cursor-not-allowed"
+                      onChange={(e) => handleInputChange("displayName", e.target.value)}
+                      className="transition-smooth focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   
@@ -567,7 +358,7 @@ const AgentProfile = () => {
                     {profileData.displayName}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-1">
-                    {profileData.financialInstitution} • Rep ({profileData.representativeNumber})
+                    {profileData.financialInstitution} • Rep #{profileData.representativeNumber}
                   </p>
                   <p className="text-sm text-muted-foreground mb-2">
                     📧 {profileData.email} • 📞 {profileData.contactNumber}

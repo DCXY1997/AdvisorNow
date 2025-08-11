@@ -28,7 +28,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
     name: "",
     phoneNumber: "",
     topic: "",
-    financialInstitution: "Any",
+    financialInstitution: "",
     pdpaConsent: false,
   });
 
@@ -60,7 +60,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
         name: "",
         phoneNumber: "",
         topic: "",
-        financialInstitution: "Any",
+        financialInstitution: "",
         pdpaConsent: false,
       });
       // Navigate to video call page
@@ -139,7 +139,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
             <Label htmlFor="topic" className="text-sm font-medium">
               Topic of Interest *
             </Label>
-            <Select value={formData.topic} onValueChange={(value) => handleInputChange("topic", value)} required>
+            <Select onValueChange={(value) => handleInputChange("topic", value)} required>
               <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
                 <SelectValue placeholder="Select your area of interest" />
               </SelectTrigger>
@@ -157,7 +157,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
             <Label htmlFor="institution" className="text-sm font-medium">
               Preferred Financial Institution *
             </Label>
-            <Select value={formData.financialInstitution} onValueChange={(value) => handleInputChange("financialInstitution", value)} required>
+            <Select onValueChange={(value) => handleInputChange("financialInstitution", value)} required>
               <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
                 <SelectValue placeholder="Any" />
               </SelectTrigger>

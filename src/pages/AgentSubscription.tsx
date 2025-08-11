@@ -183,10 +183,7 @@ const AgentSubscription = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="flex items-center gap-2 cursor-pointer hover:bg-muted"
-                    onClick={async () => {
-                      const { logout } = await import("@/utils/auth");
-                      await logout();
-                    }}
+                    onClick={() => navigate("/")}
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Logout</span>

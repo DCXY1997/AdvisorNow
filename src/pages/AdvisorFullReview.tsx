@@ -55,8 +55,6 @@ const AdvisorFullReview = () => {
     switch (status) {
       case "active":
         return <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>;
-      case "inactive":
-        return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Inactive</Badge>;
       case "suspended":
         return <Badge className="bg-red-100 text-red-700 border-red-200">Suspended</Badge>;
       case "pending":
@@ -67,14 +65,6 @@ const AdvisorFullReview = () => {
   };
 
   const getSubscriptionBadge = (subscription: string) => {
-    if (!subscription) {
-      return (
-        <Badge className="bg-gray-100 text-gray-700 border-gray-200">
-          N/A
-        </Badge>
-      );
-    }
-    
     const colorMap: Record<string, string> = {
       "Basic": "bg-blue-100 text-blue-700 border-blue-200",
       "Premium": "bg-purple-100 text-purple-700 border-purple-200", 
@@ -106,13 +96,13 @@ const AdvisorFullReview = () => {
               <Avatar className="h-12 w-12">
                 <AvatarImage src="" />
                 <AvatarFallback className="text-lg">
-                  {(advisor.full_name || advisor.name || 'N/A').split(' ').map((n: string) => n[0]).join('')}
+                  {advisor.name.split(' ').map((n: string) => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">{advisor.full_name || advisor.name || 'Unknown Advisor'}</h1>
+                <h1 className="text-2xl font-bold text-foreground">{advisor.name}</h1>
                 <div className="flex items-center gap-2">
-                  {getStatusBadge(advisor.subscription ? 'active' : 'inactive')}
+                  {getStatusBadge(advisor.status)}
                   {getSubscriptionBadge(advisor.subscription)}
                 </div>
               </div>
@@ -126,7 +116,7 @@ const AdvisorFullReview = () => {
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews ({advisor.reviewCount || (advisor.reviews?.length) || 0})</TabsTrigger>
+            <TabsTrigger value="reviews">Reviews ({advisor.reviewCount})</TabsTrigger>
             <TabsTrigger value="reports">Reports ({advisor.reports?.length || 0})</TabsTrigger>
           </TabsList>
           
@@ -143,17 +133,15 @@ const AdvisorFullReview = () => {
                 <CardContent className="space-y-3">
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Email</div>
-                    <div>{advisor.email || ''}</div>
+                    <div>{advisor.email}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Phone</div>
-                    <div>{advisor.phone || 'N/A'}</div>
+                    <div>{advisor.phone}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Representative Number</div>
-                    <code className="bg-muted px-2 py-1 rounded text-sm">
-                      {advisor.representative_code || advisor.representativeNumber || 'N/A'}
-                    </code>
+                    <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.representativeNumber}</code>
                   </div>
                 </CardContent>
               </Card>
@@ -169,30 +157,24 @@ const AdvisorFullReview = () => {
                 <CardContent className="space-y-3">
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Financial Institution</div>
-                    <div>{advisor.financial_institution || advisor.financialInstitution || 'N/A'}</div>
+                    <div>{advisor.financialInstitution}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Credentials & Accolades</div>
                     <div className="space-y-1">
-                      {(advisor.credentialsAccolades || []).map((credential: string, index: number) => (
+                      {advisor.credentialsAccolades.map((credential: string, index: number) => (
                         <div key={index} className="text-sm bg-green-50 p-2 rounded border-l-2 border-green-200">
                           {credential}
                         </div>
                       ))}
-                      {(!advisor.credentialsAccolades || advisor.credentialsAccolades.length === 0) && (
-                        <div className="text-sm text-muted-foreground">No credentials listed</div>
-                      )}
                     </div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Specialisations</div>
                     <div className="flex gap-1 flex-wrap">
-                      {(advisor.specialization || []).map((specialty: string) => (
+                      {advisor.specialization.map((specialty: string) => (
                         <Badge key={specialty} className="bg-blue-100 text-blue-700">{specialty}</Badge>
                       ))}
-                      {(!advisor.specialization || advisor.specialization.length === 0) && (
-                        <div className="text-sm text-muted-foreground">No specializations listed</div>
-                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -205,7 +187,7 @@ const AdvisorFullReview = () => {
                 <CardTitle className="text-lg">Biography</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">{advisor.bio || ''}</p>
+                <p className="text-muted-foreground leading-relaxed">{advisor.bio}</p>
               </CardContent>
             </Card>
 
@@ -213,19 +195,19 @@ const AdvisorFullReview = () => {
             <div className="grid grid-cols-3 gap-4">
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-green-600">{advisor.rating || 'N/A'}</div>
+                  <div className="text-3xl font-bold text-green-600">{advisor.rating}</div>
                   <div className="text-sm text-muted-foreground">Average Rating</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-600">{advisor.totalCalls || '0'}</div>
+                  <div className="text-3xl font-bold text-blue-600">{advisor.totalCalls}</div>
                   <div className="text-sm text-muted-foreground">Total Calls</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-purple-600">{advisor.reviewCount || '0'}</div>
+                  <div className="text-3xl font-bold text-purple-600">{advisor.reviewCount}</div>
                   <div className="text-sm text-muted-foreground">Reviews</div>
                 </CardContent>
               </Card>
@@ -238,37 +220,31 @@ const AdvisorFullReview = () => {
                 <CardTitle>Client Reviews</CardTitle>
               </CardHeader>
               <CardContent>
-                {advisor.reviews && advisor.reviews.length > 0 ? (
-                  <div className="space-y-4">
-                    {advisor.reviews.map((review: any) => (
-                      <div key={review.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <div className="font-medium">{review.userName}</div>
-                            <div className="flex items-center gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                              <span className="text-sm text-muted-foreground ml-1">
-                                {new Date(review.date).toLocaleDateString()}
-                              </span>
-                            </div>
+                <div className="space-y-4">
+                  {advisor.reviews.map((review: any) => (
+                    <div key={review.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <div className="font-medium">{review.userName}</div>
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-4 w-4 ${
+                                  i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                            <span className="text-sm text-muted-foreground ml-1">
+                              {new Date(review.date).toLocaleDateString()}
+                            </span>
                           </div>
                         </div>
-                        <p className="text-sm text-muted-foreground">{review.comment}</p>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No reviews found for this advisor.
-                  </div>
-                )}
+                      <p className="text-sm text-muted-foreground">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

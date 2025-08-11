@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Search, Filter, Eye, MoreHorizontal, CheckCircle, XCircle, Clock, User, Building2, FileText, UserCheck, UserX } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 export const AdvisorRegistrations = () => {
   const { toast } = useToast();
@@ -21,47 +20,79 @@ export const AdvisorRegistrations = () => {
   const [statusFilter, setStatusFilter] = useState("pending");
   const [approvalReason, setApprovalReason] = useState("");
   const [rejectionReason, setRejectionReason] = useState("");
-  const [registrations, setRegistrations] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  // Fetch registrations from database
-  useEffect(() => {
-    fetchRegistrations();
-  }, []);
-
-  const fetchRegistrations = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('agent_registrations')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch registrations",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setRegistrations(data || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch registrations",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+  // Mock registration data
+  const registrations = [
+    {
+      id: "1",
+      name: "Michael Chen",
+      email: "michael.chen@email.com",
+      phone: "+65 9123 4567",
+      representativeNumber: "REP-2024-456",
+      financialInstitution: "Great Eastern",
+      specializations: ["Startup Financing", "Venture Capital", "Financial Tech"],
+      credentials: ["CFP - Certified Financial Planner", "Series 7 - General Securities Representative"],
+      bio: "Experienced financial advisor specializing in startup financing and venture capital advisory with 8+ years in the industry.",
+      submittedDate: "2024-01-28",
+      status: "pending",
+      documents: ["License Certificate", "Resume", "References"],
+      avatar: ""
+    },
+    {
+      id: "2", 
+      name: "Sarah Martinez",
+      email: "sarah.martinez@email.com",
+      phone: "+65 8765 4321",
+      representativeNumber: "REP-2024-457",
+      financialInstitution: "Prudential",
+      specializations: ["Retirement Planning", "Investment Strategies"],
+      credentials: ["CFP - Certified Financial Planner", "CFA - Chartered Financial Analyst"],
+      bio: "Dedicated to helping families secure their financial future through comprehensive retirement and investment planning.",
+      submittedDate: "2024-01-27",
+      status: "pending",
+      documents: ["License Certificate", "Resume", "References", "Portfolio Examples"],
+      avatar: ""
+    },
+    {
+      id: "3",
+      name: "David Kim",
+      email: "david.kim@email.com", 
+      phone: "+65 7654 3210",
+      representativeNumber: "REP-2024-458",
+      financialInstitution: "Income",
+      specializations: ["Wealth Management", "Estate Planning"],
+      credentials: ["CFP - Certified Financial Planner", "ChFC - Chartered Financial Consultant"],
+      bio: "High-net-worth specialist with expertise in comprehensive wealth management and estate planning strategies.",
+      submittedDate: "2024-01-26",
+      status: "approved",
+      documents: ["License Certificate", "Resume", "References"],
+      avatar: "",
+      approvalDate: "2024-01-28",
+      approvedBy: "Admin"
+    },
+    {
+      id: "4",
+      name: "Jennifer Wong",
+      email: "jennifer.wong@email.com",
+      phone: "+65 6543 2109", 
+      representativeNumber: "REP-2024-459",
+      financialInstitution: "Other",
+      specializations: ["Personal Finance"],
+      credentials: ["Basic Certification"],
+      bio: "New to financial advisory, looking to help with basic personal finance questions.",
+      submittedDate: "2024-01-25",
+      status: "rejected",
+      documents: ["Resume"],
+      avatar: "",
+      rejectionDate: "2024-01-27",
+      rejectionReason: "Insufficient credentials and experience for platform standards"
     }
-  };
+  ];
 
   const filteredRegistrations = registrations.filter(registration => {
-    const matchesSearch = registration.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = registration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          registration.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         registration.representative_code.toLowerCase().includes(searchTerm.toLowerCase());
+                         registration.representativeNumber.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || registration.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -79,78 +110,23 @@ export const AdvisorRegistrations = () => {
     }
   };
 
-  const handleApproveRegistration = async (registrationId: string) => {
-    try {
-      const { error } = await supabase
-        .from('agent_registrations')
-        .update({ 
-          status: 'approved',
-          approved_at: new Date().toISOString(),
-          approved_by: 'Admin' // In a real app, this would be the current admin user
-        })
-        .eq('id', registrationId);
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to approve registration",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Registration Approved",
-        description: "The advisor registration has been approved successfully.",
-      });
-      
-      setApprovalReason("");
-      fetchRegistrations(); // Refresh the list
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to approve registration",
-        variant: "destructive",
-      });
-    }
+  const handleApproveRegistration = (registrationId: string) => {
+    console.log(`Approving registration ${registrationId} with reason: ${approvalReason}`);
+    toast({
+      title: "Registration Approved",
+      description: "The advisor registration has been approved successfully.",
+    });
+    setApprovalReason("");
   };
 
-  const handleRejectRegistration = async (registrationId: string) => {
-    if (!rejectionReason.trim()) return;
-
-    try {
-      const { error } = await supabase
-        .from('agent_registrations')
-        .update({ 
-          status: 'rejected',
-          // You could add a rejection_reason column to store this
-        })
-        .eq('id', registrationId);
-
-      if (error) {
-        toast({
-          title: "Error", 
-          description: "Failed to reject registration",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Registration Rejected", 
-        description: "The advisor registration has been rejected.",
-        variant: "destructive"
-      });
-      
-      setRejectionReason("");
-      fetchRegistrations(); // Refresh the list
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to reject registration", 
-        variant: "destructive",
-      });
-    }
+  const handleRejectRegistration = (registrationId: string) => {
+    console.log(`Rejecting registration ${registrationId} with reason: ${rejectionReason}`);
+    toast({
+      title: "Registration Rejected", 
+      description: "The advisor registration has been rejected.",
+      variant: "destructive"
+    });
+    setRejectionReason("");
   };
 
   // Calculate stats
@@ -277,14 +253,15 @@ export const AdvisorRegistrations = () => {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar>
+                          <AvatarImage src={registration.avatar} />
                           <AvatarFallback>
-                            {registration.full_name.split(' ').map((n: string) => n[0]).join('')}
+                            {registration.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <div className="font-medium">{registration.full_name}</div>
+                          <div className="font-medium">{registration.name}</div>
                           <code className="text-xs bg-muted px-1 rounded">
-                            {registration.representative_code}
+                            {registration.representativeNumber}
                           </code>
                         </div>
                       </div>
@@ -292,15 +269,16 @@ export const AdvisorRegistrations = () => {
                     <TableCell>
                       <div className="text-sm">
                         <div>{registration.email}</div>
+                        <div className="text-muted-foreground">{registration.phone}</div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm">{registration.financial_institution}</span>
+                      <span className="text-sm">{registration.financialInstitution}</span>
                     </TableCell>
                     <TableCell>{getStatusBadge(registration.status)}</TableCell>
                     <TableCell>
                       <div className="text-sm">
-                        {new Date(registration.created_at).toLocaleDateString()}
+                        {new Date(registration.submittedDate).toLocaleDateString()}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -320,7 +298,7 @@ export const AdvisorRegistrations = () => {
                             </DialogTrigger>
                             <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                               <DialogHeader>
-                                <DialogTitle>Application Details - {registration.full_name}</DialogTitle>
+                                <DialogTitle>Application Details - {registration.name}</DialogTitle>
                               </DialogHeader>
                               
                               <div className="space-y-4">
@@ -335,21 +313,21 @@ export const AdvisorRegistrations = () => {
                                   <CardContent className="grid grid-cols-1 gap-4">
                                     <div>
                                       <Label className="text-sm font-medium text-muted-foreground">Full Name</Label>
-                                      <div className="text-base font-medium">{registration.full_name}</div>
+                                      <div className="text-base font-medium">{registration.name}</div>
                                     </div>
                                     <div>
                                       <Label className="text-sm font-medium text-muted-foreground">Email</Label>
                                       <div className="text-base">{registration.email}</div>
                                     </div>
                                     <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Representative Code</Label>
+                                      <Label className="text-sm font-medium text-muted-foreground">Representative Number</Label>
                                       <code className="bg-muted px-3 py-2 rounded text-base">
-                                        {registration.representative_code}
+                                        {registration.representativeNumber}
                                       </code>
                                     </div>
                                     <div>
                                       <Label className="text-sm font-medium text-muted-foreground">Financial Institution</Label>
-                                      <div className="text-base">{registration.financial_institution}</div>
+                                      <div className="text-base">{registration.financialInstitution}</div>
                                     </div>
                                   </CardContent>
                                 </Card>
@@ -397,7 +375,7 @@ export const AdvisorRegistrations = () => {
                                   <AlertDialogHeader>
                                     <AlertDialogTitle>Approve Registration</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      This will approve {registration.full_name}'s registration and allow them to start using the platform as an advisor.
+                                      This will approve {registration.name}'s registration and allow them to start using the platform as an advisor.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <div className="space-y-4">
@@ -434,7 +412,7 @@ export const AdvisorRegistrations = () => {
                                   <AlertDialogHeader>
                                     <AlertDialogTitle>Reject Registration</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      This will reject {registration.full_name}'s registration. Please provide a reason for the rejection.
+                                      This will reject {registration.name}'s registration. Please provide a reason for the rejection.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <div className="space-y-4">

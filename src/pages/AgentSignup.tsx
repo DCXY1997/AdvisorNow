@@ -5,16 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 const AgentSignup = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    password: "",
     representativeCode: "",
     financialInstitution: "",
   });
@@ -36,9 +33,9 @@ const AgentSignup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const { fullName, email, password, representativeCode, financialInstitution } = formData;
+    const { fullName, email, representativeCode, financialInstitution } = formData;
     
-    if (!fullName || !email || !password || !representativeCode || !financialInstitution) {
+    if (!fullName || !email || !representativeCode || !financialInstitution) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields to continue.",
@@ -49,53 +46,20 @@ const AgentSignup = () => {
 
     setIsSubmitting(true);
     
-    try {
-      const { error } = await supabase
-        .from('agent_registrations')
-        .insert({
-          full_name: fullName,
-          email: email,
-          password: password,
-          representative_code: representativeCode,
-          financial_institution: financialInstitution,
-          status: 'pending'
-        });
-
-      if (error) {
-        if (error.code === '23505') { // Unique constraint violation
-          toast({
-            title: "Email Already Registered",
-            description: "An account with this email already exists. Please use a different email or contact support.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Registration Failed",
-            description: "There was an error submitting your registration. Please try again.",
-            variant: "destructive",
-          });
-        }
-        return;
-      }
-
+    // Simulate signup process
+    setTimeout(() => {
       toast({
         title: "Registration Submitted",
         description: "Your agent registration has been submitted for review. We'll contact you soon.",
       });
-      
-      // Navigate to index page after successful registration
-      setTimeout(() => {
-        navigate('/');
-      }, 2000); // 2 second delay to show the success message
-    } catch (error) {
-      toast({
-        title: "Registration Failed",
-        description: "There was an error submitting your registration. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
       setIsSubmitting(false);
-    }
+      setFormData({
+        fullName: "",
+        email: "",
+        representativeCode: "",
+        financialInstitution: "",
+      });
+    }, 1500);
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
@@ -139,21 +103,6 @@ const AgentSignup = () => {
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="Enter your email address"
-                required
-                className="h-12 transition-smooth focus:ring-2 focus:ring-primary/20 border-border"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => handleInputChange("password", e.target.value)}
-                placeholder="Enter your password"
                 required
                 className="h-12 transition-smooth focus:ring-2 focus:ring-primary/20 border-border"
               />

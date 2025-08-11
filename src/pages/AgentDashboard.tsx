@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,113 +9,17 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } from "recharts";
-import { Filter, User, FileText, CreditCard, ChevronDown, CalendarIcon, LogOut, Settings, Key } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { Filter, User, FileText, CreditCard, ChevronDown, CalendarIcon, LogOut, Settings } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 
 const AgentDashboard = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const [isOnline, setIsOnline] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
   const [filterPeriod, setFilterPeriod] = useState("weekly");
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
-  const [advisorProfile, setAdvisorProfile] = useState<{
-    profileImage: string;
-    displayName: string;
-  }>({
-    profileImage: "",
-    displayName: ""
-  });
-  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-
-  // Load advisor profile data on component mount
-  useEffect(() => {
-    loadAdvisorProfile();
-  }, []);
-
-  const loadAdvisorProfile = async () => {
-    try {
-      // Get current user
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) return;
-
-      // Get advisor data
-      const { data: advisor, error: advisorError } = await supabase
-        .from('advisors')
-        .select('full_name, profile_image')
-        .eq('user_id', user.id)
-        .single();
-
-      if (advisor) {
-        setAdvisorProfile({
-          profileImage: (advisor as any).profile_image || "",
-          displayName: advisor.full_name || ""
-        });
-      }
-    } catch (error) {
-      console.error('Error loading advisor profile:', error);
-    }
-  };
-
-  const handleChangePassword = async () => {
-    if (newPassword !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "New passwords don't match.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      toast({
-        title: "Error",
-        description: "Password must be at least 6 characters long.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsChangingPassword(true);
-
-    try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Password changed successfully.",
-      });
-
-      // Reset form and close modal
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setIsChangePasswordOpen(false);
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Could not change password. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsChangingPassword(false);
-    }
-  };
   
   // Dynamic data based on filter period
   const getDashboardData = () => {
@@ -399,9 +303,9 @@ const AgentDashboard = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2 p-2">
                     <Avatar>
-                      <AvatarImage src={advisorProfile.profileImage} />
+                      <AvatarImage src="" />
                       <AvatarFallback>
-                        {advisorProfile.displayName ? advisorProfile.displayName.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
+                        <User className="h-4 w-4" />
                       </AvatarFallback>
                     </Avatar>
                     <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -417,17 +321,7 @@ const AgentDashboard = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="flex items-center gap-2 cursor-pointer hover:bg-muted"
-                    onClick={() => setIsChangePasswordOpen(true)}
-                  >
-                    <Key className="h-4 w-4" />
-                    <span>Change Password</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="flex items-center gap-2 cursor-pointer hover:bg-muted"
-                    onClick={async () => {
-                      const { logout } = await import("@/utils/auth");
-                      await logout();
-                    }}
+                    onClick={() => navigate("/")}
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Logout</span>
@@ -510,64 +404,6 @@ const AgentDashboard = () => {
           </Card>
         </div>
       </div>
-
-      {/* Change Password Modal */}
-      <Dialog open={isChangePasswordOpen} onOpenChange={setIsChangePasswordOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Change Password</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
-              <Input
-                id="currentPassword"
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Enter your current password"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter your new password"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm your new password"
-              />
-            </div>
-            <div className="flex gap-2 pt-4">
-              <Button
-                variant="outline"
-                onClick={() => setIsChangePasswordOpen(false)}
-                className="flex-1"
-                disabled={isChangingPassword}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleChangePassword}
-                className="flex-1"
-                disabled={isChangingPassword || !newPassword || !confirmPassword}
-              >
-                {isChangingPassword ? "Changing..." : "Change Password"}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
