@@ -89,14 +89,14 @@ const AgentProfile = () => {
         setProfileData({
           displayName: advisor.full_name || "",
           email: advisor.email || "",
-          contactNumber: advisor.contact_number || "",
+          contactNumber: (advisor as any).contact_number || "",
           representativeNumber: advisor.representative_code || "",
           financialInstitution: advisor.financial_institution || "",
-          bio: advisor.bio || "",
-          credentials: advisor.credentials || "",
-          tagline: advisor.tagline || "",
-          specializations: advisor.specializations ? JSON.parse(advisor.specializations) : [],
-          profileImage: advisor.profile_image || ""
+          bio: (advisor as any).bio || "",
+          credentials: (advisor as any).credentials || "",
+          tagline: (advisor as any).tagline || "",
+          specializations: (advisor as any).specializations ? JSON.parse((advisor as any).specializations) : [],
+          profileImage: (advisor as any).profile_image || ""
         });
       }
     } catch (error) {

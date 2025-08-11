@@ -16,41 +16,59 @@ export type Database = {
     Tables: {
       advisors: {
         Row: {
+          bio: string | null
+          contact_number: string | null
           created_at: string
+          credentials: string | null
           email: string
           financial_institution: string
           full_name: string
           id: string
+          profile_image: string | null
           registration_id: string | null
           representative_code: string
+          specializations: string | null
           status: string
           subscription: string | null
+          tagline: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
+          bio?: string | null
+          contact_number?: string | null
           created_at?: string
+          credentials?: string | null
           email: string
           financial_institution: string
           full_name: string
           id?: string
+          profile_image?: string | null
           registration_id?: string | null
           representative_code: string
+          specializations?: string | null
           status?: string
           subscription?: string | null
+          tagline?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
+          bio?: string | null
+          contact_number?: string | null
           created_at?: string
+          credentials?: string | null
           email?: string
           financial_institution?: string
           full_name?: string
           id?: string
+          profile_image?: string | null
           registration_id?: string | null
           representative_code?: string
+          specializations?: string | null
           status?: string
           subscription?: string | null
+          tagline?: string | null
           updated_at?: string
           user_id?: string | null
         }
