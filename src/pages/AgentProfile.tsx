@@ -528,7 +528,7 @@ const AgentProfile = () => {
                     {profileData.displayName}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-1">
-                    {profileData.financialInstitution} • Rep #{profileData.representativeNumber}
+                    {profileData.financialInstitution} • Rep ({profileData.representativeNumber})
                   </p>
                   <p className="text-sm text-muted-foreground mb-2">
                     📧 {profileData.email} • 📞 {profileData.contactNumber}
