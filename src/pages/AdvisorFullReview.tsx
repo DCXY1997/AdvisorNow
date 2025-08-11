@@ -96,14 +96,14 @@ const AdvisorFullReview = () => {
               <Avatar className="h-12 w-12">
                 <AvatarImage src="" />
                 <AvatarFallback className="text-lg">
-                  {advisor.name.split(' ').map((n: string) => n[0]).join('')}
+                  {(advisor.full_name || advisor.name || 'N/A').split(' ').map((n: string) => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">{advisor.name}</h1>
+                <h1 className="text-2xl font-bold text-foreground">{advisor.full_name || advisor.name || 'Unknown Advisor'}</h1>
                 <div className="flex items-center gap-2">
                   {getStatusBadge(advisor.status)}
-                  {getSubscriptionBadge(advisor.subscription)}
+                  {advisor.subscription && getSubscriptionBadge(advisor.subscription)}
                 </div>
               </div>
             </div>
@@ -137,11 +137,13 @@ const AdvisorFullReview = () => {
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Phone</div>
-                    <div>{advisor.phone}</div>
+                    <div>{advisor.phone || 'N/A'}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Representative Number</div>
-                    <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.representativeNumber}</code>
+                    <code className="bg-muted px-2 py-1 rounded text-sm">
+                      {advisor.representative_code || advisor.representativeNumber || 'N/A'}
+                    </code>
                   </div>
                 </CardContent>
               </Card>
@@ -157,24 +159,30 @@ const AdvisorFullReview = () => {
                 <CardContent className="space-y-3">
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Financial Institution</div>
-                    <div>{advisor.financialInstitution}</div>
+                    <div>{advisor.financial_institution || advisor.financialInstitution || 'N/A'}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Credentials & Accolades</div>
                     <div className="space-y-1">
-                      {advisor.credentialsAccolades.map((credential: string, index: number) => (
+                      {(advisor.credentialsAccolades || []).map((credential: string, index: number) => (
                         <div key={index} className="text-sm bg-green-50 p-2 rounded border-l-2 border-green-200">
                           {credential}
                         </div>
                       ))}
+                      {(!advisor.credentialsAccolades || advisor.credentialsAccolades.length === 0) && (
+                        <div className="text-sm text-muted-foreground">No credentials listed</div>
+                      )}
                     </div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Specialisations</div>
                     <div className="flex gap-1 flex-wrap">
-                      {advisor.specialization.map((specialty: string) => (
+                      {(advisor.specialization || []).map((specialty: string) => (
                         <Badge key={specialty} className="bg-blue-100 text-blue-700">{specialty}</Badge>
                       ))}
+                      {(!advisor.specialization || advisor.specialization.length === 0) && (
+                        <div className="text-sm text-muted-foreground">No specializations listed</div>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -195,19 +203,19 @@ const AdvisorFullReview = () => {
             <div className="grid grid-cols-3 gap-4">
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-green-600">{advisor.rating}</div>
+                  <div className="text-3xl font-bold text-green-600">{advisor.rating || 'N/A'}</div>
                   <div className="text-sm text-muted-foreground">Average Rating</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-600">{advisor.totalCalls}</div>
+                  <div className="text-3xl font-bold text-blue-600">{advisor.totalCalls || '0'}</div>
                   <div className="text-sm text-muted-foreground">Total Calls</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-purple-600">{advisor.reviewCount}</div>
+                  <div className="text-3xl font-bold text-purple-600">{advisor.reviewCount || '0'}</div>
                   <div className="text-sm text-muted-foreground">Reviews</div>
                 </CardContent>
               </Card>
