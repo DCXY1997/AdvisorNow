@@ -49,22 +49,6 @@ export const AdvisorModeration = () => {
       reportedDate: "2024-01-28",
       severity: "high"
     },
-    {
-      id: "3",
-      advisor: {
-        name: "Maria Rodriguez",
-        email: "maria.rodriguez@email.com", 
-        licenseCode: "FP-2024-008",
-        avatar: ""
-      },
-      issue: "Call availability issues",
-      description: "Frequently unavailable during scheduled consultation hours",
-      reportCount: 12,
-      avgRating: 4.1,
-      status: "under_review",
-      reportedDate: "2024-01-22",
-      severity: "low"
-    }
   ];
 
   const getSeverityBadge = (severity: string) => {
@@ -287,7 +271,7 @@ export const AdvisorModeration = () => {
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3</div>
+            <div className="text-2xl font-bold">2</div>
             <p className="text-xs text-muted-foreground">
               Requiring immediate attention
             </p>
