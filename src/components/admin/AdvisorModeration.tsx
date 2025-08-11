@@ -9,8 +9,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Shield, Ban, AlertTriangle, Users, Settings, CheckCircle, Filter, MoreHorizontal } from "lucide-react";
+import { Shield, Ban, AlertTriangle, Users, Settings, CheckCircle, Filter, MoreHorizontal, Eye } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export const AdvisorModeration = () => {
   const [advisorLimit, setAdvisorLimit] = useState("1500");
@@ -30,18 +31,39 @@ export const AdvisorModeration = () => {
       },
       issue: "Low ratings",
       description: "Consistently receiving ratings below 3.0 stars (15+ reviews)",
-      reportDetails: [
-        "User reported: 'Advisor seemed unprepared and gave generic advice'",
-        "User reported: 'Did not understand my investment goals'", 
-        "User reported: 'Call ended abruptly without proper conclusion'"
+      reports: [
+        {
+          id: "1-1",
+          userId: "user123",
+          reportDate: "2024-01-20",
+          rating: 2,
+          complaint: "Advisor seemed unprepared and gave generic advice",
+          callId: "call_789",
+          status: "active"
+        },
+        {
+          id: "1-2", 
+          userId: "user456",
+          reportDate: "2024-01-22",
+          rating: 3,
+          complaint: "Did not understand my investment goals",
+          callId: "call_790",
+          status: "active"
+        },
+        {
+          id: "1-3",
+          userId: "user789",
+          reportDate: "2024-01-25",
+          rating: 2,
+          complaint: "Call ended abruptly without proper conclusion",
+          callId: "call_791",
+          status: "active"
+        }
       ],
-      reportCount: 15,
       avgRating: 2.8,
       status: "under_review",
       reportedDate: "2024-01-25",
-      severity: "medium",
-      resolvedDate: null,
-      resolutionNote: null
+      severity: "medium"
     },
     {
       id: "2", 
@@ -53,18 +75,39 @@ export const AdvisorModeration = () => {
       },
       issue: "Inappropriate conduct",
       description: "Multiple reports of unprofessional behavior during consultations",
-      reportDetails: [
-        "User reported: 'Advisor made inappropriate personal comments'",
-        "User reported: 'Used unprofessional language during call'",
-        "User reported: 'Seemed intoxicated during video consultation'"
+      reports: [
+        {
+          id: "2-1",
+          userId: "user321",
+          reportDate: "2024-01-26",
+          rating: 1,
+          complaint: "Advisor made inappropriate personal comments during financial consultation",
+          callId: "call_800",
+          status: "active"
+        },
+        {
+          id: "2-2",
+          userId: "user654",
+          reportDate: "2024-01-27",
+          rating: 2,
+          complaint: "Used unprofessional language during call",
+          callId: "call_801",
+          status: "active"
+        },
+        {
+          id: "2-3",
+          userId: "user987",
+          reportDate: "2024-01-28",
+          rating: 1,
+          complaint: "Seemed intoxicated during video consultation",
+          callId: "call_802",
+          status: "active"
+        }
       ],
-      reportCount: 5,
       avgRating: 3.1,
       status: "flagged",
       reportedDate: "2024-01-28",
-      severity: "high",
-      resolvedDate: null,
-      resolutionNote: null
+      severity: "high"
     },
     {
       id: "3",
@@ -76,18 +119,32 @@ export const AdvisorModeration = () => {
       },
       issue: "False complaint reports",
       description: "Investigation revealed reports were false accusations from competitor",
-      reportDetails: [
-        "Anonymous reports claiming 'advisor provided illegal advice'",
-        "Multiple reports from same IP address with similar wording",
-        "Investigation found reports originated from competitor advisor"
+      reports: [
+        {
+          id: "3-1",
+          userId: "anonymous1",
+          reportDate: "2024-01-15",
+          rating: 1,
+          complaint: "Advisor provided illegal investment advice",
+          callId: "call_750",
+          status: "resolved",
+          resolutionNote: "False report - investigation showed advisor followed all compliance guidelines"
+        },
+        {
+          id: "3-2",
+          userId: "anonymous2", 
+          reportDate: "2024-01-16",
+          rating: 1,
+          complaint: "Unauthorized financial transactions discussed",
+          callId: "call_751",
+          status: "resolved",
+          resolutionNote: "False report - same IP address as previous report, competitor interference"
+        }
       ],
-      reportCount: 8,
       avgRating: 4.3,
       status: "resolved",
       reportedDate: "2024-01-15",
-      severity: "low",
-      resolvedDate: "2024-01-30",
-      resolutionNote: "After thorough investigation, all reports were determined to be false accusations. Advisor cleared of all charges."
+      severity: "low"
     }
   ];
 
@@ -135,10 +192,10 @@ export const AdvisorModeration = () => {
     // Here you would make API call to blacklist the advisor
   };
 
-  const handleResolveCase = (advisorId: string) => {
-    console.log(`Resolving case ${advisorId} with note: ${resolutionNote}`);
+  const handleResolveReport = (reportId: string) => {
+    console.log(`Resolving report ${reportId} with note: ${resolutionNote}`);
     setResolutionNote("");
-    // Here you would make API call to resolve the case and update status
+    // Here you would make API call to resolve the specific report
   };
 
   return (
@@ -241,14 +298,14 @@ export const AdvisorModeration = () => {
                         </div>
                         <div className="space-y-1">
                           <div className="text-xs font-medium text-muted-foreground">Recent Reports:</div>
-                          {case_.reportDetails.slice(0, 2).map((detail, index) => (
+                          {case_.reports.slice(0, 2).map((report, index) => (
                             <div key={index} className="text-xs bg-orange-50 p-2 rounded border-l-2 border-orange-200">
-                              {detail}
+                              {report.complaint}
                             </div>
                           ))}
-                          {case_.reportDetails.length > 2 && (
+                          {case_.reports.length > 2 && (
                             <div className="text-xs text-muted-foreground">
-                              +{case_.reportDetails.length - 2} more reports...
+                              +{case_.reports.length - 2} more reports...
                             </div>
                           )}
                         </div>
@@ -257,7 +314,7 @@ export const AdvisorModeration = () => {
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <AlertTriangle className="h-4 w-4 text-orange-500" />
-                        <span className="font-medium">{case_.reportCount}</span>
+                        <span className="font-medium">{case_.reports.filter(r => r.status === 'active').length}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -270,11 +327,6 @@ export const AdvisorModeration = () => {
                     <TableCell>
                       <div>
                         <div>{new Date(case_.reportedDate).toLocaleDateString()}</div>
-                        {case_.resolvedDate && (
-                          <div className="text-xs text-green-600">
-                            Resolved: {new Date(case_.resolvedDate).toLocaleDateString()}
-                          </div>
-                        )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -284,11 +336,6 @@ export const AdvisorModeration = () => {
                             <CheckCircle className="h-4 w-4 text-green-600" />
                             Case Resolved
                           </div>
-                          {case_.resolutionNote && (
-                            <div className="mt-1 text-xs bg-green-50 p-2 rounded border-l-2 border-green-200">
-                              {case_.resolutionNote}
-                            </div>
-                          )}
                         </div>
                       ) : (
                         <DropdownMenu>
@@ -298,43 +345,88 @@ export const AdvisorModeration = () => {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
+                            <Dialog>
+                              <DialogTrigger asChild>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                                  Resolve Case
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  View Reports
                                 </DropdownMenuItem>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Resolve Case</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Are you sure you want to resolve the case for {case_.advisor.name}? This will mark the case as resolved and remove it from active moderation.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Individual Reports for {case_.advisor.name}</DialogTitle>
+                                </DialogHeader>
                                 <div className="space-y-4">
-                                  <div>
-                                    <Label htmlFor="resolution-note">Resolution note (required)</Label>
-                                    <Textarea
-                                      id="resolution-note"
-                                      placeholder="Enter the reason for resolution (e.g., false report, advisor corrected issue, etc.)..."
-                                      value={resolutionNote}
-                                      onChange={(e) => setResolutionNote(e.target.value)}
-                                    />
-                                  </div>
+                                  {case_.reports.map((report) => (
+                                    <div key={report.id} className="border rounded-lg p-4 space-y-3">
+                                      <div className="flex justify-between items-start">
+                                        <div className="space-y-1">
+                                          <div className="text-sm font-medium">Report #{report.id}</div>
+                                          <div className="text-xs text-muted-foreground">
+                                            User: {report.userId} | Call: {report.callId} | {new Date(report.reportDate).toLocaleDateString()}
+                                          </div>
+                                          <div className="text-xs">
+                                            Rating: {report.rating}/5 stars
+                                          </div>
+                                        </div>
+                                        <Badge className={report.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
+                                          {report.status}
+                                        </Badge>
+                                      </div>
+                                      <div className="text-sm bg-gray-50 p-3 rounded">
+                                        <strong>Complaint:</strong> {report.complaint}
+                                      </div>
+                                      {report.resolutionNote && (
+                                        <div className="text-sm bg-green-50 p-3 rounded border-l-4 border-green-200">
+                                          <strong>Resolution:</strong> {report.resolutionNote}
+                                        </div>
+                                      )}
+                                      {report.status === 'active' && (
+                                        <div className="flex gap-2">
+                                          <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                              <Button size="sm" variant="outline" className="text-green-600 border-green-200">
+                                                <CheckCircle className="h-4 w-4 mr-1" />
+                                                Resolve This Report
+                                              </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                              <AlertDialogHeader>
+                                                <AlertDialogTitle>Resolve Report #{report.id}</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                  Are you sure you want to resolve this specific report? You'll need to provide a resolution note.
+                                                </AlertDialogDescription>
+                                              </AlertDialogHeader>
+                                              <div className="space-y-4">
+                                                <div>
+                                                  <Label htmlFor="resolution-note">Resolution note (required)</Label>
+                                                  <Textarea
+                                                    id="resolution-note"
+                                                    placeholder="Explain why this report is being resolved..."
+                                                    value={resolutionNote}
+                                                    onChange={(e) => setResolutionNote(e.target.value)}
+                                                  />
+                                                </div>
+                                              </div>
+                                              <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction 
+                                                  onClick={() => handleResolveReport(report.id)}
+                                                  className="bg-green-600 hover:bg-green-700"
+                                                  disabled={!resolutionNote.trim()}
+                                                >
+                                                  Resolve Report
+                                                </AlertDialogAction>
+                                              </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                          </AlertDialog>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
                                 </div>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction 
-                                    onClick={() => handleResolveCase(case_.id)}
-                                    className="bg-green-600 hover:bg-green-700"
-                                    disabled={!resolutionNote.trim()}
-                                  >
-                                    Resolve Case
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                              </DialogContent>
+                            </Dialog>
 
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
