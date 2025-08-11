@@ -65,6 +65,14 @@ const AdvisorFullReview = () => {
   };
 
   const getSubscriptionBadge = (subscription: string) => {
+    if (!subscription) {
+      return (
+        <Badge className="bg-gray-100 text-gray-700 border-gray-200">
+          N/A
+        </Badge>
+      );
+    }
+    
     const colorMap: Record<string, string> = {
       "Basic": "bg-blue-100 text-blue-700 border-blue-200",
       "Premium": "bg-purple-100 text-purple-700 border-purple-200", 
@@ -103,7 +111,7 @@ const AdvisorFullReview = () => {
                 <h1 className="text-2xl font-bold text-foreground">{advisor.full_name || advisor.name || 'Unknown Advisor'}</h1>
                 <div className="flex items-center gap-2">
                   {getStatusBadge(advisor.status)}
-                  {advisor.subscription && getSubscriptionBadge(advisor.subscription)}
+                  {getSubscriptionBadge(advisor.subscription)}
                 </div>
               </div>
             </div>
