@@ -19,57 +19,10 @@ export const AdvisorModeration = () => {
   const [resolutionNote, setResolutionNote] = useState("");
   const [caseFilter, setCaseFilter] = useState("active");
 
-  // Mock data for advisors requiring moderation
+  // Mock data for report cases only
   const allModerationCases = [
     {
       id: "1",
-      advisor: {
-        name: "Jennifer Davis",
-        email: "jennifer.davis@email.com",
-        licenseCode: "FP-2024-003",
-        avatar: ""
-      },
-      issue: "Low ratings",
-      description: "Triggered when advisor has 15+ reviews with average rating below 3.0 stars",
-      reports: [
-        {
-          id: "1-1",
-          userId: "user123",
-          reportDate: "2024-01-20",
-          rating: 2,
-          complaint: "Advisor seemed unprepared and gave generic advice",
-          callId: "call_789",
-          status: "active",
-          resolutionNote: undefined
-        },
-        {
-          id: "1-2", 
-          userId: "user456",
-          reportDate: "2024-01-22",
-          rating: 3,
-          complaint: "Did not understand my investment goals",
-          callId: "call_790",
-          status: "active",
-          resolutionNote: undefined
-        },
-        {
-          id: "1-3",
-          userId: "user789",
-          reportDate: "2024-01-25",
-          rating: 2,
-          complaint: "Call ended abruptly without proper conclusion",
-          callId: "call_791",
-          status: "active",
-          resolutionNote: undefined
-        }
-      ],
-      avgRating: 2.8,
-      status: "under_review",
-      reportedDate: "2024-01-25",
-      severity: "medium"
-    },
-    {
-      id: "2", 
       advisor: {
         name: "Alex Thompson",
         email: "alex.thompson@email.com",
@@ -80,7 +33,7 @@ export const AdvisorModeration = () => {
       description: "Triggered by any report of unprofessional behavior (1+ reports)",
       reports: [
         {
-          id: "2-1",
+          id: "1-1",
           userId: "user321",
           reportDate: "2024-01-26",
           rating: 1,
@@ -90,7 +43,7 @@ export const AdvisorModeration = () => {
           resolutionNote: undefined
         },
         {
-          id: "2-2",
+          id: "1-2",
           userId: "user654",
           reportDate: "2024-01-27",
           rating: 2,
@@ -100,7 +53,7 @@ export const AdvisorModeration = () => {
           resolutionNote: undefined
         },
         {
-          id: "2-3",
+          id: "1-3",
           userId: "user987",
           reportDate: "2024-01-28",
           rating: 1,
@@ -116,18 +69,92 @@ export const AdvisorModeration = () => {
       severity: "high"
     },
     {
+      id: "2",
+      advisor: {
+        name: "Jennifer Davis",
+        email: "jennifer.davis@email.com",
+        licenseCode: "FP-2024-003",
+        avatar: ""
+      },
+      issue: "Multiple complaints",
+      description: "Multiple user complaints about service quality",
+      reports: [
+        {
+          id: "2-1",
+          userId: "user123",
+          reportDate: "2024-01-20",
+          rating: 2,
+          complaint: "Advisor seemed unprepared and gave generic advice",
+          callId: "call_789",
+          status: "active",
+          resolutionNote: undefined
+        },
+        {
+          id: "2-2", 
+          userId: "user456",
+          reportDate: "2024-01-22",
+          rating: 3,
+          complaint: "Did not understand my investment goals",
+          callId: "call_790",
+          status: "active",
+          resolutionNote: undefined
+        },
+        {
+          id: "2-3",
+          userId: "user789",
+          reportDate: "2024-01-25",
+          rating: 2,
+          complaint: "Call ended abruptly without proper conclusion",
+          callId: "call_791",
+          status: "active",
+          resolutionNote: undefined
+        }
+      ],
+      avgRating: 2.8,
+      status: "under_review",
+      reportedDate: "2024-01-25",
+      severity: "medium"
+    },
+    {
       id: "3",
+      advisor: {
+        name: "Michael Roberts",
+        email: "michael.roberts@email.com",
+        licenseCode: "FP-2024-009",
+        avatar: ""
+      },
+      issue: "Client complaint",
+      description: "Single report of unprofessional behavior",
+      reports: [
+        {
+          id: "3-1",
+          userId: "user555",
+          reportDate: "2024-01-29",
+          rating: 1,
+          complaint: "Advisor was late to scheduled call and did not apologize",
+          callId: "call_850",
+          status: "active",
+          resolutionNote: undefined
+        }
+      ],
+      avgRating: 4.2,
+      status: "flagged",
+      reportedDate: "2024-01-29",
+      severity: "low"
+    },
+    {
+      id: "4",
       advisor: {
         name: "Sarah Wilson",
         email: "sarah.wilson@email.com",
         licenseCode: "FP-2024-012",
         avatar: ""
       },
-      issue: "False complaint reports",
-      description: "Investigation revealed reports were false accusations from competitor",
+      issue: "Resolved complaint",
+      description: "Investigation revealed reports were false accusations",
       reports: [
         {
-          id: "3-1",
+          id: "4-1",
           userId: "anonymous1",
           reportDate: "2024-01-15",
           rating: 1,
@@ -137,7 +164,7 @@ export const AdvisorModeration = () => {
           resolutionNote: "False report - investigation showed advisor followed all compliance guidelines"
         },
         {
-          id: "3-2",
+          id: "4-2",
           userId: "anonymous2", 
           reportDate: "2024-01-16",
           rating: 1,
@@ -241,7 +268,7 @@ export const AdvisorModeration = () => {
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Advisor Moderation Cases
+            Report Cases Management
           </CardTitle>
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4" />
