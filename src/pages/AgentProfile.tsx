@@ -10,10 +10,14 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Upload, User, Save, ChevronDown, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import type { User as SupabaseUser, Session } from "@supabase/supabase-js";
 
 const AgentProfile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   
   const [profileData, setProfileData] = useState({
     displayName: "",
@@ -45,35 +49,68 @@ const AgentProfile = () => {
   
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Load advisor profile data on component mount
+  // Set up auth state listener and load initial session
   useEffect(() => {
-    loadAdvisorProfile();
-  }, []);
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Load profile when user is authenticated
+        if (session?.user && event !== 'SIGNED_OUT') {
+          setTimeout(() => {
+            loadAdvisorProfile(session.user);
+          }, 0);
+        } else if (event === 'SIGNED_OUT') {
+          // Redirect to home when signed out
+          navigate('/');
+        }
+      }
+    );
 
-  const loadAdvisorProfile = async () => {
-    try {
-      setLoading(true);
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session?.user?.email);
+      setSession(session);
+      setUser(session?.user ?? null);
       
-      // Get current user
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError) throw authError;
-      if (!user) {
+      if (session?.user) {
+        loadAdvisorProfile(session.user);
+      } else {
+        setLoading(false);
         toast({
           title: "Authentication Required",
           description: "Please log in to access your profile.",
           variant: "destructive",
         });
-        navigate("/agent-login");
+        navigate('/');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate, toast]);
+
+  const loadAdvisorProfile = async (currentUser?: SupabaseUser) => {
+    try {
+      setLoading(true);
+      
+      // Use provided user or current user
+      const userToUse = currentUser || user;
+      if (!userToUse) {
+        console.log('No user available for profile loading');
+        setLoading(false);
         return;
       }
 
-      console.log('Current user:', user.id, user.email);
+      console.log('Loading profile for user:', userToUse.id, userToUse.email);
 
       // Get advisor data
       const { data: advisor, error: advisorError } = await supabase
         .from('advisors')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userToUse.id)
         .maybeSingle();
 
       console.log('Advisor query result:', advisor, advisorError);
@@ -89,11 +126,20 @@ const AgentProfile = () => {
       }
 
       if (!advisor) {
-        console.log('No advisor found for user_id:', user.id);
-        toast({
-          title: "Profile Not Found",
-          description: "Your advisor profile is not set up yet. Please contact support.",
-          variant: "destructive",
+        console.log('No advisor found for user_id:', userToUse.id);
+        // Don't show error toast immediately, show empty form instead
+        console.log('Setting empty profile data');
+        setProfileData({
+          displayName: "",
+          email: userToUse.email || "",
+          contactNumber: "",
+          representativeNumber: "",
+          financialInstitution: "",
+          bio: "",
+          credentials: "",
+          tagline: "",
+          specializations: [],
+          profileImage: ""
         });
         return;
       }
