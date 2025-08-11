@@ -73,6 +73,7 @@ export type Database = {
           financial_institution: string
           full_name: string
           id: string
+          password: string | null
           rejection_reason: string | null
           representative_code: string
           status: string
@@ -86,6 +87,7 @@ export type Database = {
           financial_institution: string
           full_name: string
           id?: string
+          password?: string | null
           rejection_reason?: string | null
           representative_code: string
           status?: string
@@ -99,6 +101,7 @@ export type Database = {
           financial_institution?: string
           full_name?: string
           id?: string
+          password?: string | null
           rejection_reason?: string | null
           representative_code?: string
           status?: string
