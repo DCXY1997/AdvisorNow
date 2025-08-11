@@ -10,6 +10,7 @@ import AgentSignup from "./pages/AgentSignup";
 import AgentDashboard from "./pages/AgentDashboard";
 import AgentProfile from "./pages/AgentProfile";
 import AgentReviews from "./pages/AgentReviews";
+import AdvisorFullReview from "./pages/AdvisorFullReview";
 import AgentSubscription from "./pages/AgentSubscription";
 import AdminDashboard from "./pages/AdminDashboard";
 import VideoCall from "./pages/VideoCall";
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/agent-reviews" element={<AgentReviews />} />
           <Route path="/agent-subscription" element={<AgentSubscription />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/advisor-full-review" element={<AdvisorFullReview />} />
           <Route path="/video-call" element={<VideoCall />} />
           <Route path="/review-rating" element={<ReviewRating />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
