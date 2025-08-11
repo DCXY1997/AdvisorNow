@@ -19,7 +19,7 @@ export const AdvisorModeration = () => {
   const [resolutionNote, setResolutionNote] = useState("");
   const [caseFilter, setCaseFilter] = useState("active");
 
-  // Mock data for report cases only
+  // Mock data for actual user reports only
   const allModerationCases = [
     {
       id: "1",
@@ -29,43 +29,23 @@ export const AdvisorModeration = () => {
         licenseCode: "FP-2024-015",
         avatar: ""
       },
-      issue: "Inappropriate conduct",
-      description: "Triggered by any report of unprofessional behavior (1+ reports)",
+      issue: "Inappropriate behavior",
+      description: "User reported inappropriate behavior during consultation",
       reports: [
         {
           id: "1-1",
           userId: "user321",
           reportDate: "2024-01-26",
-          rating: 1,
+          rating: null,
           complaint: "Advisor made inappropriate personal comments during financial consultation",
           callId: "call_800",
           status: "active",
           resolutionNote: undefined
-        },
-        {
-          id: "1-2",
-          userId: "user654",
-          reportDate: "2024-01-27",
-          rating: 2,
-          complaint: "Used unprofessional language during call",
-          callId: "call_801",
-          status: "active",
-          resolutionNote: undefined
-        },
-        {
-          id: "1-3",
-          userId: "user987",
-          reportDate: "2024-01-28",
-          rating: 1,
-          complaint: "Seemed intoxicated during video consultation",
-          callId: "call_802",
-          status: "active",
-          resolutionNote: undefined
         }
       ],
-      avgRating: 3.1,
+      avgRating: 4.1,
       status: "flagged",
-      reportedDate: "2024-01-28",
+      reportedDate: "2024-01-26",
       severity: "high"
     },
     {
@@ -76,43 +56,23 @@ export const AdvisorModeration = () => {
         licenseCode: "FP-2024-003",
         avatar: ""
       },
-      issue: "Multiple complaints",
-      description: "Multiple user complaints about service quality",
+      issue: "Unprofessional conduct",
+      description: "User reported unprofessional behavior during call",
       reports: [
         {
           id: "2-1",
-          userId: "user123",
-          reportDate: "2024-01-20",
-          rating: 2,
-          complaint: "Advisor seemed unprepared and gave generic advice",
-          callId: "call_789",
-          status: "active",
-          resolutionNote: undefined
-        },
-        {
-          id: "2-2", 
-          userId: "user456",
-          reportDate: "2024-01-22",
-          rating: 3,
-          complaint: "Did not understand my investment goals",
-          callId: "call_790",
-          status: "active",
-          resolutionNote: undefined
-        },
-        {
-          id: "2-3",
-          userId: "user789",
-          reportDate: "2024-01-25",
-          rating: 2,
-          complaint: "Call ended abruptly without proper conclusion",
-          callId: "call_791",
+          userId: "user654",
+          reportDate: "2024-01-27",
+          rating: null,
+          complaint: "Used unprofessional language during call",
+          callId: "call_801",
           status: "active",
           resolutionNote: undefined
         }
       ],
-      avgRating: 2.8,
+      avgRating: 3.8,
       status: "under_review",
-      reportedDate: "2024-01-25",
+      reportedDate: "2024-01-27",
       severity: "medium"
     },
     {
@@ -123,15 +83,15 @@ export const AdvisorModeration = () => {
         licenseCode: "FP-2024-009",
         avatar: ""
       },
-      issue: "Client complaint",
-      description: "Single report of unprofessional behavior",
+      issue: "Other",
+      description: "General complaint reported by user",
       reports: [
         {
           id: "3-1",
           userId: "user555",
           reportDate: "2024-01-29",
-          rating: 1,
-          complaint: "Advisor was late to scheduled call and did not apologize",
+          rating: null,
+          complaint: "Advisor was consistently interrupting and not listening to my concerns",
           callId: "call_850",
           status: "active",
           resolutionNote: undefined
@@ -150,34 +110,24 @@ export const AdvisorModeration = () => {
         licenseCode: "FP-2024-012",
         avatar: ""
       },
-      issue: "Resolved complaint",
-      description: "Investigation revealed reports were false accusations",
+      issue: "Inappropriate behavior",
+      description: "Resolved - Investigation completed",
       reports: [
         {
           id: "4-1",
-          userId: "anonymous1",
+          userId: "user888",
           reportDate: "2024-01-15",
-          rating: 1,
-          complaint: "Advisor provided illegal investment advice",
+          rating: null,
+          complaint: "Advisor made me uncomfortable with personal questions unrelated to finances",
           callId: "call_750",
           status: "resolved",
-          resolutionNote: "False report - investigation showed advisor followed all compliance guidelines"
-        },
-        {
-          id: "4-2",
-          userId: "anonymous2", 
-          reportDate: "2024-01-16",
-          rating: 1,
-          complaint: "Unauthorized financial transactions discussed",
-          callId: "call_751",
-          status: "resolved",
-          resolutionNote: "False report - same IP address as previous report, competitor interference"
+          resolutionNote: "Investigation completed - Advisor has been counseled on appropriate consultation boundaries"
         }
       ],
       avgRating: 4.3,
       status: "resolved",
       reportedDate: "2024-01-15",
-      severity: "low"
+      severity: "medium"
     }
   ];
 
@@ -395,14 +345,9 @@ export const AdvisorModeration = () => {
                                       <div className="flex justify-between items-start">
                                         <div className="space-y-1">
                                           <div className="text-sm font-medium">Report #{report.id}</div>
-                                           <div className="text-xs text-muted-foreground">
-                                             User: {report.userId} | Call: {report.callId} | {new Date(report.reportDate).toLocaleDateString()}
-                                           </div>
-                                           {case_.issue === "Low ratings" && (
-                                             <div className="text-xs">
-                                               Rating: {report.rating}/5 stars
-                                             </div>
-                                           )}
+                                            <div className="text-xs text-muted-foreground">
+                                              User: {report.userId} | Call: {report.callId} | {new Date(report.reportDate).toLocaleDateString()}
+                                            </div>
                                         </div>
                                         <Badge className={report.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
                                           {report.status}
