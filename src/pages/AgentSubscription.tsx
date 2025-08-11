@@ -60,37 +60,44 @@ const AgentSubscription = () => {
   const planFeatures = [
     {
       name: "Basic",
+      duration: "1 Month Access",
       features: [
-        "Up to 50 client consultations/month",
-        "Basic analytics dashboard",
+        "Full access to advisor platform",
+        "Complete analytics dashboard",
+        "Client consultation management",
+        "Review and rating system",
+        "Profile customization",
         "Email support",
-        "Standard profile customization",
-        "Client review management"
+        "Mobile app access"
       ]
     },
     {
       name: "Premium", 
+      duration: "3 Months Access",
       features: [
-        "Up to 200 client consultations/month",
-        "Advanced analytics & reporting",
-        "Priority phone & email support",
-        "Enhanced profile features",
-        "Advanced review management",
-        "Marketing tools integration",
-        "Custom branding options"
+        "Full access to advisor platform",
+        "Complete analytics dashboard", 
+        "Client consultation management",
+        "Review and rating system",
+        "Profile customization",
+        "Priority email support",
+        "Mobile app access",
+        "Extended reporting features"
       ]
     },
     {
       name: "Pro",
+      duration: "12 Months Access",
       features: [
-        "Unlimited client consultations",
-        "Enterprise-grade analytics",
-        "24/7 dedicated support",
-        "White-label solutions",
-        "Advanced API access",
-        "Custom integrations",
-        "Team collaboration tools",
-        "Advanced compliance features"
+        "Full access to advisor platform",
+        "Complete analytics dashboard",
+        "Client consultation management", 
+        "Review and rating system",
+        "Profile customization",
+        "Priority phone & email support",
+        "Mobile app access",
+        "Advanced reporting & exports",
+        "API access for integrations"
       ]
     }
   ];
@@ -201,13 +208,19 @@ const AgentSubscription = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border">
-                      <th className="text-left p-6 font-semibold text-foreground">Plan Term</th>
-                      <th className="text-center p-6 font-semibold text-foreground">Monthly</th>
-                      <th className="text-center p-6 font-semibold text-foreground">Quarterly</th>
-                      <th className="text-center p-6 font-semibold text-foreground">Annually</th>
+                      <th className="text-left p-6 font-semibold text-foreground">Plan Details</th>
+                      <th className="text-center p-6 font-semibold text-foreground">Basic</th>
+                      <th className="text-center p-6 font-semibold text-foreground">Premium</th>
+                      <th className="text-center p-6 font-semibold text-foreground">Pro</th>
                     </tr>
                   </thead>
                   <tbody>
+                    <tr className="border-b border-border">
+                      <td className="p-6 font-medium text-foreground">Access Period</td>
+                      <td className="text-center p-6 text-foreground font-semibold">1 Month</td>
+                      <td className="text-center p-6 text-foreground font-semibold">3 Months</td>
+                      <td className="text-center p-6 text-foreground font-semibold">12 Months</td>
+                    </tr>
                     <tr className="border-b border-border">
                       <td className="p-6 font-medium text-foreground">Price</td>
                       <td className="text-center p-6 text-foreground font-semibold">$299</td>
@@ -237,10 +250,11 @@ const AgentSubscription = () => {
             {planFeatures.map((plan, index) => (
               <Card key={plan.name} className={`${plans[index].featured ? 'ring-2 ring-primary ring-offset-2' : ''}`}>
                 <CardHeader>
-                  <CardTitle className="text-center text-xl">{plan.name} Plan</CardTitle>
+                  <CardTitle className="text-center text-xl">{plan.name}</CardTitle>
+                  <p className="text-center text-lg font-semibold text-primary">{plan.duration}</p>
                   {plans[index].featured && (
                     <Badge className="mx-auto bg-primary text-primary-foreground">
-                      Recommended
+                      Best Value
                     </Badge>
                   )}
                 </CardHeader>
