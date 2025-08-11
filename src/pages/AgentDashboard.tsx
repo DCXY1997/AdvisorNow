@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend } from "recharts";
-import { Filter, User, FileText, CreditCard } from "lucide-react";
+import { Filter, User, FileText, CreditCard, ChevronDown } from "lucide-react";
 
 const AgentDashboard = () => {
   const [isOnline, setIsOnline] = useState(true);
+  const [filterPeriod, setFilterPeriod] = useState("week");
   
   const weeklyData = [
     { day: "Monday", value1: 8, value2: 2 },
@@ -64,10 +66,19 @@ const AgentDashboard = () => {
             <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
             
             <div className="flex items-center gap-4">
-              <Button variant="outline" className="gap-2">
-                <Filter className="h-4 w-4" />
-                Filter
-              </Button>
+              <Select value={filterPeriod} onValueChange={setFilterPeriod}>
+                <SelectTrigger className="w-[180px]">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Filter by period" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-border z-50">
+                  <SelectItem value="day">Day</SelectItem>
+                  <SelectItem value="week">Week</SelectItem>
+                  <SelectItem value="month">Month</SelectItem>
+                  <SelectItem value="year">Year</SelectItem>
+                  <SelectItem value="custom">Custom</SelectItem>
+                </SelectContent>
+              </Select>
               
               <div className="flex items-center gap-2">
                 <Badge variant={isOnline ? "default" : "secondary"} className="px-3 py-1">
@@ -92,7 +103,7 @@ const AgentDashboard = () => {
 
         {/* Dashboard Content */}
         <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Total Consultations</CardTitle>
@@ -110,16 +121,6 @@ const AgentDashboard = () => {
               <CardContent>
                 <div className="text-3xl font-bold text-primary">4.8</div>
                 <p className="text-sm text-muted-foreground">Average rating</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Revenue</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-primary">$2,840</div>
-                <p className="text-sm text-muted-foreground">This week</p>
               </CardContent>
             </Card>
           </div>
