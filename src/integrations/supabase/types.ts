@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agent_registrations: {
+        Row: {
+          created_at: string
+          email: string
+          financial_institution: string
+          full_name: string
+          id: string
+          representative_code: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          financial_institution: string
+          full_name: string
+          id?: string
+          representative_code: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          financial_institution?: string
+          full_name?: string
+          id?: string
+          representative_code?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
