@@ -55,6 +55,8 @@ const AdvisorFullReview = () => {
     switch (status) {
       case "active":
         return <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>;
+      case "inactive":
+        return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Inactive</Badge>;
       case "suspended":
         return <Badge className="bg-red-100 text-red-700 border-red-200">Suspended</Badge>;
       case "pending":
@@ -110,7 +112,7 @@ const AdvisorFullReview = () => {
               <div>
                 <h1 className="text-2xl font-bold text-foreground">{advisor.full_name || advisor.name || 'Unknown Advisor'}</h1>
                 <div className="flex items-center gap-2">
-                  {getStatusBadge(advisor.status)}
+                  {getStatusBadge(advisor.subscription ? 'active' : 'inactive')}
                   {getSubscriptionBadge(advisor.subscription)}
                 </div>
               </div>
