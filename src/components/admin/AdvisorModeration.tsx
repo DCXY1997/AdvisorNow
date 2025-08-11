@@ -371,9 +371,6 @@ export const AdvisorModeration = () => {
                                           <div className="text-xs text-muted-foreground">
                                             User: {report.userId} | Call: {report.callId} | {new Date(report.reportDate).toLocaleDateString()}
                                           </div>
-                                          <div className="text-xs">
-                                            Rating: {report.rating}/5 stars
-                                          </div>
                                         </div>
                                         <Badge className={report.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
                                           {report.status}
