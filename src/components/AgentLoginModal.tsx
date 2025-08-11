@@ -106,13 +106,31 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
           return;
         }
       } else {
-        // Advisor exists but no auth account yet - show message
-        toast({
-          title: "Account Pending",
-          description: "Your registration is being processed. Please contact support for account activation.",
-          variant: "default",
+        // Advisor exists but no auth account yet - create one
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: formData.emailOrPhone,
+          password: formData.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/agent-dashboard`
+          }
         });
-        return;
+
+        if (signUpError) {
+          toast({
+            title: "Account Creation Failed",
+            description: signUpError.message,
+            variant: "destructive",
+          });
+          return;
+        }
+
+        // Update advisor record with new user_id
+        if (signUpData.user) {
+          await supabase
+            .from('advisors')
+            .update({ user_id: signUpData.user.id })
+            .eq('email', formData.emailOrPhone);
+        }
       }
 
       // Step 6: Final success
