@@ -9,13 +9,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } from "recharts";
-import { Filter, User, FileText, CreditCard, ChevronDown, CalendarIcon, LogOut, Settings } from "lucide-react";
+import { Filter, User, FileText, CreditCard, ChevronDown, CalendarIcon, LogOut, Settings, Key } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 const AgentDashboard = () => {
+  const { toast } = useToast();
   const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(false);
   const [filterPeriod, setFilterPeriod] = useState("weekly");
@@ -28,6 +33,11 @@ const AgentDashboard = () => {
     profileImage: "",
     displayName: ""
   });
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // Load advisor profile data on component mount
   useEffect(() => {
@@ -55,6 +65,55 @@ const AgentDashboard = () => {
       }
     } catch (error) {
       console.error('Error loading advisor profile:', error);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "New passwords don't match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsChangingPassword(true);
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Password changed successfully.",
+      });
+
+      // Reset form and close modal
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setIsChangePasswordOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Could not change password. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsChangingPassword(false);
     }
   };
   
@@ -358,6 +417,13 @@ const AgentDashboard = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="flex items-center gap-2 cursor-pointer hover:bg-muted"
+                    onClick={() => setIsChangePasswordOpen(true)}
+                  >
+                    <Key className="h-4 w-4" />
+                    <span>Change Password</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="flex items-center gap-2 cursor-pointer hover:bg-muted"
                     onClick={() => navigate("/")}
                   >
                     <LogOut className="h-4 w-4" />
@@ -441,6 +507,64 @@ const AgentDashboard = () => {
           </Card>
         </div>
       </div>
+
+      {/* Change Password Modal */}
+      <Dialog open={isChangePasswordOpen} onOpenChange={setIsChangePasswordOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="currentPassword">Current Password</Label>
+              <Input
+                id="currentPassword"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Enter your current password"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="newPassword">New Password</Label>
+              <Input
+                id="newPassword"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter your new password"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm your new password"
+              />
+            </div>
+            <div className="flex gap-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsChangePasswordOpen(false)}
+                className="flex-1"
+                disabled={isChangingPassword}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleChangePassword}
+                className="flex-1"
+                disabled={isChangingPassword || !newPassword || !confirmPassword}
+              >
+                {isChangingPassword ? "Changing..." : "Change Password"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
