@@ -176,9 +176,9 @@ const AgentDashboard = () => {
   const currentData = getDashboardData();
 
   const sidebarItems = [
-    { icon: BarChart, label: "Dashboard", active: true },
-    { icon: FileText, label: "Reviews", active: false },
-    { icon: CreditCard, label: "Subscription", active: false },
+    { icon: BarChart, label: "Dashboard", active: true, path: "/agent-dashboard" },
+    { icon: FileText, label: "Reviews", active: false, path: "/agent-reviews" },
+    { icon: CreditCard, label: "Subscription", active: false, path: "#" },
   ];
 
   return (
@@ -197,6 +197,7 @@ const AgentDashboard = () => {
             {sidebarItems.map((item) => (
               <button
                 key={item.label}
+                onClick={() => item.path !== "#" && navigate(item.path)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-smooth ${
                   item.active 
                     ? "bg-primary/10 text-primary font-medium" 
