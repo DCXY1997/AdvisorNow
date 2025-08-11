@@ -69,14 +69,15 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
   };
 
   const financialInstitutions = [
-    "DBS Bank",
-    "OCBC Bank",
-    "UOB Bank",
-    "Maybank",
-    "CIMB Bank",
-    "Standard Chartered",
-    "Citibank",
-    "HSBC",
+    "AIA",
+    "Great Eastern", 
+    "Prudential",
+    "HSBC Life",
+    "Income",
+    "Manulife",
+    "Singlife",
+    "FWD",
+    "Tokio Marine Life",
     "Other"
   ];
 
