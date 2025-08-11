@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,22 +23,64 @@ import { ReviewManagement } from "@/components/admin/ReviewManagement";
 import { SubscriptionManagement } from "@/components/admin/SubscriptionManagement";
 import { AdvisorRegistrations } from "@/components/admin/AdvisorRegistrations";
 import { CallAnalytics } from "@/components/admin/CallAnalytics";
+import { supabase } from "@/integrations/supabase/client";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
+  const [overviewStats, setOverviewStats] = useState({
+    totalAdvisors: 0,
+    activeAdvisors: 0,
+    suspendedAdvisors: 0,
+    pendingRegistrations: 0,
+    totalRegistrations: 0
+  });
+  const [loading, setLoading] = useState(true);
 
-  // Mock overview stats
-  const overviewStats = {
-    totalAdvisors: 1247,
-    activeAdvisors: 1089,
-    suspendedAdvisors: 12,
-    totalReviews: 8456,
-    flaggedReviews: 23,
-    totalCalls: 15678,
-    totalCallMinutes: 234567,
-    monthlyRevenue: 89450
-  };
+  // Fetch overview statistics from Supabase
+  useEffect(() => {
+    const fetchOverviewStats = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch advisor statistics
+        const { data: advisors, error: advisorsError } = await (supabase as any)
+          .from('advisors')
+          .select('status');
+        
+        if (advisorsError) throw advisorsError;
+
+        // Fetch registration statistics
+        const { data: registrations, error: registrationsError } = await (supabase as any)
+          .from('agent_registrations')
+          .select('status');
+        
+        if (registrationsError) throw registrationsError;
+
+        // Calculate statistics
+        const totalAdvisors = advisors?.length || 0;
+        const activeAdvisors = advisors?.filter((advisor: any) => advisor.status === 'active')?.length || 0;
+        const suspendedAdvisors = advisors?.filter((advisor: any) => advisor.status === 'suspended')?.length || 0;
+        
+        const totalRegistrations = registrations?.length || 0;
+        const pendingRegistrations = registrations?.filter((reg: any) => reg.status === 'pending')?.length || 0;
+
+        setOverviewStats({
+          totalAdvisors,
+          activeAdvisors,
+          suspendedAdvisors,
+          pendingRegistrations,
+          totalRegistrations
+        });
+      } catch (error) {
+        console.error('Error fetching overview stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOverviewStats();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -129,39 +171,39 @@ const AdminDashboard = () => {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Reviews</CardTitle>
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm font-medium">Registrations</CardTitle>
+                  <UserPlus className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{overviewStats.totalReviews.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">{overviewStats.totalRegistrations.toLocaleString()}</div>
                   <p className="text-xs text-muted-foreground">
-                    {overviewStats.flaggedReviews} flagged for review
+                    {overviewStats.pendingRegistrations} pending approval
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Calls</CardTitle>
+                  <CardTitle className="text-sm font-medium">System Status</CardTitle>
                   <BarChart3 className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{overviewStats.totalCalls.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-green-600">Online</div>
                   <p className="text-xs text-muted-foreground">
-                    {Math.round(overviewStats.totalCallMinutes / 60).toLocaleString()} hours total
+                    All services operational
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+                  <CardTitle className="text-sm font-medium">Data Summary</CardTitle>
                   <CreditCard className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">${overviewStats.monthlyRevenue.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">{(overviewStats.totalAdvisors + overviewStats.totalRegistrations).toLocaleString()}</div>
                   <p className="text-xs text-muted-foreground">
-                    From advisor subscriptions
+                    Total records in system
                   </p>
                 </CardContent>
               </Card>
