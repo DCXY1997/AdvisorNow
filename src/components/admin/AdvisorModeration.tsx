@@ -84,7 +84,7 @@ export const AdvisorModeration = () => {
         avatar: ""
       },
       issue: "Other",
-      description: "General complaint reported by user",
+      description: "User reported general behavioral concerns",
       reports: [
         {
           id: "3-1",
@@ -98,7 +98,7 @@ export const AdvisorModeration = () => {
         }
       ],
       avgRating: 4.2,
-      status: "flagged",
+      status: "under_review",
       reportedDate: "2024-01-29",
       severity: "low"
     },
