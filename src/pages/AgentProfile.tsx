@@ -72,13 +72,22 @@ const AgentProfile = () => {
         .from('advisors')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (advisorError) {
-        console.error('Error fetching advisor:', advisorError);
+        console.error('Advisors error:', advisorError);
         toast({
           title: "Error",
           description: "Could not load profile data.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!advisor) {
+        toast({
+          title: "Profile Not Found",
+          description: "Your advisor profile is not set up yet. Please contact support.",
           variant: "destructive",
         });
         return;
