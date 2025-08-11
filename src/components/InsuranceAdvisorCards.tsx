@@ -23,7 +23,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       insuranceRating: 4.9,
       insuranceReviews: 167,
       specialties: "Life Insurance, Health Insurance, Critical Illness",
-      experience: "8 years at Great Eastern",
+      experience: "Great Eastern",
       connections: "Li Wei and 6 other mutual connections",
       avatar: "SC"
     },
@@ -32,7 +32,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       insuranceRating: 4.8,
       insuranceReviews: 203,
       specialties: "Term Life, Whole Life, Investment-Linked",
-      experience: "12 years at AIA",
+      experience: "AIA",
       connections: "James Lim and 12 other mutual connections",
       avatar: "MT"
     },
@@ -41,7 +41,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       insuranceRating: 4.8,
       insuranceReviews: 156,
       specialties: "Family Protection, Business Insurance, Disability",
-      experience: "6 years at Prudential",
+      experience: "Prudential",
       connections: "Rachel Wong and 8 other mutual connections",
       avatar: "JL"
     },
@@ -50,7 +50,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       insuranceRating: 4.7,
       insuranceReviews: 189,
       specialties: "Estate Planning, Legacy Protection, Wealth Transfer",
-      experience: "15 years at Income",
+      experience: "Income",
       connections: "Kevin Ng and 15 other mutual connections",
       avatar: "DW"
     },
@@ -59,7 +59,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       insuranceRating: 4.7,
       insuranceReviews: 134,
       specialties: "Young Professional Insurance, Health Coverage",
-      experience: "5 years at Singlife",
+      experience: "Singlife",
       connections: "Mark Tan and 7 other mutual connections",
       avatar: "AL"
     },
@@ -68,7 +68,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       insuranceRating: 4.6,
       insuranceReviews: 198,
       specialties: "Business Insurance, Corporate Solutions",
-      experience: "11 years at FWD",
+      experience: "FWD",
       connections: "Peter Lee and 18 other mutual connections",
       avatar: "RC"
     }
