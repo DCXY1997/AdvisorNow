@@ -14,6 +14,7 @@ interface Review {
 
 interface AdvisorDetails {
   name: string;
+  profileImage: string;
   bio: string;
   repNumber: string;
   email: string;
@@ -36,7 +37,14 @@ const AdvisorDetailModal = ({ advisor, isOpen, onClose }: AdvisorDetailModalProp
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+        <DialogHeader className="flex flex-row items-center gap-4 space-y-0">
+          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 flex-shrink-0">
+            <img 
+              src={advisor.profileImage} 
+              alt={`${advisor.name} profile`} 
+              className="w-full h-full object-cover"
+            />
+          </div>
           <DialogTitle className="text-2xl font-bold text-primary">
             {advisor.name}
           </DialogTitle>

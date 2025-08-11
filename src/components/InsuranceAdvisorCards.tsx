@@ -4,6 +4,14 @@ import { Star, Users } from "lucide-react";
 import { useState } from "react";
 import AdvisorDetailModal from "./AdvisorDetailModal";
 
+// Import advisor profile images
+import sarahChenImg from "@/assets/advisors/sarah-chen.jpg";
+import michaelTanImg from "@/assets/advisors/michael-tan.jpg";
+import jenniferLimImg from "@/assets/advisors/jennifer-lim.jpg";
+import davidWongImg from "@/assets/advisors/david-wong.jpg";
+import amandaLeeImg from "@/assets/advisors/amanda-lee.jpg";
+import robertChuaImg from "@/assets/advisors/robert-chua.jpg";
+
 interface Review {
   id: number;
   clientName: string;
@@ -21,6 +29,7 @@ interface InsuranceAdvisor {
   experience: string;
   connections: string;
   avatar: string;
+  profileImage: string;
   bio: string;
   repNumber: string;
   email: string;
@@ -46,6 +55,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       experience: "Great Eastern",
       connections: "Li Wei and 6 other mutual connections",
       avatar: "SC",
+      profileImage: sarahChenImg,
       bio: "Sarah is a dedicated insurance professional with extensive experience in life and health insurance. She specializes in helping families secure their financial future through comprehensive coverage solutions.",
       repNumber: "REP-SC-2024-001",
       email: "sarah.chen@greatetern.com.sg",
@@ -78,6 +88,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       experience: "AIA",
       connections: "James Lim and 12 other mutual connections",
       avatar: "MT",
+      profileImage: michaelTanImg,
       bio: "Michael brings over a decade of experience in the insurance industry, specializing in investment-linked policies and retirement planning.",
       repNumber: "REP-MT-2024-002",
       email: "michael.tan@aia.com.sg",
@@ -102,6 +113,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       experience: "Prudential",
       connections: "Rachel Wong and 8 other mutual connections",
       avatar: "JL",
+      profileImage: jenniferLimImg,
       bio: "Jennifer focuses on comprehensive family and business protection strategies, ensuring her clients have robust coverage for all life scenarios.",
       repNumber: "REP-JL-2024-003",
       email: "jennifer.lim@prudential.com.sg",
@@ -126,6 +138,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       experience: "Income",
       connections: "Kevin Ng and 15 other mutual connections",
       avatar: "DW",
+      profileImage: davidWongImg,
       bio: "David specializes in estate planning and wealth transfer strategies, helping high-net-worth individuals preserve and transfer their wealth efficiently.",
       repNumber: "REP-DW-2024-004",
       email: "david.wong@income.com.sg",
@@ -150,6 +163,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       experience: "Singlife",
       connections: "Mark Tan and 7 other mutual connections",
       avatar: "AL",
+      profileImage: amandaLeeImg,
       bio: "Amanda specializes in insurance solutions for young professionals, helping them build a strong financial foundation early in their careers.",
       repNumber: "REP-AL-2024-005",
       email: "amanda.lee@singlife.com.sg",
@@ -174,6 +188,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       experience: "FWD",
       connections: "Peter Lee and 18 other mutual connections",
       avatar: "RC",
+      profileImage: robertChuaImg,
       bio: "Robert focuses on corporate insurance solutions, helping businesses protect their operations, employees, and key personnel.",
       repNumber: "REP-RC-2024-006",
       email: "robert.chua@fwd.com.sg",
@@ -214,9 +229,13 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
           {topInsuranceAdvisors.map((advisor, index) => (
             <Card key={advisor.name} className="service-card p-6 relative">
               <div className="flex flex-col items-center text-center">
-                {/* Profile Avatar */}
-                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">
-                  {advisor.avatar}
+                {/* Profile Image */}
+                <div className="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-primary/20">
+                  <img 
+                    src={advisor.profileImage} 
+                    alt={`${advisor.name} profile`} 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 
                 {/* Name and Rating */}
