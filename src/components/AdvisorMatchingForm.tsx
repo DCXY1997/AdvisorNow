@@ -28,7 +28,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
     name: "",
     phoneNumber: "",
     topic: "",
-    financialInstitution: "",
+    financialInstitution: "Any",
     pdpaConsent: false,
   });
 
@@ -60,7 +60,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
         name: "",
         phoneNumber: "",
         topic: "",
-        financialInstitution: "",
+        financialInstitution: "Any",
         pdpaConsent: false,
       });
       // Navigate to video call page
