@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MessageSquare, CheckCircle, XCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -403,52 +404,52 @@ export const ReviewManagement = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Reviews</CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Total Reviews Appeal</CardTitle>
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">8,456</div>
+            <div className="text-2xl font-bold">47</div>
             <p className="text-xs text-muted-foreground">
-              All time reviews
+              All time appeals
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Flagged Reviews</CardTitle>
-            <Flag className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Total Appeal Approved</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">23</div>
             <p className="text-xs text-muted-foreground">
-              Requiring attention
+              Successfully approved
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Hidden Reviews</CardTitle>
-            <EyeOff className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Total Appeal Rejected</CardTitle>
+            <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">156</div>
+            <div className="text-2xl font-bold">18</div>
             <p className="text-xs text-muted-foreground">
-              Currently hidden
+              Appeals denied
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">4.2</div>
+            <div className="text-2xl font-bold">6</div>
             <p className="text-xs text-muted-foreground">
-              Platform average
+              Awaiting decision
             </p>
           </CardContent>
         </Card>
