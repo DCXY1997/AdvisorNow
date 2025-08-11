@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -22,6 +23,7 @@ interface AdvisorMatchingFormProps {
 
 const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     phoneNumber: "",
@@ -49,8 +51,8 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
     // Simulate form submission
     setTimeout(() => {
       toast({
-        title: "Request Submitted!",
-        description: "We'll match you with a qualified advisor within 24 hours.",
+        title: "Advisor Found!",
+        description: "Connecting you to your advisor now...",
       });
       setIsSubmitting(false);
       onClose();
@@ -61,6 +63,8 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
         financialInstitution: "",
         pdpaConsent: false,
       });
+      // Navigate to video call page
+      navigate('/video-call');
     }, 1500);
   };
 
