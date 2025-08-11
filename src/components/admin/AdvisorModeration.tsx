@@ -9,14 +9,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Shield, Ban, AlertTriangle, Users, Settings } from "lucide-react";
+import { Shield, Ban, AlertTriangle, Users, Settings, CheckCircle, Filter } from "lucide-react";
 
 export const AdvisorModeration = () => {
   const [advisorLimit, setAdvisorLimit] = useState("1500");
   const [suspensionReason, setSuspensionReason] = useState("");
+  const [resolutionNote, setResolutionNote] = useState("");
+  const [caseFilter, setCaseFilter] = useState("active");
 
   // Mock data for advisors requiring moderation
-  const moderationCases = [
+  const allModerationCases = [
     {
       id: "1",
       advisor: {
@@ -31,7 +33,9 @@ export const AdvisorModeration = () => {
       avgRating: 2.8,
       status: "under_review",
       reportedDate: "2024-01-25",
-      severity: "medium"
+      severity: "medium",
+      resolvedDate: null,
+      resolutionNote: null
     },
     {
       id: "2", 
@@ -47,9 +51,36 @@ export const AdvisorModeration = () => {
       avgRating: 3.1,
       status: "flagged",
       reportedDate: "2024-01-28",
-      severity: "high"
+      severity: "high",
+      resolvedDate: null,
+      resolutionNote: null
     },
+    {
+      id: "3",
+      advisor: {
+        name: "Sarah Wilson",
+        email: "sarah.wilson@email.com",
+        licenseCode: "FP-2024-012",
+        avatar: ""
+      },
+      issue: "False complaint reports",
+      description: "Investigation revealed reports were false accusations from competitor",
+      reportCount: 8,
+      avgRating: 4.3,
+      status: "resolved",
+      reportedDate: "2024-01-15",
+      severity: "low",
+      resolvedDate: "2024-01-30",
+      resolutionNote: "After thorough investigation, all reports were determined to be false accusations. Advisor cleared of all charges."
+    }
   ];
+
+  // Filter cases based on selected filter
+  const moderationCases = allModerationCases.filter(case_ => {
+    if (caseFilter === "active") return case_.status !== "resolved";
+    if (caseFilter === "resolved") return case_.status === "resolved";
+    return true; // "all"
+  });
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
@@ -88,6 +119,12 @@ export const AdvisorModeration = () => {
     // Here you would make API call to blacklist the advisor
   };
 
+  const handleResolveCase = (advisorId: string) => {
+    console.log(`Resolving case ${advisorId} with note: ${resolutionNote}`);
+    setResolutionNote("");
+    // Here you would make API call to resolve the case and update status
+  };
+
   return (
     <div className="space-y-6">
       {/* Platform Settings */}
@@ -122,11 +159,24 @@ export const AdvisorModeration = () => {
 
       {/* Moderation Cases */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
             Advisor Moderation Cases
           </CardTitle>
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4" />
+            <Select value={caseFilter} onValueChange={setCaseFilter}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active Cases</SelectItem>
+                <SelectItem value="resolved">Resolved Cases</SelectItem>
+                <SelectItem value="all">All Cases</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="border rounded-lg">
@@ -187,72 +237,132 @@ export const AdvisorModeration = () => {
                     <TableCell>{getSeverityBadge(case_.severity)}</TableCell>
                     <TableCell>{getStatusBadge(case_.status)}</TableCell>
                     <TableCell>
-                      {new Date(case_.reportedDate).toLocaleDateString()}
+                      <div>
+                        <div>{new Date(case_.reportedDate).toLocaleDateString()}</div>
+                        {case_.resolvedDate && (
+                          <div className="text-xs text-green-600">
+                            Resolved: {new Date(case_.resolvedDate).toLocaleDateString()}
+                          </div>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="sm">
-                              <Shield className="h-4 w-4 mr-1" />
-                              Suspend
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Suspend Advisor</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to suspend {case_.advisor.name}? They will not be able to take new consultations until reactivated.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <div className="space-y-4">
-                              <div>
-                                <Label htmlFor="suspension-reason">Reason for suspension</Label>
-                                <Textarea
-                                  id="suspension-reason"
-                                  placeholder="Enter the reason for suspension..."
-                                  value={suspensionReason}
-                                  onChange={(e) => setSuspensionReason(e.target.value)}
-                                />
-                              </div>
+                      <div className="flex gap-2 flex-wrap">{case_.status === "resolved" ? (
+                          <div className="text-sm text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <CheckCircle className="h-4 w-4 text-green-600" />
+                              Case Resolved
                             </div>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction 
-                                onClick={() => handleSuspendAdvisor(case_.id)}
-                                className="bg-orange-600 hover:bg-orange-700"
-                              >
-                                Suspend Advisor
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                            {case_.resolutionNote && (
+                              <div className="mt-1 text-xs bg-green-50 p-2 rounded border-l-2 border-green-200">
+                                {case_.resolutionNote}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="outline" size="sm" className="text-green-600 border-green-200 hover:bg-green-50">
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Resolve
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Resolve Case</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to resolve the case for {case_.advisor.name}? This will mark the case as resolved and remove it from active moderation.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className="space-y-4">
+                                  <div>
+                                    <Label htmlFor="resolution-note">Resolution note (required)</Label>
+                                    <Textarea
+                                      id="resolution-note"
+                                      placeholder="Enter the reason for resolution (e.g., false report, advisor corrected issue, etc.)..."
+                                      value={resolutionNote}
+                                      onChange={(e) => setResolutionNote(e.target.value)}
+                                    />
+                                  </div>
+                                </div>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => handleResolveCase(case_.id)}
+                                    className="bg-green-600 hover:bg-green-700"
+                                    disabled={!resolutionNote.trim()}
+                                  >
+                                    Resolve Case
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
 
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">
-                              <Ban className="h-4 w-4 mr-1" />
-                              Blacklist
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Blacklist Advisor</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to blacklist {case_.advisor.name}? This action is permanent and cannot be undone. The advisor will be permanently banned from the platform.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction 
-                                onClick={() => handleBlacklistAdvisor(case_.id)}
-                                className="bg-red-600 hover:bg-red-700"
-                              >
-                                Blacklist Advisor
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                  <Shield className="h-4 w-4 mr-1" />
+                                  Suspend
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Suspend Advisor</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to suspend {case_.advisor.name}? They will not be able to take new consultations until reactivated.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className="space-y-4">
+                                  <div>
+                                    <Label htmlFor="suspension-reason">Reason for suspension</Label>
+                                    <Textarea
+                                      id="suspension-reason"
+                                      placeholder="Enter the reason for suspension..."
+                                      value={suspensionReason}
+                                      onChange={(e) => setSuspensionReason(e.target.value)}
+                                    />
+                                  </div>
+                                </div>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => handleSuspendAdvisor(case_.id)}
+                                    className="bg-orange-600 hover:bg-orange-700"
+                                  >
+                                    Suspend Advisor
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm">
+                                  <Ban className="h-4 w-4 mr-1" />
+                                  Blacklist
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Blacklist Advisor</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to blacklist {case_.advisor.name}? This action is permanent and cannot be undone. The advisor will be permanently banned from the platform.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => handleBlacklistAdvisor(case_.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Blacklist Advisor
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
