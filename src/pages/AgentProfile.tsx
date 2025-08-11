@@ -131,15 +131,74 @@ const AgentProfile = () => {
     setProfileData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // In a real app, you'd upload to a server and get back a URL
-      const imageUrl = URL.createObjectURL(file);
-      setProfileData(prev => ({ ...prev, profileImage: imageUrl }));
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid File",
+        description: "Please select an image file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "Please select an image smaller than 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Get current user
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        toast({
+          title: "Authentication Error",
+          description: "Please log in to upload photos.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Create unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/profile.${fileExt}`;
+
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('advisor-profiles')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: true // Replace existing file
+        });
+
+      if (error) throw error;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('advisor-profiles')
+        .getPublicUrl(fileName);
+
+      // Update profile data with new image URL
+      setProfileData(prev => ({ ...prev, profileImage: publicUrl }));
+      
       toast({
         title: "Image Uploaded",
         description: "Profile picture updated successfully.",
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Upload Failed",
+        description: "Could not upload image. Please try again.",
+        variant: "destructive",
       });
     }
   };
