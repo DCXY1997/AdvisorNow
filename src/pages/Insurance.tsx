@@ -11,8 +11,8 @@ const Insurance = () => {
   const topInsuranceAdvisors = [
     {
       name: "Sarah Chen",
-      rating: 4.9,
-      reviews: 167,
+      insuranceRating: 4.9,
+      insuranceReviews: 167,
       specialties: "Life Insurance, Health Insurance, Critical Illness",
       experience: "8 years at Great Eastern",
       connections: "Li Wei and 6 other mutual connections",
@@ -20,8 +20,8 @@ const Insurance = () => {
     },
     {
       name: "Michael Tan",
-      rating: 4.8,
-      reviews: 203,
+      insuranceRating: 4.8,
+      insuranceReviews: 203,
       specialties: "Term Life, Whole Life, Investment-Linked",
       experience: "12 years at AIA",
       connections: "James Lim and 12 other mutual connections",
@@ -29,8 +29,8 @@ const Insurance = () => {
     },
     {
       name: "Jennifer Lim",
-      rating: 4.8,
-      reviews: 156,
+      insuranceRating: 4.8,
+      insuranceReviews: 156,
       specialties: "Family Protection, Business Insurance, Disability",
       experience: "6 years at Prudential",
       connections: "Rachel Wong and 8 other mutual connections",
@@ -38,8 +38,8 @@ const Insurance = () => {
     },
     {
       name: "David Wong",
-      rating: 4.7,
-      reviews: 189,
+      insuranceRating: 4.7,
+      insuranceReviews: 189,
       specialties: "Estate Planning, Legacy Protection, Wealth Transfer",
       experience: "15 years at Income",
       connections: "Kevin Ng and 15 other mutual connections",
@@ -47,8 +47,8 @@ const Insurance = () => {
     },
     {
       name: "Amanda Lee",
-      rating: 4.7,
-      reviews: 134,
+      insuranceRating: 4.7,
+      insuranceReviews: 134,
       specialties: "Young Professional Insurance, Health Coverage",
       experience: "5 years at Singlife",
       connections: "Mark Tan and 7 other mutual connections",
@@ -56,16 +56,17 @@ const Insurance = () => {
     },
     {
       name: "Robert Chua",
-      rating: 4.6,
-      reviews: 198,
+      insuranceRating: 4.6,
+      insuranceReviews: 198,
       specialties: "Business Insurance, Corporate Solutions",
       experience: "11 years at FWD",
       connections: "Peter Lee and 18 other mutual connections",
       avatar: "RC"
     }
   ].sort((a, b) => {
-    if (b.rating !== a.rating) return b.rating - a.rating;
-    return b.reviews - a.reviews;
+    // Sort by insurance rating first (descending), then by insurance review count (descending)
+    if (b.insuranceRating !== a.insuranceRating) return b.insuranceRating - a.insuranceRating;
+    return b.insuranceReviews - a.insuranceReviews;
   });
 
   const features = [
@@ -104,9 +105,12 @@ const Insurance = () => {
 
           {/* Top-Rated Advisors Grid */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-primary mb-6 text-center">
+            <h2 className="text-2xl font-bold text-primary mb-2 text-center">
               Top-Rated Insurance Advisors
             </h2>
+            <p className="text-center text-muted-foreground mb-6">
+              Ranked by insurance expertise ratings and reviews
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {topInsuranceAdvisors.map((advisor, index) => (
                 <Card key={advisor.name} className="service-card p-6 relative">
@@ -125,10 +129,10 @@ const Insurance = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-semibold text-foreground">{advisor.rating}</span>
+                        <span className="font-semibold text-foreground">{advisor.insuranceRating}</span>
                       </div>
                       <span className="text-sm text-muted-foreground">
-                        ({advisor.reviews} reviews)
+                        ({advisor.insuranceReviews} insurance reviews)
                       </span>
                     </div>
                     
