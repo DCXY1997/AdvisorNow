@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 
 const AgentSignup = () => {
   const { toast } = useToast();
@@ -50,28 +49,13 @@ const AgentSignup = () => {
 
     setIsSubmitting(true);
     
-    try {
-      // Insert registration data into the database
-      const { data, error } = await (supabase as any)
-        .from('agent_registrations')
-        .insert([{
-          full_name: fullName,
-          email: email,
-          password: password,
-          representative_code: representativeCode,
-          financial_institution: financialInstitution,
-          status: 'pending'
-        }]);
-
-      if (error) {
-        throw error;
-      }
-
+    // Simulate signup process
+    setTimeout(() => {
       toast({
         title: "Registration Submitted",
         description: "Your agent registration has been submitted for review. We'll contact you soon.",
       });
-      
+      setIsSubmitting(false);
       setFormData({
         fullName: "",
         email: "",
@@ -84,16 +68,7 @@ const AgentSignup = () => {
       setTimeout(() => {
         navigate("/");
       }, 2000);
-      
-    } catch (error: any) {
-      toast({
-        title: "Registration Failed",
-        description: error.message || "Failed to submit registration. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    }, 1500);
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
