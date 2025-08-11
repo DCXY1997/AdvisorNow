@@ -22,6 +22,7 @@ const AgentProfile = () => {
     bio: "Experienced financial advisor with over 10 years in wealth management and retirement planning.",
     credentials: "CFP, CFA, ChFC - Certified Financial Planner with expertise in investment strategies and risk management.",
     tagline: "Building your financial future, one step at a time",
+    specialization: "Retirement Planning, Investment Strategies, Risk Management",
     profileImage: ""
   });
   
@@ -216,6 +217,29 @@ const AgentProfile = () => {
           </CardContent>
         </Card>
 
+        {/* Specialization */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Specialization</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Label htmlFor="specialization">Areas of Expertise</Label>
+              <Textarea
+                id="specialization"
+                value={profileData.specialization}
+                onChange={(e) => handleInputChange("specialization", e.target.value)}
+                placeholder="e.g., Retirement Planning, Investment Strategies, Insurance, Estate Planning, Tax Planning..."
+                className="min-h-[80px] transition-smooth focus:ring-2 focus:ring-primary/20"
+                maxLength={300}
+              />
+              <p className="text-sm text-muted-foreground">
+                {profileData.specialization.length}/300 characters
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Credentials & Accolades */}
         <Card>
           <CardHeader>
@@ -228,7 +252,7 @@ const AgentProfile = () => {
                 id="credentials"
                 value={profileData.credentials}
                 onChange={(e) => handleInputChange("credentials", e.target.value)}
-                placeholder="List your certifications, awards, years of experience, specializations, etc."
+                placeholder="List your certifications, awards, years of experience, etc."
                 className="min-h-[100px] transition-smooth focus:ring-2 focus:ring-primary/20"
                 maxLength={1000}
               />
@@ -271,6 +295,9 @@ const AgentProfile = () => {
                   )}
                   <p className="text-sm text-foreground mb-3">
                     {profileData.bio}
+                  </p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    <strong>Specialization:</strong> {profileData.specialization}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     <strong>Credentials:</strong> {profileData.credentials}
