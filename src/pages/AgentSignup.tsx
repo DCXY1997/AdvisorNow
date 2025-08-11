@@ -5,10 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AgentSignup = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -62,6 +63,11 @@ const AgentSignup = () => {
         representativeCode: "",
         financialInstitution: "",
       });
+      
+      // Redirect to index page after successful submission
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     }, 1500);
   };
 
