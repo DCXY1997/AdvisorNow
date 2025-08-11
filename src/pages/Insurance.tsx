@@ -80,48 +80,6 @@ const Insurance = () => {
             </Button>
           </div>
 
-          {/* Top Advisors */}
-          <Card className="service-card mb-8">
-            <CardHeader>
-              <CardTitle className="text-2xl text-primary">Top-Rated Insurance Advisors</CardTitle>
-              <CardDescription>Ranked by rating and review count</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4">
-                {topInsuranceAdvisors.map((advisor, index) => (
-                  <div key={advisor.name} className="bg-card border border-border/50 rounded-lg p-4 hover:shadow-card transition-smooth">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-foreground text-lg">{advisor.name}</span>
-                          <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">#{index + 1}</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{advisor.experience} • {advisor.institution}</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center gap-1 mb-1">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold text-foreground">{advisor.rating}</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <MessageCircle className="w-3 h-3" />
-                          <span>{advisor.reviews} reviews</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {advisor.specialties.map((specialty) => (
-                        <span key={specialty} className="bg-secondary/10 text-secondary-foreground text-xs px-2 py-1 rounded-full">
-                          {specialty}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Features */}
           <Card className="service-card">
             <CardHeader>
