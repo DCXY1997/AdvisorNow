@@ -31,12 +31,17 @@ export const AdvisorManagement = () => {
   const fetchAdvisors = async () => {
     try {
       setLoading(true);
+      console.log("Fetching advisors...");
       const { data, error } = await supabase
         .from('advisors')
         .select('*')
         .order('created_at', { ascending: false });
 
+      console.log("Advisors data:", data);
+      console.log("Advisors error:", error);
+
       if (error) {
+        console.error("Error fetching advisors:", error);
         toast({
           title: "Error",
           description: "Failed to fetch advisors",
@@ -47,6 +52,7 @@ export const AdvisorManagement = () => {
 
       setAdvisors(data || []);
     } catch (error) {
+      console.error("Catch error:", error);
       toast({
         title: "Error",
         description: "Failed to fetch advisors",
