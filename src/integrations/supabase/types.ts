@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      advisors: {
+        Row: {
+          created_at: string
+          email: string
+          financial_institution: string
+          full_name: string
+          id: string
+          registration_id: string | null
+          representative_code: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          financial_institution: string
+          full_name: string
+          id?: string
+          registration_id?: string | null
+          representative_code: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          financial_institution?: string
+          full_name?: string
+          id?: string
+          registration_id?: string | null
+          representative_code?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advisors_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_registrations: {
         Row: {
           created_at: string

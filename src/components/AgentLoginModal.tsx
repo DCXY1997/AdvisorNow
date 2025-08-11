@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AgentLoginModalProps {
   isOpen: boolean;
@@ -34,20 +35,106 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
 
     setIsLoggingIn(true);
     
-    // Simulate login process
-    setTimeout(() => {
+    try {
+      // First, check if the email has an approved registration
+      const { data: registration, error: regError } = await supabase
+        .from('agent_registrations')
+        .select('status')
+        .eq('email', formData.emailOrPhone)
+        .single();
+
+      if (regError || !registration) {
+        toast({
+          title: "Registration Not Found",
+          description: "Please register first or contact support if you believe this is an error.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (registration.status !== 'approved') {
+        const statusMessage = registration.status === 'pending' 
+          ? "Your registration is still pending approval. Please wait for admin confirmation."
+          : "Your registration has been rejected. Please contact support for more information.";
+        
+        toast({
+          title: "Access Denied",
+          description: statusMessage,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check if advisor already has an auth account
+      const { data: advisor } = await supabase
+        .from('advisors')
+        .select('user_id')
+        .eq('email', formData.emailOrPhone)
+        .single();
+
+      if (advisor?.user_id) {
+        // Advisor already has account, try to sign in
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: formData.emailOrPhone,
+          password: formData.password,
+        });
+
+        if (signInError) {
+          toast({
+            title: "Login Failed",
+            description: signInError.message,
+            variant: "destructive",
+          });
+          return;
+        }
+      } else {
+        // First time login - create auth account and link to advisor
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+          email: formData.emailOrPhone,
+          password: formData.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/agent-dashboard`
+          }
+        });
+
+        if (signUpError) {
+          toast({
+            title: "Account Creation Failed",
+            description: signUpError.message,
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (authData.user) {
+          // Link the auth user to the advisor record
+          await supabase
+            .from('advisors')
+            .update({ user_id: authData.user.id })
+            .eq('email', formData.emailOrPhone);
+        }
+      }
+
       toast({
         title: "Login Successful",
         description: "Welcome back! Redirecting to agent dashboard...",
       });
-      setIsLoggingIn(false);
+      
       onClose();
       setFormData({
         emailOrPhone: "",
         password: "",
       });
       navigate("/agent-dashboard");
-    }, 1500);
+    } catch (error) {
+      toast({
+        title: "Login Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
