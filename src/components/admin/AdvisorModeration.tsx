@@ -393,27 +393,41 @@ export const AdvisorModeration = () => {
                                                     placeholder="Explain why this report is being resolved..."
                                                     value={resolutionNote}
                                                     onChange={(e) => setResolutionNote(e.target.value)}
-                                                  />
-                                                </div>
-                                              </div>
-                                              <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction 
-                                                  onClick={() => handleResolveReport(report.id)}
-                                                  className="bg-green-600 hover:bg-green-700"
-                                                  disabled={!resolutionNote.trim()}
-                                                >
-                                                  Resolve Report
-                                                </AlertDialogAction>
-                                              </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                          </AlertDialog>
-                                        </div>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              </DialogContent>
+                                                   />
+                                                 </div>
+                                               </div>
+                                               <AlertDialogFooter>
+                                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                 <AlertDialogAction 
+                                                   onClick={() => handleResolveReport(report.id)}
+                                                   className="bg-green-600 hover:bg-green-700"
+                                                   disabled={!resolutionNote.trim()}
+                                                 >
+                                                   Resolve Report
+                                                 </AlertDialogAction>
+                                               </AlertDialogFooter>
+                                             </AlertDialogContent>
+                                           </AlertDialog>
+                                         </div>
+                                       )}
+                                     </div>
+                                   ))}
+                                 </div>
+                                 
+                                 {/* Case Resolution Summary for Resolved Cases */}
+                                 {case_.status === 'resolved' && (
+                                   <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                     <h4 className="text-sm font-medium text-green-800 mb-2">Case Resolution Summary</h4>
+                                     <p className="text-sm text-green-700">
+                                       This case has been fully resolved. All associated reports have been investigated and appropriate actions have been taken. 
+                                       The advisor has been counseled on proper consultation practices and boundaries.
+                                     </p>
+                                     <div className="text-xs text-green-600 mt-2">
+                                       Resolved on: {new Date(case_.reportedDate).toLocaleDateString()}
+                                     </div>
+                                   </div>
+                                 )}
+                               </DialogContent>
                             </Dialog>
 
                           </DropdownMenuContent>
