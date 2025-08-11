@@ -23,9 +23,8 @@ export const AdvisorManagement = () => {
       name: "Dr. Sarah Johnson",
       email: "sarah.johnson@email.com",
       phone: "+1 (555) 123-4567",
-      licenseCode: "FP-2024-001",
       representativeNumber: "REP-789456123",
-      financialInstitution: "Goldman Sachs Private Wealth Management",
+      financialInstitution: "AIA",
       rating: 4.8,
       reviewCount: 156,
       status: "active",
@@ -70,7 +69,6 @@ export const AdvisorManagement = () => {
       name: "Michael Chen",
       email: "michael.chen@email.com",
       phone: "+1 (555) 234-5678",
-      licenseCode: "FP-2024-002",
       representativeNumber: "REP-456789012",
       financialInstitution: "Morgan Stanley Wealth Management",
       rating: 4.6,
@@ -108,7 +106,6 @@ export const AdvisorManagement = () => {
       name: "Jennifer Davis",
       email: "jennifer.davis@email.com",
       phone: "+1 (555) 345-6789", 
-      licenseCode: "FP-2024-003",
       representativeNumber: "REP-123789456",
       financialInstitution: "Charles Schwab Advisory Services",
       rating: 3.2,
@@ -146,7 +143,6 @@ export const AdvisorManagement = () => {
       name: "Robert Wilson",
       email: "robert.wilson@email.com",
       phone: "+1 (555) 456-7890",
-      licenseCode: "FP-2024-004",
       representativeNumber: "REP-987654321",
       financialInstitution: "UBS Private Wealth Management", 
       rating: 4.9,
@@ -189,8 +185,8 @@ export const AdvisorManagement = () => {
           return advisor.name.toLowerCase().includes(term);
         case "email":
           return advisor.email.toLowerCase().includes(term);
-        case "license":
-          return advisor.licenseCode.toLowerCase().includes(term);
+        case "representative":
+          return advisor.representativeNumber.toLowerCase().includes(term);
         default:
           return true;
       }
@@ -250,7 +246,7 @@ export const AdvisorManagement = () => {
                 <SelectContent>
                   <SelectItem value="name">Name</SelectItem>
                   <SelectItem value="email">Email</SelectItem>
-                  <SelectItem value="license">License</SelectItem>
+                  <SelectItem value="representative">Representative</SelectItem>
                 </SelectContent>
               </Select>
               <div className="flex-1 relative">
@@ -287,7 +283,7 @@ export const AdvisorManagement = () => {
                 <TableRow>
                   <TableHead>Advisor</TableHead>
                   <TableHead>Contact</TableHead>
-                  <TableHead>License</TableHead>
+                  <TableHead>Rep Number</TableHead>
                   <TableHead>Rating</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Subscription</TableHead>
@@ -319,7 +315,7 @@ export const AdvisorManagement = () => {
                     </TableCell>
                     <TableCell>
                       <code className="text-xs bg-muted px-2 py-1 rounded">
-                        {advisor.licenseCode}
+                        {advisor.representativeNumber}
                       </code>
                     </TableCell>
                     <TableCell>
@@ -396,14 +392,10 @@ export const AdvisorManagement = () => {
                                           <div className="text-sm font-medium text-muted-foreground">Phone</div>
                                           <div>{advisor.phone}</div>
                                         </div>
-                                        <div>
-                                          <div className="text-sm font-medium text-muted-foreground">Representative Number</div>
-                                          <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.representativeNumber}</code>
-                                        </div>
-                                        <div>
-                                          <div className="text-sm font-medium text-muted-foreground">License Code</div>
-                                          <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.licenseCode}</code>
-                                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-muted-foreground">Representative Number</div>
+                          <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.representativeNumber}</code>
+                        </div>
                                       </CardContent>
                                     </Card>
 
