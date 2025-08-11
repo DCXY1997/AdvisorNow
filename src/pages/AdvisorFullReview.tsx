@@ -114,11 +114,10 @@ const AdvisorFullReview = () => {
       {/* Content */}
       <div className="container mx-auto p-6">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="reviews">Reviews ({advisor.reviewCount})</TabsTrigger>
             <TabsTrigger value="reports">Reports ({advisor.reports?.length || 0})</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview" className="space-y-6 mt-6">
@@ -282,43 +281,6 @@ const AdvisorFullReview = () => {
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="analytics" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Performance Metrics</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span>Call Success Rate</span>
-                      <span className="font-medium">94%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Average Call Duration</span>
-                      <span className="font-medium">28 mins</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Client Retention</span>
-                      <span className="font-medium">87%</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-muted-foreground">
-                    Analytics data will be available in future updates.
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </TabsContent>
         </Tabs>
       </div>
