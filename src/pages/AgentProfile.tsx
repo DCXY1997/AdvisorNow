@@ -5,8 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Upload, User, Save } from "lucide-react";
+import { ArrowLeft, Upload, User, Save, ChevronDown, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const AgentProfile = () => {
@@ -22,11 +23,39 @@ const AgentProfile = () => {
     bio: "Experienced financial advisor with over 10 years in wealth management and retirement planning.",
     credentials: "CFP, CFA, ChFC - Certified Financial Planner with expertise in investment strategies and risk management.",
     tagline: "Building your financial future, one step at a time",
-    specialization: "Retirement Planning, Investment Strategies, Risk Management",
+    specializations: ["Retirement Planning", "Investment Planning", "Wealth Management"],
     profileImage: ""
   });
+
+  const specializationOptions = [
+    "Investment Planning",
+    "Insurance Coverage", 
+    "Retirement Planning",
+    "Education Planning",
+    "Wealth Management",
+    "Tax Planning",
+    "Estate Planning"
+  ];
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleSpecializationToggle = (specialization: string) => {
+    setProfileData(prev => ({
+      ...prev,
+      specializations: prev.specializations.includes(specialization)
+        ? prev.specializations.filter(s => s !== specialization)
+        : [...prev.specializations, specialization]
+    }));
+  };
+
+  const removeSpecialization = (specialization: string) => {
+    setProfileData(prev => ({
+      ...prev,
+      specializations: prev.specializations.filter(s => s !== specialization)
+    }));
+  };
 
   const handleInputChange = (field: keyof typeof profileData, value: string) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
@@ -223,19 +252,65 @@ const AgentProfile = () => {
             <CardTitle>Specialization</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <Label htmlFor="specialization">Areas of Expertise</Label>
-              <Textarea
-                id="specialization"
-                value={profileData.specialization}
-                onChange={(e) => handleInputChange("specialization", e.target.value)}
-                placeholder="e.g., Retirement Planning, Investment Strategies, Insurance, Estate Planning, Tax Planning..."
-                className="min-h-[80px] transition-smooth focus:ring-2 focus:ring-primary/20"
-                maxLength={300}
-              />
-              <p className="text-sm text-muted-foreground">
-                {profileData.specialization.length}/300 characters
-              </p>
+            <div className="space-y-4">
+              <Label>Areas of Expertise</Label>
+              
+              {/* Selected Specializations */}
+              <div className="flex flex-wrap gap-2 min-h-[40px] p-3 border border-input rounded-md bg-background">
+                {profileData.specializations.map((spec) => (
+                  <Badge
+                    key={spec}
+                    variant="secondary"
+                    className="px-3 py-1 text-sm bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer group"
+                  >
+                    {spec}
+                    <X
+                      className="ml-2 h-3 w-3 group-hover:text-destructive"
+                      onClick={() => removeSpecialization(spec)}
+                    />
+                  </Badge>
+                ))}
+                {profileData.specializations.length === 0 && (
+                  <span className="text-muted-foreground text-sm">Select your areas of expertise...</span>
+                )}
+              </div>
+
+              {/* Dropdown */}
+              <div className="relative">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full justify-between"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  Add Specialization
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                </Button>
+                
+                {isDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-input rounded-md shadow-lg">
+                    <div className="p-1">
+                      {specializationOptions.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          className={`w-full text-left px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors ${
+                            profileData.specializations.includes(option) 
+                              ? 'bg-primary/10 text-primary' 
+                              : ''
+                          }`}
+                          onClick={() => {
+                            handleSpecializationToggle(option);
+                            setIsDropdownOpen(false);
+                          }}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -297,7 +372,7 @@ const AgentProfile = () => {
                     {profileData.bio}
                   </p>
                   <p className="text-sm text-muted-foreground mb-2">
-                    <strong>Specialization:</strong> {profileData.specialization}
+                    <strong>Specialization:</strong> {profileData.specializations.join(", ")}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     <strong>Credentials:</strong> {profileData.credentials}
