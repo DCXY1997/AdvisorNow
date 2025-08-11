@@ -368,9 +368,14 @@ export const AdvisorModeration = () => {
                                       <div className="flex justify-between items-start">
                                         <div className="space-y-1">
                                           <div className="text-sm font-medium">Report #{report.id}</div>
-                                          <div className="text-xs text-muted-foreground">
-                                            User: {report.userId} | Call: {report.callId} | {new Date(report.reportDate).toLocaleDateString()}
-                                          </div>
+                                           <div className="text-xs text-muted-foreground">
+                                             User: {report.userId} | Call: {report.callId} | {new Date(report.reportDate).toLocaleDateString()}
+                                           </div>
+                                           {case_.issue === "Low ratings" && (
+                                             <div className="text-xs">
+                                               Rating: {report.rating}/5 stars
+                                             </div>
+                                           )}
                                         </div>
                                         <Badge className={report.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
                                           {report.status}
