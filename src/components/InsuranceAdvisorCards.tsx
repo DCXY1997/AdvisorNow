@@ -60,7 +60,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       repNumber: "REP-SC-2024-001",
       email: "sarah.chen@greatetern.com.sg",
       phone: "+65 9123 4567",
-      specializations: ["Life Insurance", "Health Insurance", "Critical Illness", "Family Protection"],
+      specializations: ["Insurance Coverage", "Wealth Management"],
       reviews: [
         {
           id: 1,
@@ -93,7 +93,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       repNumber: "REP-MT-2024-002",
       email: "michael.tan@aia.com.sg",
       phone: "+65 9234 5678",
-      specializations: ["Term Life", "Whole Life", "Investment-Linked", "Retirement Planning"],
+      specializations: ["Investment Planning", "Insurance Coverage", "Retirement Planning"],
       reviews: [
         {
           id: 3,
@@ -118,7 +118,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       repNumber: "REP-JL-2024-003",
       email: "jennifer.lim@prudential.com.sg",
       phone: "+65 9345 6789",
-      specializations: ["Family Protection", "Business Insurance", "Disability Insurance", "Estate Planning"],
+      specializations: ["Insurance Coverage", "Estate Planning"],
       reviews: [
         {
           id: 4,
@@ -143,7 +143,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       repNumber: "REP-DW-2024-004",
       email: "david.wong@income.com.sg",
       phone: "+65 9456 7890",
-      specializations: ["Estate Planning", "Legacy Protection", "Wealth Transfer", "High Net Worth Insurance"],
+      specializations: ["Estate Planning", "Wealth Management", "Tax Planning"],
       reviews: [
         {
           id: 5,
@@ -168,7 +168,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       repNumber: "REP-AL-2024-005",
       email: "amanda.lee@singlife.com.sg",
       phone: "+65 9567 8901",
-      specializations: ["Young Professional Insurance", "Health Coverage", "Term Life", "Savings Plans"],
+      specializations: ["Insurance Coverage", "Education Planning"],
       reviews: [
         {
           id: 6,
@@ -193,7 +193,7 @@ const InsuranceAdvisorCards = ({ onConnectClick }: InsuranceAdvisorCardsProps) =
       repNumber: "REP-RC-2024-006",
       email: "robert.chua@fwd.com.sg",
       phone: "+65 9678 9012",
-      specializations: ["Business Insurance", "Corporate Solutions", "Key Person Insurance", "Group Employee Benefits"],
+      specializations: ["Insurance Coverage", "Wealth Management"],
       reviews: [
         {
           id: 7,
