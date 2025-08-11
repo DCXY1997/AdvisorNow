@@ -21,7 +21,7 @@ export const CallAnalytics = () => {
           { period: "6PM-9PM", calls: 15, duration: 35 },
           { period: "9PM-12AM", calls: 8, duration: 22 },
         ],
-        label: "Today's Performance"
+        label: "Today's Performance (24 Hours)"
       },
       weekly: {
         chartData: [
@@ -37,29 +37,39 @@ export const CallAnalytics = () => {
       },
       monthly: {
         chartData: [
-          { period: "Week 1", calls: 1285, duration: 9195 },
-          { period: "Week 2", calls: 1312, duration: 9218 },
-          { period: "Week 3", calls: 1298, duration: 9205 },
-          { period: "Week 4", calls: 1325, duration: 9232 },
+          { period: "Jan", calls: 1250, duration: 8950 },
+          { period: "Feb", calls: 1180, duration: 8245 },
+          { period: "Mar", calls: 1320, duration: 9420 },
+          { period: "Apr", calls: 1285, duration: 9195 },
+          { period: "May", calls: 1412, duration: 10118 },
+          { period: "Jun", calls: 1398, duration: 9905 },
+          { period: "Jul", calls: 1450, duration: 10350 },
+          { period: "Aug", calls: 1368, duration: 9732 },
+          { period: "Sep", calls: 1295, duration: 9205 },
+          { period: "Oct", calls: 1485, duration: 10595 },
+          { period: "Nov", calls: 1512, duration: 10836 },
+          { period: "Dec", calls: 1325, duration: 9485 },
         ],
-        label: "This Month's Performance"
+        label: "This Year's Performance (Jan - Dec)"
       },
       quarterly: {
         chartData: [
-          { period: "Jan", calls: 5250, duration: 36850 },
-          { period: "Feb", calls: 4980, duration: 34795 },
-          { period: "Mar", calls: 5320, duration: 37920 },
+          { period: "Q1", calls: 3750, duration: 26615 },
+          { period: "Q2", calls: 4095, duration: 29218 },
+          { period: "Q3", calls: 4113, duration: 29332 },
+          { period: "Q4", calls: 4322, duration: 30916 },
         ],
         label: "Quarterly Performance"
       },
       yearly: {
         chartData: [
-          { period: "Q1", calls: 15550, duration: 108565 },
-          { period: "Q2", calls: 16125, duration: 112845 },
-          { period: "Q3", calls: 15980, duration: 111720 },
-          { period: "Q4", calls: 16200, duration: 113950 },
+          { period: "2020", calls: 12400, duration: 88680 },
+          { period: "2021", calls: 14800, duration: 105520 },
+          { period: "2022", calls: 16800, duration: 119520 },
+          { period: "2023", calls: 18200, duration: 129940 },
+          { period: "2024", calls: 16280, duration: 116081 },
         ],
-        label: "Yearly Performance"
+        label: "Last 5 Years Performance"
       }
     };
     return dataMap[period as keyof typeof dataMap] || dataMap.weekly;
