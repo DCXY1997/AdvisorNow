@@ -18,7 +18,7 @@ const ServiceTabs = () => {
         "Regular portfolio reviews",
         "Tax-efficient investing"
       ],
-      highlight: "Start with as little as $1,000"
+      highlight: "Personalized investment strategies"
     },
     insurance: {
       icon: <Shield className="w-8 h-8 text-primary" />,
@@ -31,7 +31,7 @@ const ServiceTabs = () => {
         "Property and casualty insurance",
         "Insurance needs analysis"
       ],
-      highlight: "Coverage from $100/month"
+      highlight: "Comprehensive protection coverage"
     },
     retirement: {
       icon: <PiggyBank className="w-8 h-8 text-primary" />,
