@@ -26,7 +26,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
     name: "",
     phoneNumber: "",
     topic: "",
-    financialInstitution: "Any",
+    financialInstitution: "",
     pdpaConsent: false,
   });
 
@@ -58,7 +58,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
         name: "",
         phoneNumber: "",
         topic: "",
-        financialInstitution: "Any",
+        financialInstitution: "",
         pdpaConsent: false,
       });
     }, 1500);
@@ -152,11 +152,11 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
 
           <div className="space-y-2">
             <Label htmlFor="institution" className="text-sm font-medium">
-              Preferred Financial Institution
+              Preferred Financial Institution *
             </Label>
-            <Select onValueChange={(value) => handleInputChange("financialInstitution", value)}>
+            <Select onValueChange={(value) => handleInputChange("financialInstitution", value)} required>
               <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
-                <SelectValue placeholder="Select preferred institution (optional)" />
+                <SelectValue placeholder="Any" />
               </SelectTrigger>
               <SelectContent>
                 {financialInstitutions.map((institution) => (
@@ -188,7 +188,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
 
           <Button
             type="submit"
-            disabled={isSubmitting || !formData.name || !formData.phoneNumber || !formData.topic || !formData.pdpaConsent}
+            disabled={isSubmitting || !formData.name || !formData.phoneNumber || !formData.topic || !formData.financialInstitution || !formData.pdpaConsent}
             className="w-full gradient-hero hover:opacity-90 shadow-button transition-smooth"
           >
             {isSubmitting ? "Submitting..." : "Find My Advisor"}
