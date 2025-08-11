@@ -195,10 +195,10 @@ const AgentProfile = () => {
                 onChange={(e) => handleInputChange("credentials", e.target.value)}
                 placeholder="List your certifications, awards, years of experience, specializations, etc."
                 className="min-h-[100px] transition-smooth focus:ring-2 focus:ring-primary/20"
-                maxLength={300}
+                maxLength={1000}
               />
               <p className="text-sm text-muted-foreground">
-                {profileData.credentials.length}/300 characters
+                {profileData.credentials.length}/1000 characters
               </p>
             </div>
           </CardContent>
