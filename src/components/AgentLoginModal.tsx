@@ -106,54 +106,13 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
           return;
         }
       } else {
-        // Step 5: First-time login - create auth account
-        const { data: authData, error: signUpError } = await supabase.auth.signUp({
-          email: formData.emailOrPhone,
-          password: formData.password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/agent-dashboard`
-          }
+        // Advisor exists but no auth account yet - show message
+        toast({
+          title: "Account Pending",
+          description: "Your registration is being processed. Please contact support for account activation.",
+          variant: "default",
         });
-
-        if (signUpError) {
-          if (signUpError.message.includes('rate limit')) {
-            toast({
-              title: "Too Many Attempts",
-              description: "Please wait a moment before trying again.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Account Creation Failed",
-              description: signUpError.message,
-              variant: "destructive",
-            });
-          }
-          return;
-        }
-
-        if (authData.user) {
-          // Link the auth user to the advisor record
-          await supabase
-            .from('advisors')
-            .update({ user_id: authData.user.id })
-            .eq('email', formData.emailOrPhone);
-            
-          if (authData.user.email_confirmed_at) {
-            // Email already confirmed, proceed with login
-            toast({
-              title: "Login Successful",
-              description: "Welcome back! Redirecting to agent dashboard...",
-            });
-          } else {
-            // Email needs confirmation
-            toast({
-              title: "Account Created",
-              description: "Please check your email to confirm your account before logging in.",
-            });
-            return;
-          }
-        }
+        return;
       }
 
       // Step 6: Final success
