@@ -5,6 +5,7 @@ import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
 import ServiceTabs from "@/components/ServiceTabs";
 import AdvisorMatchingForm from "@/components/AdvisorMatchingForm";
+import heroImage from "@/assets/advisor-consultation-hero.jpg";
 
 const Index = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -25,14 +26,22 @@ const Index = () => {
       <Header onFindAdvisorClick={() => setIsFormOpen(true)} />
 
       {/* Hero Section */}
-      <section className="gradient-hero relative overflow-hidden">
-        {/* Decorative elements inspired by reference */}
-        <div className="absolute top-20 right-20 w-32 h-16 bg-secondary rounded-full opacity-30"></div>
-        <div className="absolute top-40 right-40 w-24 h-12 bg-secondary-light rounded-full opacity-20"></div>
-        <div className="absolute bottom-20 left-20 w-40 h-20 bg-secondary rounded-full opacity-25"></div>
-        <div className="absolute bottom-40 right-10 w-28 h-14 bg-secondary-light rounded-full opacity-15"></div>
+      <section className="relative overflow-hidden min-h-[600px] md:min-h-[700px]">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroImage})` }}
+        >
+          <div className="absolute inset-0 bg-hero-background/85"></div>
+        </div>
         
-        <div className="container mx-auto px-4 py-20 md:py-32">
+        {/* Decorative elements inspired by reference */}
+        <div className="absolute top-20 right-20 w-32 h-16 bg-secondary rounded-full opacity-30 z-10"></div>
+        <div className="absolute top-40 right-40 w-24 h-12 bg-secondary-light rounded-full opacity-20 z-10"></div>
+        <div className="absolute bottom-20 left-20 w-40 h-20 bg-secondary rounded-full opacity-25 z-10"></div>
+        <div className="absolute bottom-40 right-10 w-28 h-14 bg-secondary-light rounded-full opacity-15 z-10"></div>
+        
+        <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
           <div className="max-w-4xl">
             <h1 className="text-4xl md:text-6xl font-bold text-primary mb-6 leading-tight">
               Talk to a Licensed<br />
