@@ -63,31 +63,40 @@ export type Database = {
       }
       agent_registrations: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           created_at: string
           email: string
           financial_institution: string
           full_name: string
           id: string
+          rejection_reason: string | null
           representative_code: string
           status: string
           updated_at: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
           email: string
           financial_institution: string
           full_name: string
           id?: string
+          rejection_reason?: string | null
           representative_code: string
           status?: string
           updated_at?: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
           email?: string
           financial_institution?: string
           full_name?: string
           id?: string
+          rejection_reason?: string | null
           representative_code?: string
           status?: string
           updated_at?: string

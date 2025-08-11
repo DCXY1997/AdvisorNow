@@ -83,7 +83,11 @@ export const AdvisorRegistrations = () => {
     try {
       const { error } = await supabase
         .from('agent_registrations')
-        .update({ status: 'approved' })
+        .update({ 
+          status: 'approved',
+          approved_at: new Date().toISOString(),
+          approved_by: 'Admin' // In a real app, this would be the current admin user
+        })
         .eq('id', registrationId);
 
       if (error) {
