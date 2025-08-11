@@ -21,12 +21,16 @@ const AgentLogin = () => {
 
   // Authentication state management
   useEffect(() => {
+    console.log('AgentLogin: Setting up auth listener');
+    
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('AgentLogin: Auth state change', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
+          console.log('AgentLogin: User found, redirecting to dashboard');
           // Redirect to dashboard if already logged in
           navigate('/agent-dashboard');
         }
@@ -35,9 +39,11 @@ const AgentLogin = () => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('AgentLogin: Existing session check', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
+        console.log('AgentLogin: Existing session found, redirecting to dashboard');
         navigate('/agent-dashboard');
       }
     });
