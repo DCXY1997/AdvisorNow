@@ -104,7 +104,7 @@ const Index = () => {
                 <div className="w-10 h-7 bg-secondary rounded-full mr-3 flex items-center justify-center">
                   <div className="w-7 h-5 bg-secondary-light rounded-full"></div>
                 </div>
-                <span className="text-xl font-bold">FinanceMatch</span>
+                <span className="text-xl font-bold">AdvisorNow</span>
               </div>
               <p className="text-primary-foreground/80">
                 Connecting you with licensed financial advisors for instant, pressure-free advice.
@@ -124,7 +124,7 @@ const Index = () => {
             <div>
               <h4 className="font-semibold mb-4">Contact</h4>
               <div className="space-y-2 text-primary-foreground/80">
-                <p>📧 hello@financematch.sg</p>
+                <p>📧 hello@advisornow.sg</p>
                 <p>📞 +65 6123 4567</p>
                 <p>🏢 Singapore CBD</p>
               </div>
@@ -132,7 +132,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/60">
-            <p>&copy; 2024 FinanceMatch. All rights reserved. | Privacy Policy | Terms of Service</p>
+            <p>&copy; 2024 AdvisorNow. All rights reserved. | Privacy Policy | Terms of Service</p>
           </div>
         </div>
       </footer>

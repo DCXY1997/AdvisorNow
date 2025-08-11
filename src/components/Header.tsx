@@ -22,7 +22,7 @@ const Header = ({ onFindAdvisorClick }: HeaderProps) => {
             <div className="w-12 h-8 bg-secondary rounded-full mr-3 flex items-center justify-center">
               <div className="w-8 h-6 bg-secondary-light rounded-full"></div>
             </div>
-            <span className="font-bold text-xl text-primary">Logo</span>
+            <span className="font-bold text-xl text-primary">AdvisorNow</span>
           </div>
 
           {/* Navigation */}
