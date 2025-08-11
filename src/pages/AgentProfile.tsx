@@ -16,6 +16,9 @@ const AgentProfile = () => {
   const [profileData, setProfileData] = useState({
     displayName: "John Smith",
     email: "john.smith@example.com",
+    contactNumber: "+65 9123 4567",
+    representativeNumber: "REP-2024-0123",
+    financialInstitution: "AIA",
     bio: "Experienced financial advisor with over 10 years in wealth management and retirement planning.",
     credentials: "CFP, CFA, ChFC - Certified Financial Planner with expertise in investment strategies and risk management.",
     tagline: "Building your financial future, one step at a time",
@@ -141,6 +144,38 @@ const AgentProfile = () => {
                       className="transition-smooth focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="contactNumber">Contact Number</Label>
+                    <Input
+                      id="contactNumber"
+                      type="tel"
+                      value={profileData.contactNumber}
+                      onChange={(e) => handleInputChange("contactNumber", e.target.value)}
+                      placeholder="+65 9123 4567"
+                      className="transition-smooth focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="representativeNumber">Representative Number</Label>
+                    <Input
+                      id="representativeNumber"
+                      value={profileData.representativeNumber}
+                      readOnly
+                      className="bg-muted/50 cursor-not-allowed"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="financialInstitution">Financial Institution</Label>
+                    <Input
+                      id="financialInstitution"
+                      value={profileData.financialInstitution}
+                      readOnly
+                      className="bg-muted/50 cursor-not-allowed"
+                    />
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
@@ -223,6 +258,12 @@ const AgentProfile = () => {
                   <h3 className="text-xl font-semibold text-primary mb-1">
                     {profileData.displayName}
                   </h3>
+                  <p className="text-sm text-muted-foreground mb-1">
+                    {profileData.financialInstitution} • Rep #{profileData.representativeNumber}
+                  </p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    📧 {profileData.email} • 📞 {profileData.contactNumber}
+                  </p>
                   {profileData.tagline && (
                     <p className="text-sm text-muted-foreground italic mb-3">
                       "{profileData.tagline}"
