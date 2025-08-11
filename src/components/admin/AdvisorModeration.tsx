@@ -106,7 +106,7 @@ export const AdvisorModeration = () => {
       avgRating: 4.2,
       status: "under_review",
       reportedDate: "2024-01-29",
-      severity: "low"
+      severity: "high"
     },
     {
       id: "4",
@@ -135,7 +135,7 @@ export const AdvisorModeration = () => {
       avgRating: 4.3,
       status: "resolved",
       reportedDate: "2024-01-15",
-      severity: "medium"
+      severity: "high"
     }
   ];
 
