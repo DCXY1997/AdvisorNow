@@ -196,7 +196,13 @@ const AgentReviews = () => {
                     <Settings className="h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:bg-muted">
+                  <DropdownMenuItem 
+                    className="flex items-center gap-2 cursor-pointer hover:bg-muted"
+                    onClick={async () => {
+                      const { logout } = await import("@/utils/auth");
+                      await logout();
+                    }}
+                  >
                     <LogOut className="h-4 w-4" />
                     <span>Logout</span>
                   </DropdownMenuItem>
