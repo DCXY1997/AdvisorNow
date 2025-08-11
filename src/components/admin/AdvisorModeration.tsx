@@ -35,6 +35,8 @@ export const AdvisorModeration = () => {
         {
           id: "1-1",
           userId: "user321",
+          userName: "John Martinez",
+          userContact: "+65 9876 5432",
           reportDate: "2024-01-26",
           rating: null,
           complaint: "Advisor made inappropriate personal comments during financial consultation",
@@ -62,6 +64,8 @@ export const AdvisorModeration = () => {
         {
           id: "2-1",
           userId: "user654",
+          userName: "Sarah Chen",
+          userContact: "+65 8765 4321",
           reportDate: "2024-01-27",
           rating: null,
           complaint: "Used unprofessional language during call",
@@ -89,6 +93,8 @@ export const AdvisorModeration = () => {
         {
           id: "3-1",
           userId: "user555",
+          userName: "David Wong",
+          userContact: "+65 7654 3210",
           reportDate: "2024-01-29",
           rating: null,
           complaint: "Advisor was consistently interrupting and not listening to my concerns",
@@ -116,6 +122,8 @@ export const AdvisorModeration = () => {
         {
           id: "4-1",
           userId: "user888",
+          userName: "Lisa Tan",
+          userContact: "+65 6543 2109",
           reportDate: "2024-01-15",
           rating: null,
           complaint: "Advisor made me uncomfortable with personal questions unrelated to finances",
@@ -345,9 +353,9 @@ export const AdvisorModeration = () => {
                                       <div className="flex justify-between items-start">
                                         <div className="space-y-1">
                                           <div className="text-sm font-medium">Report #{report.id}</div>
-                                            <div className="text-xs text-muted-foreground">
-                                              User: {report.userId} | Call: {report.callId} | {new Date(report.reportDate).toLocaleDateString()}
-                                            </div>
+                                           <div className="text-xs text-muted-foreground">
+                                             User: {report.userName} | Contact: {report.userContact} | Date: {new Date(report.reportDate).toLocaleDateString()}
+                                           </div>
                                         </div>
                                         <Badge className={report.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
                                           {report.status}
