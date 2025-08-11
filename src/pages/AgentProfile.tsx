@@ -249,7 +249,7 @@ const AgentProfile = () => {
         {/* Specialization */}
         <Card>
           <CardHeader>
-            <CardTitle>Specialization</CardTitle>
+            <CardTitle>Specialisations</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -283,7 +283,7 @@ const AgentProfile = () => {
                   className="w-full justify-between"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                  Add Specialization
+                  Add Specialisation
                   <ChevronDown className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </Button>
                 
@@ -372,7 +372,7 @@ const AgentProfile = () => {
                     {profileData.bio}
                   </p>
                   <p className="text-sm text-muted-foreground mb-2">
-                    <strong>Specialization:</strong> {profileData.specializations.join(", ")}
+                    <strong>Specialisations:</strong> {profileData.specializations.join(", ")}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     <strong>Credentials:</strong> {profileData.credentials}
