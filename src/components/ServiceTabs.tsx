@@ -1,10 +1,50 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, Shield, PiggyBank, GraduationCap, CheckCircle } from "lucide-react";
+import { TrendingUp, Shield, PiggyBank, GraduationCap, CheckCircle, Star, MessageCircle } from "lucide-react";
 
 const ServiceTabs = () => {
   const [activeTab, setActiveTab] = useState("investment");
+
+  // Top-rated Insurance Advisors (sorted by rating then review count)
+  const topInsuranceAdvisors = [
+    {
+      name: "Sarah Chen",
+      rating: 4.9,
+      reviews: 167,
+      specialties: ["Life Insurance", "Health Insurance", "Critical Illness"],
+      experience: "8 years",
+      institution: "Great Eastern"
+    },
+    {
+      name: "Michael Tan",
+      rating: 4.8,
+      reviews: 203,
+      specialties: ["Term Life", "Whole Life", "Investment-Linked"],
+      experience: "12 years", 
+      institution: "AIA"
+    },
+    {
+      name: "Jennifer Lim",
+      rating: 4.8,
+      reviews: 156,
+      specialties: ["Family Protection", "Business Insurance", "Disability"],
+      experience: "6 years",
+      institution: "Prudential"
+    },
+    {
+      name: "David Wong",
+      rating: 4.7,
+      reviews: 189,
+      specialties: ["Estate Planning", "Legacy Protection", "Wealth Transfer"],
+      experience: "15 years",
+      institution: "Income"
+    }
+  ].sort((a, b) => {
+    // Sort by rating first (descending), then by review count (descending)
+    if (b.rating !== a.rating) return b.rating - a.rating;
+    return b.reviews - a.reviews;
+  });
 
   const services = {
     investment: {
@@ -31,7 +71,8 @@ const ServiceTabs = () => {
         "Property and casualty insurance",
         "Insurance needs analysis"
       ],
-      highlight: "Comprehensive protection coverage"
+      highlight: "Comprehensive protection coverage",
+      advisors: topInsuranceAdvisors
     },
     retirement: {
       icon: <PiggyBank className="w-8 h-8 text-primary" />,
@@ -110,6 +151,46 @@ const ServiceTabs = () => {
                       {service.highlight}
                     </p>
                   </div>
+                  
+                  {key === 'insurance' && 'advisors' in service && service.advisors && (
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-foreground text-lg mb-4">
+                        Top-Rated Insurance Advisors:
+                      </h4>
+                      <div className="grid gap-4">
+                        {service.advisors.map((advisor, index) => (
+                          <div key={advisor.name} className="bg-card border border-border/50 rounded-lg p-4 hover:shadow-card transition-smooth">
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-semibold text-foreground text-lg">{advisor.name}</span>
+                                  <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">#{index + 1}</span>
+                                </div>
+                                <p className="text-sm text-muted-foreground">{advisor.experience} • {advisor.institution}</p>
+                              </div>
+                              <div className="text-right">
+                                <div className="flex items-center gap-1 mb-1">
+                                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                  <span className="font-semibold text-foreground">{advisor.rating}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                  <MessageCircle className="w-3 h-3" />
+                                  <span>{advisor.reviews} reviews</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {advisor.specialties.map((specialty) => (
+                                <span key={specialty} className="bg-secondary/10 text-secondary-foreground text-xs px-2 py-1 rounded-full">
+                                  {specialty}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
