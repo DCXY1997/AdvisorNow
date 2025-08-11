@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import AgentLoginModal from "@/components/AgentLoginModal";
 
 interface HeaderProps {
   onFindAdvisorClick: () => void;
 }
 
 const Header = ({ onFindAdvisorClick }: HeaderProps) => {
+  const [isAgentLoginOpen, setIsAgentLoginOpen] = useState(false);
   const navigationItems = [
     "Insurance",
     "Investment", 
@@ -39,6 +42,7 @@ const Header = ({ onFindAdvisorClick }: HeaderProps) => {
 
           {/* Agent Login Button */}
           <Button
+            onClick={() => setIsAgentLoginOpen(true)}
             variant="default"
             className="bg-primary hover:bg-primary-light text-primary-foreground rounded-full px-6"
           >
@@ -46,6 +50,12 @@ const Header = ({ onFindAdvisorClick }: HeaderProps) => {
           </Button>
         </div>
       </div>
+      
+      {/* Agent Login Modal */}
+      <AgentLoginModal
+        isOpen={isAgentLoginOpen}
+        onClose={() => setIsAgentLoginOpen(false)}
+      />
     </header>
   );
 };
