@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface AgentLoginModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface AgentLoginModalProps {
 
 const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     emailOrPhone: "",
     password: "",
@@ -52,10 +54,8 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
   };
 
   const handleForgotPassword = () => {
-    toast({
-      title: "Password Reset",
-      description: "Password reset instructions will be sent to your registered email.",
-    });
+    onClose();
+    navigate("/forgot-password");
   };
 
   const handleSignUp = () => {
