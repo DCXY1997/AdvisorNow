@@ -46,6 +46,7 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
         emailOrPhone: "",
         password: "",
       });
+      navigate("/agent-dashboard");
     }, 1500);
   };
 
