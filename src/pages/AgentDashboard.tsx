@@ -5,12 +5,18 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } from "recharts";
-import { Filter, User, FileText, CreditCard, ChevronDown } from "lucide-react";
+import { Filter, User, FileText, CreditCard, ChevronDown, CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const AgentDashboard = () => {
   const [isOnline, setIsOnline] = useState(true);
   const [filterPeriod, setFilterPeriod] = useState("weekly");
+  const [customStartDate, setCustomStartDate] = useState<Date>();
+  const [customEndDate, setCustomEndDate] = useState<Date>();
   
   // Dynamic data based on filter period
   const getDashboardData = () => {
@@ -159,6 +165,59 @@ const AgentDashboard = () => {
                   <SelectItem value="custom">Custom</SelectItem>
                 </SelectContent>
               </Select>
+              
+              {/* Custom Date Range Picker */}
+              {filterPeriod === "custom" && (
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-[140px] justify-start text-left font-normal",
+                          !customStartDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {customStartDate ? format(customStartDate, "MMM dd") : "Start date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={customStartDate}
+                        onSelect={setCustomStartDate}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-[140px] justify-start text-left font-normal",
+                          !customEndDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {customEndDate ? format(customEndDate, "MMM dd") : "End date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={customEndDate}
+                        onSelect={setCustomEndDate}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              )}
               
               <div className="flex items-center gap-2">
                 <Badge variant={isOnline ? "default" : "destructive"} className="px-3 py-1">
