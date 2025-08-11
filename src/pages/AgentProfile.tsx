@@ -58,15 +58,21 @@ const AgentProfile = () => {
         console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
+        setAuthChecked(true);
         
         // Load profile when user is authenticated
-        if (session?.user && event !== 'SIGNED_OUT') {
+        if (session?.user && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+          console.log('Loading profile for authenticated user:', session.user.email);
           setTimeout(() => {
             loadAdvisorProfile(session.user);
           }, 0);
         } else if (event === 'SIGNED_OUT') {
           // Redirect to home when signed out
+          console.log('User signed out, redirecting to home');
           navigate('/');
+        } else if (!session?.user && authChecked) {
+          console.log('No session found after auth check');
+          setLoading(false);
         }
       }
     );

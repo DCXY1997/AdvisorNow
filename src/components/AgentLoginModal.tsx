@@ -84,7 +84,7 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
 
       // Step 4: Try to sign in with existing auth account
       if (advisor.user_id) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email: formData.emailOrPhone,
           password: formData.password,
         });
@@ -104,6 +104,11 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
             });
           }
           return;
+        }
+
+        // Wait for session to be established
+        if (signInData.session) {
+          console.log('Login successful with session:', signInData.session.user.email);
         }
       } else {
         // Advisor exists but no auth account yet - create one
@@ -133,7 +138,7 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
         }
       }
 
-      // Step 6: Final success
+      // Step 6: Final success - wait a moment for session to propagate
       toast({
         title: "Login Successful",
         description: "Welcome back! Redirecting to agent dashboard...",
@@ -144,7 +149,11 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
         emailOrPhone: "",
         password: "",
       });
-      navigate("/agent-dashboard");
+
+      // Wait a moment for the session to fully propagate before navigation
+      setTimeout(() => {
+        navigate("/agent-dashboard");
+      }, 100);
     } catch (error) {
       console.error("Login error:", error);
       toast({
