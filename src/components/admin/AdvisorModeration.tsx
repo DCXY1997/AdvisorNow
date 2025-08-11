@@ -416,68 +416,6 @@ export const AdvisorModeration = () => {
                               </DialogContent>
                             </Dialog>
 
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <Shield className="h-4 w-4 mr-2 text-orange-600" />
-                                  Suspend Advisor
-                                </DropdownMenuItem>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Suspend Advisor</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Are you sure you want to suspend {case_.advisor.name}? They will not be able to take new consultations until reactivated.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <Label htmlFor="suspension-reason">Reason for suspension</Label>
-                                    <Textarea
-                                      id="suspension-reason"
-                                      placeholder="Enter the reason for suspension..."
-                                      value={suspensionReason}
-                                      onChange={(e) => setSuspensionReason(e.target.value)}
-                                    />
-                                  </div>
-                                </div>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction 
-                                    onClick={() => handleSuspendAdvisor(case_.id)}
-                                    className="bg-orange-600 hover:bg-orange-700"
-                                  >
-                                    Suspend Advisor
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <Ban className="h-4 w-4 mr-2 text-red-600" />
-                                  Blacklist Advisor
-                                </DropdownMenuItem>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Blacklist Advisor</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Are you sure you want to blacklist {case_.advisor.name}? This action is permanent and cannot be undone. The advisor will be permanently banned from the platform.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction 
-                                    onClick={() => handleBlacklistAdvisor(case_.id)}
-                                    className="bg-red-600 hover:bg-red-700"
-                                  >
-                                    Blacklist Advisor
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       )}
