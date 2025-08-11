@@ -196,7 +196,7 @@ const AgentDashboard = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Total active hours</CardTitle>
+                <CardTitle className="text-lg">Total Active Hours</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-primary">{currentData.activeHours}</div>
