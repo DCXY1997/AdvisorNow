@@ -59,10 +59,8 @@ const AgentLoginModal = ({ isOpen, onClose }: AgentLoginModalProps) => {
   };
 
   const handleSignUp = () => {
-    toast({
-      title: "Agent Registration",
-      description: "Please contact our team to register as an agent.",
-    });
+    onClose();
+    navigate("/agent-signup");
   };
 
   return (
