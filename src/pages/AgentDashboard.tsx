@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { Filter, User, FileText, CreditCard, ChevronDown } from "lucide-react";
 
 const AgentDashboard = () => {
@@ -224,6 +224,14 @@ const AgentDashboard = () => {
                       axisLine={false}
                       tickLine={false}
                       className="text-muted-foreground"
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px',
+                        color: 'hsl(var(--foreground))'
+                      }}
                     />
                     <Legend />
                     <Bar 
