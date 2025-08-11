@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, Award, Building2 } from "lucide-react";
+import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, Award, Building2, History, Ban, UserX } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -382,12 +382,15 @@ export const AdvisorManagement = () => {
                             View Advisor
                           </DropdownMenuItem>
                           <DropdownMenuItem>
+                            <History className="h-4 w-4 mr-2" />
                             View Call History
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600">
+                            <Ban className="h-4 w-4 mr-2" />
                             {advisor.status === "suspended" ? "Reactivate" : "Suspend"}
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-red-700">
+                            <UserX className="h-4 w-4 mr-2" />
                             Blacklist Advisor
                           </DropdownMenuItem>
                         </DropdownMenuContent>
