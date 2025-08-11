@@ -11,7 +11,6 @@ import Education from "./pages/Education";
 import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 import AgentSignup from "./pages/AgentSignup";
-import AgentLogin from "./pages/AgentLogin";
 import AgentDashboard from "./pages/AgentDashboard";
 import AgentProfile from "./pages/AgentProfile";
 import AgentReviews from "./pages/AgentReviews";
@@ -37,7 +36,6 @@ const App = () => (
           <Route path="/education" element={<Education />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/agent-signup" element={<AgentSignup />} />
-          <Route path="/agent-login" element={<AgentLogin />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
           <Route path="/agent-profile" element={<AgentProfile />} />
           <Route path="/agent-reviews" element={<AgentReviews />} />

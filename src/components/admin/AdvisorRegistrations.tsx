@@ -76,13 +76,6 @@ export const AdvisorRegistrations = () => {
 
   const handleApproveRegistration = async (registrationId: string) => {
     try {
-      // Find the registration to get details for email
-      const registration = registrations.find(r => r.id === registrationId);
-      if (!registration) {
-        throw new Error('Registration not found');
-      }
-
-      // Update the registration status in database
       const { error } = await (supabase as any)
         .from('agent_registrations')
         .update({ 
@@ -97,31 +90,9 @@ export const AdvisorRegistrations = () => {
         throw error;
       }
 
-      // Send approval email
-      try {
-        const emailResponse = await supabase.functions.invoke('send-approval-email', {
-          body: {
-            email: registration.email,
-            fullName: registration.full_name,
-            representativeCode: registration.representative_code,
-            approvalNotes: approvalReason || undefined
-          }
-        });
-
-        if (emailResponse.error) {
-          console.error('Error sending approval email:', emailResponse.error);
-          // Don't fail the approval process if email fails
-        } else {
-          console.log('Approval email sent successfully');
-        }
-      } catch (emailError) {
-        console.error('Error sending approval email:', emailError);
-        // Don't fail the approval process if email fails
-      }
-
       toast({
         title: "Registration Approved",
-        description: "The advisor registration has been approved and an email notification has been sent.",
+        description: "The advisor registration has been approved successfully.",
       });
       setApprovalReason("");
       fetchRegistrations(); // Refresh the data
