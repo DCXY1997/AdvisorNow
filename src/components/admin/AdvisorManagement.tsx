@@ -457,7 +457,7 @@ export const AdvisorManagement = () => {
                                           </div>
                                         </div>
                                         <div>
-                                          <div className="text-sm font-medium text-muted-foreground">Specialization</div>
+                                          <div className="text-sm font-medium text-muted-foreground">Specialisations</div>
                                           <div className="flex gap-1 flex-wrap">
                                             {advisor.specialization.map((specialty) => (
                                               <Badge key={specialty} className="bg-blue-100 text-blue-700">{specialty}</Badge>
