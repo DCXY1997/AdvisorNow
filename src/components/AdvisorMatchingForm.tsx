@@ -188,7 +188,7 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
           <Button
             type="submit"
             disabled={isSubmitting || !formData.name || !formData.phoneNumber || !formData.topic || !formData.financialInstitution || !formData.pdpaConsent}
-            className="w-full h-12 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 border-0"
+            className="w-full h-12 text-lg font-semibold bg-primary hover:bg-primary-light text-primary-foreground shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 border-0"
           >
             {isSubmitting ? "Submitting..." : "Find My Advisor"}
           </Button>
