@@ -160,7 +160,6 @@ const AgentProfile = () => {
       const { error } = await supabase
         .from('advisors')
         .update({
-          full_name: profileData.displayName,
           contact_number: profileData.contactNumber,
           bio: profileData.bio,
           credentials: profileData.credentials,
@@ -271,8 +270,8 @@ const AgentProfile = () => {
                     <Input
                       id="displayName"
                       value={profileData.displayName}
-                      onChange={(e) => handleInputChange("displayName", e.target.value)}
-                      className="transition-smooth focus:ring-2 focus:ring-primary/20"
+                      readOnly
+                      className="bg-muted/50 cursor-not-allowed"
                     />
                   </div>
                   
