@@ -34,6 +34,7 @@ const AgentProfile = () => {
 
   const [loading, setLoading] = useState(true);
   const [advisorId, setAdvisorId] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   const specializationOptions = [
     "Investment Planning",
@@ -75,17 +76,14 @@ const AgentProfile = () => {
       console.log('Initial session:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
+      setAuthChecked(true);
       
       if (session?.user) {
         loadAdvisorProfile(session.user);
       } else {
         setLoading(false);
-        toast({
-          title: "Authentication Required",
-          description: "Please log in to access your profile.",
-          variant: "destructive",
-        });
-        navigate('/');
+        // Don't show error immediately - let user see the page first
+        console.log('No session found');
       }
     });
 
@@ -310,12 +308,27 @@ const AgentProfile = () => {
     navigate("/agent-dashboard");
   };
 
-  if (loading) {
+  if (loading || !authChecked) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show authentication required message only after auth check is complete
+  if (authChecked && !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Authentication Required</h2>
+          <p className="text-muted-foreground mb-6">Please log in to access your profile.</p>
+          <Button onClick={() => navigate('/')} className="bg-primary hover:bg-primary-light text-primary-foreground">
+            Go to Login
+          </Button>
         </div>
       </div>
     );
