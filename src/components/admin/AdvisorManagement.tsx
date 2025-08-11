@@ -62,6 +62,17 @@ export const AdvisorManagement = () => {
           comment: "Dr. Johnson helped me restructure my investment portfolio. Couldn't be happier with the results!",
           callId: "call_003"
         }
+      ],
+      reports: [
+        {
+          id: "rep1",
+          userId: "user321",
+          userName: "Alex T.",
+          date: "2024-01-26",
+          complaint: "Advisor made inappropriate personal comments during financial consultation",
+          callId: "call_010",
+          status: "active"
+        }
       ]
     },
     {
@@ -99,7 +110,8 @@ export const AdvisorManagement = () => {
           comment: "Good advice on venture capital opportunities. Very responsive and knowledgeable.",
           callId: "call_005"
         }
-      ]
+      ],
+      reports: []
     },
     {
       id: "3",
@@ -135,6 +147,26 @@ export const AdvisorManagement = () => {
           date: "2024-01-20",
           comment: "Good basic advice on debt management, but nothing particularly insightful.",
           callId: "call_007"
+        }
+      ],
+      reports: [
+        {
+          id: "rep2",
+          userId: "user654",
+          userName: "Alex T.",
+          date: "2024-01-27", 
+          complaint: "Used unprofessional language during call",
+          callId: "call_011",
+          status: "active"
+        },
+        {
+          id: "rep3",
+          userId: "user987",
+          userName: "Alex T.",
+          date: "2024-01-28",
+          complaint: "Seemed intoxicated during video consultation",
+          callId: "call_012", 
+          status: "active"
         }
       ]
     },
@@ -173,7 +205,8 @@ export const AdvisorManagement = () => {
           comment: "Exceptional wealth management advice. Robert helped save me thousands in taxes this year.",
           callId: "call_009"
         }
-      ]
+      ],
+      reports: []
     }
   ];
 
@@ -367,9 +400,10 @@ export const AdvisorManagement = () => {
                               </DialogHeader>
                               
                               <Tabs defaultValue="overview" className="w-full">
-                                <TabsList className="grid w-full grid-cols-3">
+                                <TabsList className="grid w-full grid-cols-4">
                                   <TabsTrigger value="overview">Overview</TabsTrigger>
                                   <TabsTrigger value="reviews">Reviews ({advisor.reviewCount})</TabsTrigger>
+                                  <TabsTrigger value="reports">Reports ({advisor.reports?.length || 0})</TabsTrigger>
                                   <TabsTrigger value="analytics">Analytics</TabsTrigger>
                                 </TabsList>
                                 
@@ -505,6 +539,48 @@ export const AdvisorManagement = () => {
                                       </Card>
                                     ))}
                                   </div>
+                                </TabsContent>
+
+                                <TabsContent value="reports" className="space-y-4">
+                                  <div className="space-y-4">
+                                    {advisor.reports && advisor.reports.length > 0 ? (
+                                      advisor.reports.map((report, index) => (
+                                        <Card key={report.id} className="border-l-4 border-l-red-500">
+                                          <CardHeader className="pb-3">
+                                            <div className="flex justify-between items-start">
+                                              <div>
+                                                <CardTitle className="text-lg text-red-700">Report #{advisor.id}-{index + 1}</CardTitle>
+                                                <div className="text-sm text-muted-foreground">
+                                                  User: {report.userId} | Call: {report.callId} | {new Date(report.date).toLocaleDateString()}
+                                                </div>
+                                              </div>
+                                              <Badge className="bg-orange-100 text-orange-700 border-orange-200">
+                                                {report.status}
+                                              </Badge>
+                                            </div>
+                                          </CardHeader>
+                                          <CardContent>
+                                            <div className="mb-4">
+                                              <span className="font-medium text-red-700">Complaint: </span>
+                                              <span className="text-muted-foreground">{report.complaint}</span>
+                                            </div>
+                                            <Button 
+                                              size="sm" 
+                                              className="bg-green-600 hover:bg-green-700 text-white"
+                                            >
+                                              <Award className="h-4 w-4 mr-2" />
+                                              Resolve This Report
+                                            </Button>
+                                          </CardContent>
+                                        </Card>
+                                      ))
+                                    ) : (
+                                      <div className="text-center py-8 text-muted-foreground">
+                                        No reports found for this advisor.
+                                      </div>
+                                    )}
+                                  </div>
+
                                 </TabsContent>
 
                                 <TabsContent value="analytics" className="space-y-4">
