@@ -14,7 +14,122 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      advisors: {
+        Row: {
+          bio: string | null
+          contact_number: string | null
+          created_at: string
+          credentials: string | null
+          email: string
+          financial_institution: string
+          full_name: string
+          id: string
+          profile_image: string | null
+          registration_id: string | null
+          representative_code: string
+          specializations: string | null
+          status: string
+          subscription: string | null
+          tagline: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          bio?: string | null
+          contact_number?: string | null
+          created_at?: string
+          credentials?: string | null
+          email: string
+          financial_institution: string
+          full_name: string
+          id?: string
+          profile_image?: string | null
+          registration_id?: string | null
+          representative_code: string
+          specializations?: string | null
+          status?: string
+          subscription?: string | null
+          tagline?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          bio?: string | null
+          contact_number?: string | null
+          created_at?: string
+          credentials?: string | null
+          email?: string
+          financial_institution?: string
+          full_name?: string
+          id?: string
+          profile_image?: string | null
+          registration_id?: string | null
+          representative_code?: string
+          specializations?: string | null
+          status?: string
+          subscription?: string | null
+          tagline?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advisors_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_registrations: {
+        Row: {
+          approval_notes: string | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          email: string
+          financial_institution: string
+          full_name: string
+          id: string
+          password: string | null
+          rejection_reason: string | null
+          representative_code: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          approval_notes?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          email: string
+          financial_institution: string
+          full_name: string
+          id?: string
+          password?: string | null
+          rejection_reason?: string | null
+          representative_code: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          approval_notes?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          email?: string
+          financial_institution?: string
+          full_name?: string
+          id?: string
+          password?: string | null
+          rejection_reason?: string | null
+          representative_code?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

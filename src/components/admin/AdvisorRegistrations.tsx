@@ -81,7 +81,8 @@ export const AdvisorRegistrations = () => {
         .update({ 
           status: 'approved',
           approved_at: new Date().toISOString(),
-          approved_by: 'Admin' // You can get actual admin name from auth
+          approved_by: 'Admin', // You can get actual admin name from auth
+          approval_notes: approvalReason
         })
         .eq('id', registrationId);
 
@@ -357,6 +358,11 @@ export const AdvisorRegistrations = () => {
                                          {registration.approved_at && (
                                            <div className="text-sm text-muted-foreground">
                                              Approved on {new Date(registration.approved_at).toLocaleDateString()} {registration.approved_by && `by ${registration.approved_by}`}
+                                           </div>
+                                         )}
+                                         {registration.approval_notes && (
+                                           <div className="text-sm bg-green-50 p-3 rounded border-l-4 border-green-200">
+                                             <strong>Approval Notes:</strong> {registration.approval_notes}
                                            </div>
                                          )}
                                          {registration.rejection_reason && (
