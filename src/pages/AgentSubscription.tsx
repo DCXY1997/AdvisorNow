@@ -60,43 +60,47 @@ const AgentSubscription = () => {
   const planFeatures = [
     {
       name: "Basic",
-      duration: "1 Month Access",
+      duration: "Monthly Billing",
+      savings: null,
       features: [
         "Full access to advisor platform",
         "Complete analytics dashboard",
         "Client consultation management",
         "Review and rating system",
         "Profile customization",
-        "Email support"
+        "Email support",
+        "Data export capabilities",
+        "Historical performance tracking"
       ]
     },
     {
       name: "Premium", 
-      duration: "3 Months Access",
+      duration: "Quarterly Billing",
+      savings: "Save 10%",
       features: [
         "Full access to advisor platform",
-        "Complete analytics dashboard", 
+        "Complete analytics dashboard",
         "Client consultation management",
         "Review and rating system",
         "Profile customization",
-        "Priority email support",
+        "Email support",
         "Data export capabilities",
-        "Historical performance trends"
+        "Historical performance tracking"
       ]
     },
     {
       name: "Pro",
-      duration: "12 Months Access",
+      duration: "Annual Billing",
+      savings: "Save 20%",
       features: [
         "Full access to advisor platform",
         "Complete analytics dashboard",
-        "Client consultation management", 
+        "Client consultation management",
         "Review and rating system",
         "Profile customization",
-        "Priority phone & email support",
-        "Advanced data export & reports",
-        "Custom date range analytics",
-        "API access for integrations"
+        "Email support",
+        "Data export capabilities",
+        "Historical performance tracking"
       ]
     }
   ];
@@ -215,10 +219,10 @@ const AgentSubscription = () => {
                   </thead>
                   <tbody>
                     <tr className="border-b border-border">
-                      <td className="p-6 font-medium text-foreground">Access Period</td>
-                      <td className="text-center p-6 text-foreground font-semibold">1 Month</td>
-                      <td className="text-center p-6 text-foreground font-semibold">3 Months</td>
-                      <td className="text-center p-6 text-foreground font-semibold">12 Months</td>
+                      <td className="p-6 font-medium text-foreground">Billing Period</td>
+                      <td className="text-center p-6 text-foreground font-semibold">Monthly</td>
+                      <td className="text-center p-6 text-foreground font-semibold">Quarterly</td>
+                      <td className="text-center p-6 text-foreground font-semibold">Annually</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-6 font-medium text-foreground">Price</td>
@@ -226,16 +230,34 @@ const AgentSubscription = () => {
                       <td className="text-center p-6 text-foreground font-semibold">$809</td>
                       <td className="text-center p-6 text-foreground font-semibold">$2,870</td>
                     </tr>
+                    <tr className="border-b border-border">
+                      <td className="p-6 font-medium text-foreground">Savings</td>
+                      <td className="text-center p-6">
+                        <span className="text-muted-foreground">-</span>
+                      </td>
+                      <td className="text-center p-6">
+                        <span className="text-green-600 font-bold text-lg">Save 10%</span>
+                      </td>
+                      <td className="text-center p-6">
+                        <span className="text-green-600 font-bold text-lg">Save 20%</span>
+                      </td>
+                    </tr>
                     <tr>
                       <td className="p-6 font-medium text-foreground">Discount</td>
                       <td className="text-center p-6">
-                        <X className="h-5 w-5 text-red-500 mx-auto" />
+                        <span className="text-muted-foreground">No discount</span>
                       </td>
                       <td className="text-center p-6">
-                        <span className="text-green-600 font-semibold">10%</span>
+                        <div className="flex flex-col items-center">
+                          <span className="text-green-600 font-bold text-lg">10% OFF</span>
+                          <span className="text-xs text-muted-foreground">vs monthly</span>
+                        </div>
                       </td>
                       <td className="text-center p-6">
-                        <span className="text-green-600 font-semibold">20%</span>
+                        <div className="flex flex-col items-center">
+                          <span className="text-green-600 font-bold text-lg">20% OFF</span>
+                          <span className="text-xs text-muted-foreground">vs monthly</span>
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -250,10 +272,15 @@ const AgentSubscription = () => {
               <Card key={plan.name} className={`${plans[index].featured ? 'ring-2 ring-primary ring-offset-2' : ''}`}>
                 <CardHeader>
                   <CardTitle className="text-center text-xl">{plan.name}</CardTitle>
-                  <p className="text-center text-lg font-semibold text-primary">{plan.duration}</p>
+                  <p className="text-center text-sm text-muted-foreground">{plan.duration}</p>
+                  {plan.savings && (
+                    <Badge className="mx-auto bg-green-100 text-green-700 border-green-200">
+                      {plan.savings}
+                    </Badge>
+                  )}
                   {plans[index].featured && (
-                    <Badge className="mx-auto bg-primary text-primary-foreground">
-                      Best Value
+                    <Badge className="mx-auto bg-primary text-primary-foreground mt-2">
+                      Most Popular
                     </Badge>
                   )}
                 </CardHeader>
