@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,21 +9,26 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Upload, User, Save, ChevronDown, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser, Session } from '@supabase/supabase-js';
 
 const AgentProfile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
   
   const [profileData, setProfileData] = useState({
-    displayName: "John Smith",
-    email: "john.smith@example.com",
-    contactNumber: "+65 9123 4567",
-    representativeNumber: "REP-2024-0123",
-    financialInstitution: "AIA",
-    bio: "Experienced financial advisor with over 10 years in wealth management and retirement planning.",
-    credentials: "CFP, CFA, ChFC - Certified Financial Planner with expertise in investment strategies and risk management.",
-    tagline: "Building your financial future, one step at a time",
-    specializations: ["Retirement Planning", "Investment Planning", "Wealth Management"],
+    displayName: "",
+    email: "",
+    contactNumber: "",
+    representativeNumber: "",
+    financialInstitution: "",
+    bio: "",
+    credentials: "",
+    tagline: "",
+    specializations: [] as string[],
     profileImage: ""
   });
 
@@ -40,6 +45,93 @@ const AgentProfile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Authentication and data fetching
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchAdvisorData(session.user.email!);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchAdvisorData(session.user.email!);
+      } else {
+        // Redirect to login if not authenticated
+        navigate('/agent-login');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const fetchAdvisorData = async (email: string) => {
+    try {
+      // First, try to get data from advisors table
+      const { data: advisorData, error: advisorError } = await (supabase as any)
+        .from('advisors')
+        .select('*')
+        .eq('email', email)
+        .maybeSingle();
+
+      if (advisorData) {
+        // Use data from advisors table
+        setProfileData({
+          displayName: advisorData.full_name || "",
+          email: advisorData.email || "",
+          contactNumber: advisorData.contact_number || "",
+          representativeNumber: advisorData.representative_code || "",
+          financialInstitution: advisorData.financial_institution || "",
+          bio: advisorData.bio || "",
+          credentials: advisorData.credentials || "",
+          tagline: advisorData.tagline || "",
+          specializations: advisorData.specializations ? advisorData.specializations.split(',').map((s: string) => s.trim()) : [],
+          profileImage: advisorData.profile_image || ""
+        });
+      } else {
+        // Fallback to agent_registrations table if not in advisors table yet
+        const { data: registrationData, error: regError } = await (supabase as any)
+          .from('agent_registrations')
+          .select('*')
+          .eq('email', email)
+          .eq('status', 'approved')
+          .maybeSingle();
+
+        if (registrationData) {
+          setProfileData({
+            displayName: registrationData.full_name || "",
+            email: registrationData.email || "",
+            contactNumber: "",
+            representativeNumber: registrationData.representative_code || "",
+            financialInstitution: registrationData.financial_institution || "",
+            bio: "",
+            credentials: "",
+            tagline: "",
+            specializations: [],
+            profileImage: ""
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching advisor data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load profile data",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSpecializationToggle = (specialization: string) => {
     setProfileData(prev => ({
@@ -75,21 +167,115 @@ const AgentProfile = () => {
   };
 
   const handleSave = async () => {
+    if (!user?.email) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to save changes",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsUpdating(true);
     
-    // Simulate save process
-    setTimeout(() => {
+    try {
+      // First check if advisor record exists
+      const { data: existingAdvisor } = await (supabase as any)
+        .from('advisors')
+        .select('id')
+        .eq('email', user.email)
+        .maybeSingle();
+
+      const updateData = {
+        full_name: profileData.displayName,
+        email: profileData.email,
+        contact_number: profileData.contactNumber,
+        bio: profileData.bio,
+        credentials: profileData.credentials,
+        tagline: profileData.tagline,
+        specializations: profileData.specializations.join(', '),
+        profile_image: profileData.profileImage,
+        updated_at: new Date().toISOString()
+      };
+
+      if (existingAdvisor) {
+        // Update existing advisor
+        const { error } = await (supabase as any)
+          .from('advisors')
+          .update(updateData)
+          .eq('email', user.email);
+
+        if (error) throw error;
+      } else {
+        // Create new advisor record (this should be handled by the approval process)
+        const { data: registrationData } = await (supabase as any)
+          .from('agent_registrations')
+          .select('*')
+          .eq('email', user.email)
+          .eq('status', 'approved')
+          .maybeSingle();
+
+        if (registrationData) {
+          const { error } = await (supabase as any)
+            .from('advisors')
+            .insert({
+              ...updateData,
+              representative_code: registrationData.representative_code,
+              financial_institution: registrationData.financial_institution,
+              registration_id: registrationData.id,
+              user_id: user.id
+            });
+
+          if (error) throw error;
+        }
+      }
+
       toast({
         title: "Profile Updated",
         description: "Your profile has been saved successfully.",
       });
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save profile changes",
+        variant: "destructive"
+      });
+    } finally {
       setIsUpdating(false);
-    }, 1500);
+    }
   };
 
   const handleBackToDashboard = () => {
     navigate("/agent-dashboard");
   };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg font-medium">Loading profile...</div>
+          <div className="text-sm text-muted-foreground">Please wait while we fetch your data</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if no user
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg font-medium">Access Denied</div>
+          <div className="text-sm text-muted-foreground">Please log in to view your profile</div>
+          <Button onClick={() => navigate('/agent-login')} className="mt-4">
+            Go to Login
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
