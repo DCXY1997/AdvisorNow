@@ -21,7 +21,7 @@ const Testimonials = () => {
               Why People Love It
             </h2>
             <p className="text-muted-foreground text-lg">
-              Ready to join our platform and connect with real, ready to talk users
+              Ready to join our platform and connect with real, ready to talk advisors
             </p>
           </div>
           
