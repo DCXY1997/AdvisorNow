@@ -96,11 +96,11 @@ const AdvisorFullReview = () => {
               <Avatar className="h-12 w-12">
                 <AvatarImage src="" />
                 <AvatarFallback className="text-lg">
-                  {advisor.full_name?.split(' ').map((n: string) => n[0]).join('') || 'NA'}
+                  {advisor.name.split(' ').map((n: string) => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">{advisor.full_name || advisor.name}</h1>
+                <h1 className="text-2xl font-bold text-foreground">{advisor.name}</h1>
                 <div className="flex items-center gap-2">
                   {getStatusBadge(advisor.status)}
                   {getSubscriptionBadge(advisor.subscription)}
