@@ -86,14 +86,12 @@ const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
   ];
 
   const topics = [
+    "Insurance Planning",
     "Investment Planning",
-    "Insurance Coverage",
     "Retirement Planning",
-    "Education Planning",
-    "Wealth Management",
-    "Tax Planning",
     "Estate Planning",
-    "General Financial Advice"
+    "Education Planning",
+    "Corporate Solution"
   ];
 
   return (

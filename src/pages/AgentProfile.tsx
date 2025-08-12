@@ -28,13 +28,12 @@ const AgentProfile = () => {
   });
 
   const specializationOptions = [
+    "Insurance Planning",
     "Investment Planning",
-    "Insurance Coverage", 
     "Retirement Planning",
+    "Estate Planning",
     "Education Planning",
-    "Wealth Management",
-    "Tax Planning",
-    "Estate Planning"
+    "Corporate Solution"
   ];
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
