@@ -73,6 +73,8 @@ export const AdvisorManagement = () => {
     switch (status) {
       case "active":
         return <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>;
+      case "inactive":
+        return <Badge className="bg-orange-100 text-orange-700 border-orange-200">Inactive</Badge>;
       case "suspended":
         return <Badge className="bg-red-100 text-red-700 border-red-200">Suspended</Badge>;
       case "pending":
@@ -155,6 +157,7 @@ export const AdvisorManagement = () => {
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
                   <SelectItem value="suspended">Suspended</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                 </SelectContent>
