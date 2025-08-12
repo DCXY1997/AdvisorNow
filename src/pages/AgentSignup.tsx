@@ -14,7 +14,6 @@ const AgentSignup = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    password: "",
     representativeCode: "",
     financialInstitution: "",
   });
@@ -37,9 +36,9 @@ const AgentSignup = () => {
     e.preventDefault();
     e.stopPropagation();
     
-    const { fullName, email, password, representativeCode, financialInstitution } = formData;
+    const { fullName, email, representativeCode, financialInstitution } = formData;
     
-    if (!fullName || !email || !password || !representativeCode || !financialInstitution) {
+    if (!fullName || !email || !representativeCode || !financialInstitution) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields to continue.",
@@ -57,7 +56,6 @@ const AgentSignup = () => {
         .insert({
           full_name: fullName,
           email: email,
-          password: password,
           representative_code: representativeCode,
           financial_institution: financialInstitution,
           status: 'pending'
@@ -75,7 +73,6 @@ const AgentSignup = () => {
       setFormData({
         fullName: "",
         email: "",
-        password: "",
         representativeCode: "",
         financialInstitution: "",
       });
@@ -142,20 +139,6 @@ const AgentSignup = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => handleInputChange("password", e.target.value)}
-                placeholder="Enter your password"
-                required
-                className="h-12 transition-smooth focus:ring-2 focus:ring-primary/20 border-border"
-              />
-            </div>
 
             <div className="space-y-2">
               <Label htmlFor="representativeCode" className="text-sm font-medium text-foreground">
