@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,75 +6,55 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Phone, Building2, Star, AlertTriangle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 
 const AdvisorFullReview = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [advisor, setAdvisor] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   
-  // Get advisor ID from navigation state or URL params
-  const advisorId = location.state?.advisorId || new URLSearchParams(location.search).get('id');
-  
-  useEffect(() => {
-    const fetchAdvisor = async () => {
-      if (!advisorId) {
-        setLoading(false);
-        return;
+  // Get advisor data from navigation state
+  const advisor = location.state?.advisor || {
+    id: "1",
+    name: "Dr. Sarah Johnson",
+    email: "sarah.johnson@email.com",
+    phone: "+1 (555) 123-4567",
+    representativeNumber: "REP-789456123",
+    financialInstitution: "AIA",
+    rating: 4.8,
+    reviewCount: 156,
+    status: "active",
+    joinDate: "2024-01-15",
+    subscription: "Premium",
+    totalCalls: 234,
+    specialization: ["Investment Planning", "Retirement", "Tax Strategy"],
+    credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CFA - Chartered Financial Analyst", "Top 100 Financial Advisors 2023 - Forbes"],
+    bio: "Dr. Sarah Johnson is a seasoned financial advisor specializing in comprehensive investment planning and retirement strategies. She has been recognized for her exceptional client service and innovative portfolio management techniques.",
+    reviews: [
+      {
+        id: "r1",
+        userId: "user123",
+        userName: "John D.",
+        rating: 5,
+        date: "2024-01-20",
+        comment: "Excellent advice on my retirement planning. Dr. Johnson was very thorough and explained everything clearly.",
+        callId: "call_001"
+      },
+      {
+        id: "r2",
+        userId: "user456",
+        userName: "Mary S.",
+        rating: 4,
+        date: "2024-01-18",
+        comment: "Great insights on tax optimization strategies. Very knowledgeable and professional.",
+        callId: "call_002"
       }
-      
-      try {
-        const { data, error } = await supabase
-          .from('advisors')
-          .select('*')
-          .eq('id', advisorId)
-          .single();
-          
-        if (error) {
-          console.error('Error fetching advisor:', error);
-        } else {
-          setAdvisor(data);
-        }
-      } catch (error) {
-        console.error('Error fetching advisor:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchAdvisor();
-  }, [advisorId]);
-  
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-lg">Loading advisor details...</div>
-        </div>
-      </div>
-    );
-  }
-  
-  if (!advisor) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-lg text-muted-foreground">Advisor not found</div>
-          <Button onClick={() => navigate("/admin-dashboard")} className="mt-4">
-            Back to Dashboard
-          </Button>
-        </div>
-      </div>
-    );
-  }
+    ],
+    reports: []
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
         return <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>;
-      case "inactive":
-        return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Inactive</Badge>;
       case "suspended":
         return <Badge className="bg-red-100 text-red-700 border-red-200">Suspended</Badge>;
       case "pending":
@@ -114,16 +94,16 @@ const AdvisorFullReview = () => {
             </Button>
             <div className="flex items-center gap-3">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={advisor.profile_image || ""} />
+                <AvatarImage src="" />
                 <AvatarFallback className="text-lg">
-                  {advisor.full_name ? advisor.full_name.split(' ').map((n: string) => n[0]).join('') : 'A'}
+                  {advisor.name.split(' ').map((n: string) => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">{advisor.full_name || ''}</h1>
+                <h1 className="text-2xl font-bold text-foreground">{advisor.name}</h1>
                 <div className="flex items-center gap-2">
                   {getStatusBadge(advisor.status)}
-                  {advisor.subscription && getSubscriptionBadge(advisor.subscription)}
+                  {getSubscriptionBadge(advisor.subscription)}
                 </div>
               </div>
             </div>
@@ -136,8 +116,8 @@ const AdvisorFullReview = () => {
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews (0)</TabsTrigger>
-            <TabsTrigger value="reports">Reports (0)</TabsTrigger>
+            <TabsTrigger value="reviews">Reviews ({advisor.reviewCount})</TabsTrigger>
+            <TabsTrigger value="reports">Reports ({advisor.reports?.length || 0})</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview" className="space-y-6 mt-6">
@@ -153,15 +133,15 @@ const AdvisorFullReview = () => {
                 <CardContent className="space-y-3">
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Email</div>
-                    <div>{advisor.email || ''}</div>
+                    <div>{advisor.email}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Phone</div>
-                    <div>{advisor.contact_number || ''}</div>
+                    <div>{advisor.phone}</div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-muted-foreground">Representative Code</div>
-                    <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.representative_code || ''}</code>
+                    <div className="text-sm font-medium text-muted-foreground">Representative Number</div>
+                    <code className="bg-muted px-2 py-1 rounded text-sm">{advisor.representativeNumber}</code>
                   </div>
                 </CardContent>
               </Card>
@@ -177,28 +157,24 @@ const AdvisorFullReview = () => {
                 <CardContent className="space-y-3">
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Financial Institution</div>
-                    <div>{advisor.financial_institution || ''}</div>
+                    <div>{advisor.financialInstitution}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-muted-foreground">Credentials & Accolades</div>
                     <div className="space-y-1">
-                      {advisor.credentials ? (
-                        <div className="text-sm bg-green-50 p-2 rounded border-l-2 border-green-200">
-                          {advisor.credentials}
+                      {advisor.credentialsAccolades.map((credential: string, index: number) => (
+                        <div key={index} className="text-sm bg-green-50 p-2 rounded border-l-2 border-green-200">
+                          {credential}
                         </div>
-                      ) : (
-                        <div className="text-sm text-muted-foreground">No credentials listed</div>
-                      )}
+                      ))}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-muted-foreground">Specializations</div>
+                    <div className="text-sm font-medium text-muted-foreground">Specialisations</div>
                     <div className="flex gap-1 flex-wrap">
-                      {advisor.specializations ? (
-                        <Badge className="bg-blue-100 text-blue-700">{advisor.specializations}</Badge>
-                      ) : (
-                        <div className="text-sm text-muted-foreground">No specializations listed</div>
-                      )}
+                      {advisor.specialization.map((specialty: string) => (
+                        <Badge key={specialty} className="bg-blue-100 text-blue-700">{specialty}</Badge>
+                      ))}
                     </div>
                   </div>
                 </CardContent>
@@ -211,9 +187,7 @@ const AdvisorFullReview = () => {
                 <CardTitle className="text-lg">Biography</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  {advisor.bio || 'No biography available'}
-                </p>
+                <p className="text-muted-foreground leading-relaxed">{advisor.bio}</p>
               </CardContent>
             </Card>
 
@@ -221,19 +195,19 @@ const AdvisorFullReview = () => {
             <div className="grid grid-cols-3 gap-4">
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-green-600">-</div>
+                  <div className="text-3xl font-bold text-green-600">{advisor.rating}</div>
                   <div className="text-sm text-muted-foreground">Average Rating</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-600">-</div>
+                  <div className="text-3xl font-bold text-blue-600">{advisor.totalCalls}</div>
                   <div className="text-sm text-muted-foreground">Total Calls</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-purple-600">-</div>
+                  <div className="text-3xl font-bold text-purple-600">{advisor.reviewCount}</div>
                   <div className="text-sm text-muted-foreground">Reviews</div>
                 </CardContent>
               </Card>
@@ -246,8 +220,30 @@ const AdvisorFullReview = () => {
                 <CardTitle>Client Reviews</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  No reviews available for this advisor.
+                <div className="space-y-4">
+                  {advisor.reviews.map((review: any) => (
+                    <div key={review.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <div className="font-medium">{review.userName}</div>
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-4 w-4 ${
+                                  i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                            <span className="text-sm text-muted-foreground ml-1">
+                              {new Date(review.date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{review.comment}</p>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
