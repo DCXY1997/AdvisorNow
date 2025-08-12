@@ -23,7 +23,7 @@ const AgentProfile = () => {
     bio: "Experienced financial advisor with over 10 years in wealth management and retirement planning.",
     credentials: "CFP, CFA, ChFC - Certified Financial Planner with expertise in investment strategies and risk management.",
     tagline: "Building your financial future, one step at a time",
-    specializations: ["Retirement Planning", "Investment Planning", "Wealth Management"],
+    specializations: ["Retirement Planning", "Investment Planning"],
     profileImage: ""
   });
 
