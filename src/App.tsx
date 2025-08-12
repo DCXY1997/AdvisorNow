@@ -17,6 +17,7 @@ import AgentReviews from "./pages/AgentReviews";
 import AdvisorFullReview from "./pages/AdvisorFullReview";
 import AgentSubscription from "./pages/AgentSubscription";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
 import VideoCall from "./pages/VideoCall";
 import ReviewRating from "./pages/ReviewRating";
 
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/agent-profile" element={<AgentProfile />} />
           <Route path="/agent-reviews" element={<AgentReviews />} />
           <Route path="/agent-subscription" element={<AgentSubscription />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/advisor-full-review" element={<AdvisorFullReview />} />
           <Route path="/video-call" element={<VideoCall />} />
