@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,221 +7,58 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Eye, MoreHorizontal, Star, Phone, Calendar, Award, Building2, History, Ban, UserX } from "lucide-react";
+import { Search, Filter, Eye, MoreHorizontal, Star, History, Ban, UserX } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export const AdvisorManagement = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("name");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [advisors, setAdvisors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock advisor data with detailed information and reviews
-  const advisors = [
-    {
-      id: "1",
-      name: "Dr. Sarah Johnson",
-      email: "sarah.johnson@email.com",
-      phone: "+1 (555) 123-4567",
-      representativeNumber: "REP-789456123",
-      financialInstitution: "AIA",
-      rating: 4.8,
-      reviewCount: 156,
-      status: "active",
-      joinDate: "2024-01-15",
-      subscription: "Premium",
-      totalCalls: 234,
-      specialization: ["Investment Planning", "Retirement", "Tax Strategy"],
-      credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CFA - Chartered Financial Analyst", "Top 100 Financial Advisors 2023 - Forbes"],
-      bio: "Dr. Sarah Johnson is a seasoned financial advisor specializing in comprehensive investment planning and retirement strategies. She has been recognized for her exceptional client service and innovative portfolio management techniques.",
-      reviews: [
-        {
-          id: "r1",
-          userId: "user123",
-          userName: "John D.",
-          rating: 5,
-          date: "2024-01-20",
-          comment: "Excellent advice on my retirement planning. Dr. Johnson was very thorough and explained everything clearly.",
-          callId: "call_001"
-        },
-        {
-          id: "r2",
-          userId: "user456",
-          userName: "Mary S.",
-          rating: 4,
-          date: "2024-01-18",
-          comment: "Great insights on tax optimization strategies. Very knowledgeable and professional.",
-          callId: "call_002"
-        },
-        {
-          id: "r3",
-          userId: "user789",
-          userName: "Robert K.",
-          rating: 5,
-          date: "2024-01-15",
-          comment: "Dr. Johnson helped me restructure my investment portfolio. Couldn't be happier with the results!",
-          callId: "call_003"
+  // Fetch approved advisors from Supabase
+  useEffect(() => {
+    const fetchAdvisors = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('advisors')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          throw error;
         }
-      ],
-      reports: [
-        {
-          id: "rep1",
-          userId: "user321",
-          userName: "Alex T.",
-          date: "2024-01-26",
-          complaint: "Advisor made inappropriate personal comments during financial consultation",
-          callId: "call_010",
-          status: "active"
-        }
-      ]
-    },
-    {
-      id: "2", 
-      name: "Michael Chen",
-      email: "michael.chen@email.com",
-      phone: "+1 (555) 234-5678",
-      representativeNumber: "REP-456789012",
-      financialInstitution: "Great Eastern",
-      rating: 4.6,
-      reviewCount: 89,
-      status: "active",
-      joinDate: "2024-02-01",
-      subscription: "Basic",
-      totalCalls: 156,
-      specialization: ["Startup Financing", "Venture Capital", "Financial Tech"],
-      credentialsAccolades: ["CFP - Certified Financial Planner", "Series 7 - General Securities Representative", "Fintech Innovation Award 2023"],
-      bio: "Michael Chen specializes in startup financing and venture capital advisory. He has extensive experience working with tech entrepreneurs and early-stage companies, helping them navigate complex funding landscapes.",
-      reviews: [
-        {
-          id: "r4",
-          userId: "user321",
-          userName: "Lisa T.",
-          rating: 5,
-          date: "2024-01-25",
-          comment: "Michael's expertise in startup funding was invaluable for my new business venture.",
-          callId: "call_004"
-        },
-        {
-          id: "r5",
-          userId: "user654",
-          userName: "David W.",
-          rating: 4,
-          date: "2024-01-22",
-          comment: "Good advice on venture capital opportunities. Very responsive and knowledgeable.",
-          callId: "call_005"
-        }
-      ],
-      reports: []
-    },
-    {
-      id: "3",
-      name: "Jennifer Davis",
-      email: "jennifer.davis@email.com",
-      phone: "+1 (555) 345-6789", 
-      representativeNumber: "REP-123789456",
-      financialInstitution: "Prudential",
-      rating: 3.2,
-      reviewCount: 45,
-      status: "suspended",
-      joinDate: "2024-01-20",
-      subscription: "Pro",
-      totalCalls: 78,
-      specialization: ["Personal Finance", "Debt Management"],
-      credentialsAccolades: ["CFP - Certified Financial Planner"],
-      bio: "Jennifer Davis focuses on personal finance management and debt reduction strategies for middle-income families.",
-      reviews: [
-        {
-          id: "r6",
-          userId: "user111",
-          userName: "Tom M.",
-          rating: 2,
-          date: "2024-01-24",
-          comment: "Session was not very helpful. Advisor seemed unprepared and gave generic advice.",
-          callId: "call_006"
-        },
-        {
-          id: "r7",
-          userId: "user222",
-          userName: "Sarah P.",
-          rating: 4,
-          date: "2024-01-20",
-          comment: "Good basic advice on debt management, but nothing particularly insightful.",
-          callId: "call_007"
-        }
-      ],
-      reports: [
-        {
-          id: "rep2",
-          userId: "user654",
-          userName: "Alex T.",
-          date: "2024-01-27", 
-          complaint: "Used unprofessional language during call",
-          callId: "call_011",
-          status: "active"
-        },
-        {
-          id: "rep3",
-          userId: "user987",
-          userName: "Alex T.",
-          date: "2024-01-28",
-          complaint: "Seemed intoxicated during video consultation",
-          callId: "call_012", 
-          status: "active"
-        }
-      ]
-    },
-    {
-      id: "4",
-      name: "Robert Wilson",
-      email: "robert.wilson@email.com",
-      phone: "+1 (555) 456-7890",
-      representativeNumber: "REP-987654321",
-      financialInstitution: "Income", 
-      rating: 4.9,
-      reviewCount: 203,
-      status: "active",
-      joinDate: "2023-12-10",
-      subscription: "Premium",
-      totalCalls: 345,
-      specialization: ["Wealth Management", "Estate Planning", "Tax Optimization"],
-      credentialsAccolades: ["CFP - Certified Financial Planner", "CPA - Certified Public Accountant", "CLU - Chartered Life Underwriter", "ChFC - Chartered Financial Consultant", "Top 1% Wealth Advisors - Barron's 2023"],
-      bio: "Robert Wilson is a highly experienced wealth manager with dual expertise in law and finance. He specializes in comprehensive estate planning and tax optimization for high-net-worth individuals.",
-      reviews: [
-        {
-          id: "r8",
-          userId: "user333",
-          userName: "Elizabeth H.",
-          rating: 5,
-          date: "2024-01-26",
-          comment: "Outstanding estate planning guidance. Robert's legal background really shows in his comprehensive approach.",
-          callId: "call_008"
-        },
-        {
-          id: "r9",
-          userId: "user444",
-          userName: "Michael R.",
-          rating: 5,
-          date: "2024-01-24",
-          comment: "Exceptional wealth management advice. Robert helped save me thousands in taxes this year.",
-          callId: "call_009"
-        }
-      ],
-      reports: []
-    }
-  ];
+
+        setAdvisors(data || []);
+      } catch (error: any) {
+        toast({
+          title: "Error Loading Advisors",
+          description: error.message || "Failed to load advisor data",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAdvisors();
+  }, [toast]);
 
   const filteredAdvisors = advisors.filter(advisor => {
     const matchesSearch = () => {
       const term = searchTerm.toLowerCase();
       switch (searchType) {
         case "name":
-          return advisor.name.toLowerCase().includes(term);
+          return advisor.full_name?.toLowerCase().includes(term) || false;
         case "email":
-          return advisor.email.toLowerCase().includes(term);
+          return advisor.email?.toLowerCase().includes(term) || false;
         case "representative":
-          return advisor.representativeNumber.toLowerCase().includes(term);
+          return advisor.representative_code?.toLowerCase().includes(term) || false;
         default:
           return true;
       }
@@ -254,10 +91,24 @@ export const AdvisorManagement = () => {
     
     return (
       <Badge className={colorMap[subscription] || "bg-gray-100 text-gray-700 border-gray-200"}>
-        {subscription}
+        {subscription || "N/A"}
       </Badge>
     );
   };
+
+  const getInitials = (name: string) => {
+    return name ? name.split(' ').map(n => n[0]).join('').toUpperCase() : 'NA';
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="p-8 text-center">
+          <div className="text-muted-foreground">Loading advisor data...</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -318,11 +169,10 @@ export const AdvisorManagement = () => {
                 <TableRow>
                   <TableHead>Advisor</TableHead>
                   <TableHead>Contact</TableHead>
-                  <TableHead>Rep Number</TableHead>
-                  <TableHead>Rating</TableHead>
+                  <TableHead>Rep Code</TableHead>
+                  <TableHead>Institution</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Subscription</TableHead>
-                  <TableHead>Total Calls</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -332,41 +182,35 @@ export const AdvisorManagement = () => {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar>
-                          <AvatarImage src="" />
+                          <AvatarImage src={advisor.profile_image || ""} />
                           <AvatarFallback>
-                            {advisor.name.split(' ').map(n => n[0]).join('')}
+                            {getInitials(advisor.full_name)}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <div className="font-medium">{advisor.name}</div>
+                          <div className="font-medium">{advisor.full_name}</div>
                           <div className="text-sm text-muted-foreground">
-                            Joined {new Date(advisor.joinDate).toLocaleDateString()}
+                            Joined {new Date(advisor.created_at).toLocaleDateString()}
                           </div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">{advisor.email}</div>
+                      {advisor.contact_number && (
+                        <div className="text-xs text-muted-foreground">{advisor.contact_number}</div>
+                      )}
                     </TableCell>
                     <TableCell>
                       <code className="text-xs bg-muted px-2 py-1 rounded">
-                        {advisor.representativeNumber}
+                        {advisor.representative_code}
                       </code>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-medium">{advisor.rating}</span>
-                        <span className="text-sm text-muted-foreground">
-                          ({advisor.reviewCount})
-                        </span>
-                      </div>
+                      <div className="text-sm">{advisor.financial_institution}</div>
                     </TableCell>
                     <TableCell>{getStatusBadge(advisor.status)}</TableCell>
                     <TableCell>{getSubscriptionBadge(advisor.subscription)}</TableCell>
-                    <TableCell>
-                      <span className="font-medium">{advisor.totalCalls}</span>
-                    </TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -374,12 +218,12 @@ export const AdvisorManagement = () => {
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border shadow-lg z-50">
+                        <DropdownMenuContent align="end" className="bg-background border shadow-lg z-50">
                           <DropdownMenuItem 
                             onClick={() => navigate("/advisor-full-review", { state: { advisor } })}
                           >
                             <Eye className="h-4 w-4 mr-2" />
-                            View Advisor
+                            View Details
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <History className="h-4 w-4 mr-2" />
@@ -391,7 +235,7 @@ export const AdvisorManagement = () => {
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-red-700">
                             <UserX className="h-4 w-4 mr-2" />
-                            Blacklist Advisor
+                            Remove Advisor
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -404,7 +248,10 @@ export const AdvisorManagement = () => {
 
           {filteredAdvisors.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
-              No advisors found matching your search criteria.
+              {advisors.length === 0 
+                ? "No advisors have been approved yet." 
+                : "No advisors found matching your search criteria."
+              }
             </div>
           )}
         </CardContent>
