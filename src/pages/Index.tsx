@@ -123,10 +123,10 @@ const Index = () => {
             <div>
               <h4 className="font-semibold mb-4">Services</h4>
               <ul className="space-y-2 text-primary-foreground/80">
-                <li>Insurance Planning</li>
-                <li>Investment Advisory</li>
-                <li>Retirement Planning</li>
-                <li>Education Funding</li>
+                <li><a href="/insurance" className="hover:text-primary-foreground transition-colors">Insurance Planning</a></li>
+                <li><a href="/investment" className="hover:text-primary-foreground transition-colors">Investment Advisory</a></li>
+                <li><a href="/retirement" className="hover:text-primary-foreground transition-colors">Retirement Planning</a></li>
+                <li><a href="/education" className="hover:text-primary-foreground transition-colors">Education Funding</a></li>
               </ul>
             </div>
             
