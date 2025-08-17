@@ -8,6 +8,7 @@ import About from "./pages/About";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ConsumerProtectionAct from "./pages/ConsumerProtectionAct";
+import HelpSupport from "./pages/HelpSupport";
 import Investment from "./pages/Investment";
 import Insurance from "./pages/Insurance";
 import Retirement from "./pages/Retirement";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/consumer-protection-act" element={<ConsumerProtectionAct />} />
+          <Route path="/help-support" element={<HelpSupport />} />
           <Route path="/investment" element={<Investment />} />
           <Route path="/insurance" element={<Insurance />} />
           <Route path="/retirement" element={<Retirement />} />
