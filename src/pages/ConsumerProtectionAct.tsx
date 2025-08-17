@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, CheckCircle, AlertTriangle, Phone } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const ConsumerProtectionAct = () => {
   return (
@@ -114,6 +115,8 @@ const ConsumerProtectionAct = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };

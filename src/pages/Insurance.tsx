@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import { useState } from "react";
 import AdvisorMatchingForm from "@/components/AdvisorMatchingForm";
 import InsuranceAdvisorCards from "@/components/InsuranceAdvisorCards";
+import Footer from "@/components/Footer";
 
 const Insurance = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -15,6 +16,8 @@ const Insurance = () => {
           <InsuranceAdvisorCards onConnectClick={() => setIsFormOpen(true)} />
         </div>
       </div>
+
+      <Footer />
 
       <AdvisorMatchingForm
         isOpen={isFormOpen}

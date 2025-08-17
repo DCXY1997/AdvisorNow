@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Footer from "@/components/Footer";
 import { CheckCircle, Shield, Users, Heart } from "lucide-react";
 
 const About = () => {
@@ -145,6 +146,8 @@ const About = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };

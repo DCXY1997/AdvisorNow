@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import { Card, CardContent } from "@/components/ui/card";
+import Footer from "@/components/Footer";
 
 const TermsOfService = () => {
   return (
@@ -148,6 +149,8 @@ const TermsOfService = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };

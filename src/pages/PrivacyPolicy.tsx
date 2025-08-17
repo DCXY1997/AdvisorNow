@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import { Card, CardContent } from "@/components/ui/card";
+import Footer from "@/components/Footer";
 
 const PrivacyPolicy = () => {
   return (
@@ -134,6 +135,8 @@ const PrivacyPolicy = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };
