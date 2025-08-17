@@ -131,15 +131,6 @@ const Index = () => {
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Contact</h4>
-              <div className="space-y-2 text-primary-foreground/80">
-                <p>📧 hello@advisornow.sg</p>
-                <p>📞 +65 6123 4567</p>
-                <p>🏢 Singapore CBD</p>
-              </div>
-            </div>
-            
-            <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-primary-foreground/80">
                 <li><a href="#" className="hover:text-primary-foreground transition-colors">About AdvisorNow</a></li>
