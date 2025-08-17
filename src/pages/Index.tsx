@@ -138,10 +138,21 @@ const Index = () => {
                 <p>🏢 Singapore CBD</p>
               </div>
             </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-primary-foreground/80">
+                <li><a href="#" className="hover:text-primary-foreground transition-colors">About AdvisorNow</a></li>
+                <li><a href="#" className="hover:text-primary-foreground transition-colors">Help & Support</a></li>
+                <li><a href="#" className="hover:text-primary-foreground transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-primary-foreground transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-primary-foreground transition-colors">Consumer Protection Act</a></li>
+              </ul>
+            </div>
           </div>
           
           <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/60">
-            <p>&copy; 2024 AdvisorNow. All rights reserved. | Privacy Policy | Terms of Service</p>
+            <p>&copy; 2024 AdvisorNow. All rights reserved.</p>
           </div>
         </div>
       </footer>
