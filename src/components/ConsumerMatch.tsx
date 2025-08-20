@@ -1,224 +1,236 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { UserSearch, Users, CheckCircle } from 'lucide-react';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { supabase } from '@/integrations/supabase/client'
 
-interface ConsumerMatchProps {
-  onMatch?: (matchData: any) => void;
-}
+const TOPICS = ['Insurance', 'Investment', 'Retirement', 'Education']
+const INSTITUTIONS = ['Any', 'Great Eastern', 'Prudential', 'AIA', 'NTUC Income', 'Tokio Marine']
 
-const ConsumerMatch: React.FC<ConsumerMatchProps> = ({ onMatch }) => {
+export default function ConsumerMatch() {
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    serviceType: '',
-    budget: '',
-    experience: '',
-    preferences: [] as string[],
-    consent: false
-  });
+    fullName: '',
+    phoneNumber: '',
+    topicOfInterest: '',
+    preferredFinancialInstitution: 'Any'
+  })
+  
+  const [status, setStatus] = useState<'form' | 'searching' | 'no-advisor' | 'ringing'>('form')
+  const [consent, setConsent] = useState(false)
+  const [error, setError] = useState('')
 
-  const serviceTypes = [
-    'Investment Planning',
-    'Retirement Planning',
-    'Insurance Coverage',
-    'Education Savings',
-    'General Financial Advice'
-  ];
-
-  const budgetRanges = [
-    'Under $10,000',
-    '$10,000 - $50,000',
-    '$50,000 - $100,000',
-    '$100,000 - $500,000',
-    'Over $500,000'
-  ];
-
-  const experienceLevels = [
-    'Beginner',
-    'Intermediate',
-    'Advanced',
-    'Expert'
-  ];
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handlePreferenceChange = (preference: string, checked: boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      preferences: checked
-        ? [...prev.preferences, preference]
-        : prev.preferences.filter(p => p !== preference)
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (onMatch) {
-      onMatch(formData);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!formData.fullName || !formData.phoneNumber || !formData.topicOfInterest) {
+      setError('Please fill in all required fields')
+      return
     }
-  };
+
+    if (!consent) {
+      setError('Please give consent for data usage')
+      return
+    }
+
+    setStatus('searching')
+    setError('')
+
+    try {
+      const { data, error } = await supabase.rpc('create_instant_match', {
+        consumer_data: {
+          full_name: formData.fullName,
+          phone_number: formData.phoneNumber,
+          topic_of_interest: formData.topicOfInterest,
+          preferred_financial_institution: formData.preferredFinancialInstitution
+        },
+        required_specialization: formData.topicOfInterest
+      })
+
+      if (error) {
+        console.error('Supabase error:', error)
+        throw error
+      }
+
+      const result = data?.[0]
+
+      if (!result?.call_id || !result?.advisor_id) {
+        setStatus('no-advisor')
+        return
+      }
+
+      setStatus('ringing')
+      
+    } catch (error) {
+      console.error('Matching error:', error)
+      setError('Failed to find advisor. Please try again.')
+      setStatus('form')
+    }
+  }
+
+  const resetForm = () => {
+    setStatus('form')
+    setError('')
+  }
+
+  if (status === 'searching') {
+    return (
+      <div className="max-w-lg mx-auto p-6">
+        <Card>
+          <CardContent className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <h3 className="text-lg font-semibold">Finding Available Advisor...</h3>
+            <p className="text-gray-600">Looking for {formData.topicOfInterest} specialists</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (status === 'ringing') {
+    return (
+      <div className="max-w-lg mx-auto p-6">
+        <Card>
+          <CardContent className="text-center py-8">
+            <div className="animate-pulse text-green-600 mb-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                <span className="text-2xl">📞</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold">Connecting you to an advisor...</h3>
+            <p className="text-gray-600">Please wait while we connect your call</p>
+            <div className="mt-4">
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-blue-600 h-2 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (status === 'no-advisor') {
+    return (
+      <div className="max-w-lg mx-auto p-6">
+        <Card>
+          <CardContent className="text-center py-8">
+            <div className="text-gray-400 mb-4">
+              <span className="text-4xl">😔</span>
+            </div>
+            <h3 className="text-lg font-semibold">No Advisors Available</h3>
+            <p className="text-gray-600 mb-6">
+              Sorry, all {formData.topicOfInterest} advisors are currently busy. 
+              Please try again in a few minutes.
+            </p>
+            <Button onClick={resetForm} variant="outline">
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader className="text-center">
-        <div className="flex justify-center mb-4">
-          <UserSearch className="h-12 w-12 text-primary" />
-        </div>
-        <CardTitle className="text-2xl">Find Your Perfect Advisor Match</CardTitle>
-        <CardDescription>
-          Tell us about your financial goals and we'll connect you with the right advisor
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Personal Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Personal Information
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="+65 XXXX XXXX"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+    <div className="max-w-lg mx-auto p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Find Your Financial Advisor</CardTitle>
+          <p className="text-gray-600">Connect with a certified advisor via video call</p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="fullName">Full Name *</Label>
               <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="your.email@example.com"
+                id="fullName"
                 required
+                placeholder="Enter your full name"
+                value={formData.fullName}
+                onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
               />
             </div>
-          </div>
 
-          {/* Service Preferences */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Service Preferences</h3>
-            
-            <div className="space-y-2">
-              <Label htmlFor="service-type">Primary Service Needed</Label>
-              <Select value={formData.serviceType} onValueChange={(value) => handleInputChange('serviceType', value)}>
+            <div>
+              <Label htmlFor="phoneNumber">Phone Number *</Label>
+              <Input
+                id="phoneNumber"
+                type="tel"
+                required
+                placeholder="+65 XXXX XXXX"
+                value={formData.phoneNumber}
+                onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <Label>Topic of Interest *</Label>
+              <Select 
+                value={formData.topicOfInterest} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, topicOfInterest: value }))}
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select service type" />
+                  <SelectValue placeholder="Select your area of interest" />
                 </SelectTrigger>
                 <SelectContent>
-                  {serviceTypes.map((type) => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
+                  {TOPICS.map((topic) => (
+                    <SelectItem key={topic} value={topic}>{topic}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="budget">Investment Budget</Label>
-                <Select value={formData.budget} onValueChange={(value) => handleInputChange('budget', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select budget range" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {budgetRanges.map((range) => (
-                      <SelectItem key={range} value={range}>{range}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="experience">Experience Level</Label>
-                <Select value={formData.experience} onValueChange={(value) => handleInputChange('experience', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select experience" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {experienceLevels.map((level) => (
-                      <SelectItem key={level} value={level}>{level}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label>Preferred Financial Institution</Label>
+              <Select 
+                value={formData.preferredFinancialInstitution} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, preferredFinancialInstitution: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {INSTITUTIONS.map((inst) => (
+                    <SelectItem key={inst} value={inst}>{inst}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
 
-          {/* Advisor Preferences */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Advisor Preferences</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {['English Speaking', 'Mandarin Speaking', 'Malay Speaking', 'Tamil Speaking', 'Weekend Availability', 'Online Consultation'].map((preference) => (
-                <div key={preference} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={preference}
-                    checked={formData.preferences.includes(preference)}
-                    onCheckedChange={(checked) => handlePreferenceChange(preference, checked as boolean)}
-                  />
-                  <Label htmlFor={preference} className="text-sm">{preference}</Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Consent */}
-          <div className="space-y-4">
             <div className="flex items-start space-x-2">
-              <Checkbox
+              <input
+                type="checkbox"
                 id="consent"
-                checked={formData.consent}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, consent: checked as boolean }))}
-                required
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-1"
               />
-              <div className="space-y-1">
-                <Label htmlFor="consent" className="text-sm font-medium">
-                  Privacy and Data Consent
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  I consent to AdvisorNow collecting and processing my personal data for advisor matching purposes. 
-                  Data will be handled in accordance with our Privacy Policy.
-                </p>
-              </div>
+              <label htmlFor="consent" className="text-sm text-gray-700">
+                I consent to the collection and use of my personal data *
+                <div className="text-xs text-gray-500 mt-1">
+                  By checking this box, you agree to our Personal Data Protection Act (PDPA) policy. 
+                  Your information will be used solely for matching you with qualified financial advisors.
+                </div>
+              </label>
             </div>
-          </div>
 
-          <Button type="submit" className="w-full" size="lg">
-            <CheckCircle className="h-5 w-5 mr-2" />
-            Find My Perfect Match
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
-};
+            {error && (
+              <div className="text-red-600 text-sm">{error}</div>
+            )}
 
-export default ConsumerMatch;
+            <Button 
+              type="submit" 
+              className="w-full bg-blue-600 hover:bg-blue-700" 
+              size="lg"
+              disabled={!consent}
+            >
+              Find My Advisor
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
