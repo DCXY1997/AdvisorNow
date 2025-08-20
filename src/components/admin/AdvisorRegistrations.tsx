@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, X, Mail, Building, Hash } from 'lucide-react';
+import { Check, X, Mail, Building, Hash, Clock } from 'lucide-react';
 
 interface PendingAdvisor {
   id: string;
@@ -30,7 +30,7 @@ export const AdvisorRegistrations = () => {
       const { data, error } = await supabase
         .from('advisors')
         .select('id, full_name, email, representative_code, financial_institution, created_at')
-        .eq('status', 'pending')
+        .eq('status', 'pending') // Only pending advisors
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -51,7 +51,7 @@ export const AdvisorRegistrations = () => {
     setActionLoading(advisorId);
     
     try {
-      // Update advisor status to inactive (awaiting email confirmation)
+      // Update advisor status to inactive (awaiting email confirmation and subscription)
       const { error } = await supabase
         .from('advisors')
         .update({ 
@@ -63,7 +63,7 @@ export const AdvisorRegistrations = () => {
       if (error) throw error;
 
       toast({
-        title: "Advisor Approved",
+        title: "Advisor Approved! ✅",
         description: "Email confirmation will be sent to the advisor.",
       });
 
@@ -83,6 +83,9 @@ export const AdvisorRegistrations = () => {
   };
 
   const handleReject = async (advisorId: string) => {
+    const reason = prompt("Please provide a reason for rejection:");
+    if (!reason) return;
+
     setActionLoading(advisorId);
     
     try {
@@ -90,7 +93,7 @@ export const AdvisorRegistrations = () => {
         .from('advisors')
         .update({ 
           status: 'rejected',
-          rejection_reason: 'Application rejected by admin'
+          rejection_reason: reason
         })
         .eq('id', advisorId);
 
@@ -118,12 +121,10 @@ export const AdvisorRegistrations = () => {
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-sm text-muted-foreground mt-2">Loading registrations...</p>
-        </CardContent>
-      </Card>
+      <div className="text-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-sm text-muted-foreground">Loading registrations...</p>
+      </div>
     );
   }
 
@@ -137,11 +138,9 @@ export const AdvisorRegistrations = () => {
       </div>
 
       {pendingAdvisors.length === 0 ? (
-        <Card>
-          <CardContent className="text-center py-8">
-            <p className="text-muted-foreground">No pending registrations</p>
-          </CardContent>
-        </Card>
+        <div className="text-center py-12 text-muted-foreground">
+          No pending registrations
+        </div>
       ) : (
         <div className="grid gap-4">
           {pendingAdvisors.map((advisor) => (
@@ -153,7 +152,7 @@ export const AdvisorRegistrations = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">{advisor.email}</span>
@@ -167,7 +166,7 @@ export const AdvisorRegistrations = () => {
                     <span className="text-sm">{advisor.financial_institution}</span>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Applied: {new Date(advisor.created_at).toLocaleDateString()}
+                    Joined: {new Date(advisor.created_at).toLocaleDateString()}
                   </div>
                 </div>
 
