@@ -111,57 +111,6 @@ const AgentSignup = () => {
               Join our platform as a financial advisor and connect with clients looking for expert guidance.
             </p>
           </div>
-
-          {/* Static Information Section */}
-          <div className="bg-muted/30 border border-border rounded-lg p-6 mb-6 space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Registration Requirements
-            </h3>
-            
-            <div className="space-y-3 text-sm text-muted-foreground">
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <p className="font-medium text-foreground">Valid Representative License</p>
-                  <p>Must possess a current financial advisor representative license with your financial institution</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <p className="font-medium text-foreground">Professional Email</p>
-                  <p>Provide your professional email address for verification and communication</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <p className="font-medium text-foreground">Institution Affiliation</p>
-                  <p>Select your current financial institution from our approved list</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <p className="font-medium text-foreground">Review Process</p>
-                  <p>Applications are reviewed within 2-3 business days. You'll receive email updates on your status</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-background border border-border rounded-lg p-4 mt-4">
-              <p className="text-xs text-muted-foreground">
-                <strong>Note:</strong> All applications are subject to verification with your financial institution. 
-                Incomplete or invalid information may result in application rejection.
-              </p>
-            </div>
-          </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
