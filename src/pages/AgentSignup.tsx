@@ -48,67 +48,30 @@ const AgentSignup = () => {
       return;
     }
 
-    // Validate password length
-    if (password.length < 8) {
-      toast({
-        title: "Invalid Password",
-        description: "Password must be at least 8 characters long.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
     
     try {
-      // Insert registration data into the advisors table
-      const { data, error } = await supabase
-        .from('advisors')
+      // Insert registration data into Supabase
+      const { error } = await (supabase as any)
+        .from('agent_registrations')
         .insert({
           full_name: fullName,
           email: email,
-          password_hash: password, // In production, this should be properly hashed
+          password: password,
           representative_code: representativeCode,
           financial_institution: financialInstitution,
-          status: 'pending' // Will be pending until admin approval
-        })
-        .select();
+          status: 'pending'
+        });
 
       if (error) {
-        // Handle unique constraint violations
-        if (error.code === '23505') {
-          if (error.message.includes('email')) {
-            toast({
-              title: "Email Already Exists",
-              description: "This email is already registered. Please use a different email or try logging in.",
-              variant: "destructive",
-            });
-          } else if (error.message.includes('representative_code')) {
-            toast({
-              title: "Representative Code Already Exists",
-              description: "This representative code is already in use. Please use a different code.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Registration Failed",
-              description: "Email or Representative code already exists. Please check your information.",
-              variant: "destructive",
-            });
-          }
-        } else {
-          throw error;
-        }
-        return;
+        throw error;
       }
 
-      // Success!
       toast({
-        title: "Registration Submitted Successfully! 🎉",
-        description: "Your application has been submitted for admin review. You will receive an email once approved (usually within 1-2 business days).",
+        title: "Registration Submitted",
+        description: "Your agent registration has been submitted for review. We'll contact you soon.",
       });
       
-      // Clear form
       setFormData({
         fullName: "",
         email: "",
@@ -117,13 +80,12 @@ const AgentSignup = () => {
         financialInstitution: "",
       });
       
-      // Redirect to homepage after successful submission
+      // Redirect to index page after successful submission
       setTimeout(() => {
         navigate("/");
-      }, 3000);
+      }, 2000);
       
     } catch (error: any) {
-      console.error('Registration error:', error);
       toast({
         title: "Registration Failed",
         description: error.message || "There was an error submitting your registration. Please try again.",
@@ -189,9 +151,8 @@ const AgentSignup = () => {
                 type="password"
                 value={formData.password}
                 onChange={(e) => handleInputChange("password", e.target.value)}
-                placeholder="Enter your password (min 8 characters)"
+                placeholder="Enter your password"
                 required
-                minLength={8}
                 className="h-12 transition-smooth focus:ring-2 focus:ring-primary/20 border-border"
               />
             </div>

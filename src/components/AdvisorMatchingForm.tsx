@@ -1,269 +1,203 @@
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { supabase } from '@/integrations/supabase/client'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
-const TOPICS = [
-  'Insurance Planning',
-  'Investment Planning', 
-  'Retirement Planning',
-  'Estate Planning',
-  'Education Planning',
-  'Corporate Solution'
-]
-
-const INSTITUTIONS = [
-  'Any',
-  'AIA',
-  'Great Eastern',
-  'Prudential', 
-  'HSBC Life',
-  'Income',
-  'Manulife',
-  'Singlife',
-  'FWD',
-  'Tokio Marine Life'
-]
+interface FormData {
+  name: string;
+  phoneNumber: string;
+  topic: string;
+  financialInstitution: string;
+  pdpaConsent: boolean;
+}
 
 interface AdvisorMatchingFormProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function AdvisorMatchingForm({ isOpen, onClose }: AdvisorMatchingFormProps) {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    phoneNumber: '',
-    topicOfInterest: '',
-    preferredFinancialInstitution: 'Any'
-  })
-  
-  const [status, setStatus] = useState<'form' | 'searching' | 'no-advisor' | 'ringing'>('form')
-  const [consent, setConsent] = useState(false)
-  const [error, setError] = useState('')
+const AdvisorMatchingForm = ({ isOpen, onClose }: AdvisorMatchingFormProps) => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    phoneNumber: "",
+    topic: "",
+    financialInstitution: "",
+    pdpaConsent: false,
+  });
 
-  // Reset form when modal closes
-  const handleClose = () => {
-    setStatus('form')
-    setError('')
-    setFormData({
-      fullName: '',
-      phoneNumber: '',
-      topicOfInterest: '',
-      preferredFinancialInstitution: 'Any'
-    })
-    setConsent(false)
-    onClose()
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     
-    if (!formData.fullName || !formData.phoneNumber || !formData.topicOfInterest) {
-      setError('Please fill in all required fields')
-      return
+    if (!formData.pdpaConsent) {
+      toast({
+        title: "Consent Required",
+        description: "Please consent to the PDPA terms to proceed.",
+        variant: "destructive",
+      });
+      return;
     }
 
-    if (!consent) {
-      setError('Please give consent for data usage')
-      return
-    }
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      toast({
+        title: "Advisor Found!",
+        description: "Connecting you to your advisor now...",
+      });
+      setIsSubmitting(false);
+      onClose();
+      setFormData({
+        name: "",
+        phoneNumber: "",
+        topic: "",
+        financialInstitution: "",
+        pdpaConsent: false,
+      });
+      // Navigate to video call page
+      navigate('/video-call');
+    }, 1500);
+  };
 
-    setStatus('searching')
-    setError('')
+  const handleInputChange = (field: keyof FormData, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
-    try {
-      const { data, error } = await supabase.rpc('create_instant_match', {
-        consumer_data: {
-          full_name: formData.fullName,
-          phone_number: formData.phoneNumber,
-          topic_of_interest: formData.topicOfInterest,
-          preferred_financial_institution: formData.preferredFinancialInstitution
-        },
-        required_specialization: formData.topicOfInterest
-      })
+  const financialInstitutions = [
+    "Any",
+    "AIA",
+    "Great Eastern", 
+    "Prudential",
+    "HSBC Life",
+    "Income",
+    "Manulife",
+    "Singlife",
+    "FWD",
+    "Tokio Marine Life"
+  ];
 
-      if (error) {
-        console.error('Supabase error:', error)
-        throw error
-      }
-
-      const result = data?.[0]
-
-      if (!result?.call_id || !result?.advisor_id) {
-        setStatus('no-advisor')
-        return
-      }
-
-      setStatus('ringing')
-      
-    } catch (error) {
-      console.error('Matching error:', error)
-      setError('Failed to find advisor. Please try again.')
-      setStatus('form')
-    }
-  }
-
-  const resetForm = () => {
-    setStatus('form')
-    setError('')
-  }
+  const topics = [
+    "Insurance Planning",
+    "Investment Planning",
+    "Retirement Planning",
+    "Estate Planning",
+    "Education Planning",
+    "Corporate Solution"
+  ];
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[500px] gradient-card border-border/50">
         <DialogHeader>
-          <DialogTitle>Find Your Financial Advisor</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold text-primary text-center">
+            Find Your Financial Advisor
+          </DialogTitle>
         </DialogHeader>
-
-        {status === 'searching' && (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold">Finding Available Advisor...</h3>
-            <p className="text-gray-600">Looking for {formData.topicOfInterest} specialists</p>
+        
+        <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-sm font-medium">
+              Full Name *
+            </Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              placeholder="Enter your full name"
+              required
+              className="transition-smooth focus:ring-2 focus:ring-primary/20"
+            />
           </div>
-        )}
 
-        {status === 'ringing' && (
-          <div className="text-center py-8">
-            <div className="animate-pulse text-green-600 mb-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-2xl">📞</span>
-              </div>
-            </div>
-            <h3 className="text-lg font-semibold">Connecting you to an advisor...</h3>
-            <p className="text-gray-600">Please wait while we connect your call</p>
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-sm font-medium">
+              Phone Number *
+            </Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={formData.phoneNumber}
+              onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+              placeholder="+65 9XXX XXXX"
+              required
+              className="transition-smooth focus:ring-2 focus:ring-primary/20"
+            />
           </div>
-        )}
 
-        {status === 'no-advisor' && (
-          <div className="text-center py-8">
-            <div className="text-gray-400 mb-4">
-              <span className="text-4xl">😔</span>
-            </div>
-            <h3 className="text-lg font-semibold">No Advisors Available</h3>
-            <p className="text-gray-600 mb-6">
-              Sorry, all {formData.topicOfInterest} advisors are currently busy. 
-              Please try again in a few minutes.
-            </p>
-            <Button onClick={resetForm} variant="outline" className="w-full">
-              Try Again
-            </Button>
+          <div className="space-y-2">
+            <Label htmlFor="topic" className="text-sm font-medium">
+              Topic of Interest *
+            </Label>
+            <Select onValueChange={(value) => handleInputChange("topic", value)} required>
+              <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
+                <SelectValue placeholder="Select your area of interest" />
+              </SelectTrigger>
+              <SelectContent>
+                {topics.map((topic) => (
+                  <SelectItem key={topic} value={topic}>
+                    {topic}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        )}
 
-        {status === 'form' && (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name */}
-            <div>
-              <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
-                Full Name *
-              </Label>
-              <Input
-                id="fullName"
-                required
-                placeholder="Enter your full name"
-                value={formData.fullName}
-                onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-                className="mt-1"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="institution" className="text-sm font-medium">
+              Preferred Financial Institution *
+            </Label>
+            <Select onValueChange={(value) => handleInputChange("financialInstitution", value)} required>
+              <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
+                <SelectValue placeholder="Any" />
+              </SelectTrigger>
+              <SelectContent>
+                {financialInstitutions.map((institution) => (
+                  <SelectItem key={institution} value={institution}>
+                    {institution}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            {/* Phone Number */}
-            <div>
-              <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700">
-                Phone Number *
-              </Label>
-              <Input
-                id="phoneNumber"
-                type="tel"
-                required
-                placeholder="+65 9XXX XXXX"
-                value={formData.phoneNumber}
-                onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                className="mt-1"
-              />
-            </div>
-
-            {/* Topic of Interest */}
-            <div>
-              <Label className="text-sm font-medium text-gray-700">
-                Topic of Interest *
-              </Label>
-              <Select 
-                value={formData.topicOfInterest} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, topicOfInterest: value }))}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select your area of interest" />
-                </SelectTrigger>
-                <SelectContent>
-                  {TOPICS.map((topic) => (
-                    <SelectItem key={topic} value={topic}>{topic}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Preferred Financial Institution */}
-            <div>
-              <Label className="text-sm font-medium text-gray-700">
-                Preferred Financial Institution
-              </Label>
-              <Select 
-                value={formData.preferredFinancialInstitution} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, preferredFinancialInstitution: value }))}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {INSTITUTIONS.map((inst) => (
-                    <SelectItem key={inst} value={inst}>{inst}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Consent Checkbox */}
-            <div className="flex items-start space-x-3">
-              <input
-                type="checkbox"
-                id="consent"
-                checked={consent}
-                onChange={(e) => setConsent(e.target.checked)}
-                className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label htmlFor="consent" className="text-sm text-gray-700">
+          <div className="flex items-start space-x-3 p-4 bg-muted rounded-lg">
+            <Checkbox
+              id="pdpa"
+              checked={formData.pdpaConsent}
+              onCheckedChange={(checked) => handleInputChange("pdpaConsent", checked as boolean)}
+              className="mt-1"
+            />
+            <div className="space-y-1">
+              <Label htmlFor="pdpa" className="text-sm font-medium leading-5 cursor-pointer">
                 I consent to the collection and use of my personal data *
-                <div className="text-xs text-gray-500 mt-1">
-                  By checking this box, you agree to our Personal Data Protection Act (PDPA) policy. 
-                  Your information will be used solely for matching you with qualified financial advisors.
-                </div>
-              </label>
+              </Label>
+              <p className="text-xs text-muted-foreground leading-4">
+                By checking this box, you agree to our Personal Data Protection Act (PDPA) policy. 
+                Your information will be used solely for matching you with qualified financial advisors.
+              </p>
             </div>
+          </div>
 
-            {/* Error Message */}
-            {error && (
-              <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md">
-                {error}
-              </div>
-            )}
-
-            {/* Submit Button */}
-            <Button 
-              type="submit" 
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-medium"
-              disabled={!consent}
-            >
-              Find My Advisor
-            </Button>
-          </form>
-        )}
+          <Button
+            type="submit"
+            disabled={isSubmitting || !formData.name || !formData.phoneNumber || !formData.topic || !formData.financialInstitution || !formData.pdpaConsent}
+            className="w-full h-12 text-lg font-semibold bg-primary hover:bg-primary-light text-primary-foreground shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 border-0"
+          >
+            {isSubmitting ? "Submitting..." : "Find My Advisor"}
+          </Button>
+        </form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
+
+export default AdvisorMatchingForm;
